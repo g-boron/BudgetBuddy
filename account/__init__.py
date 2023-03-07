@@ -1,0 +1,1 @@
+#ten kod wykona się 1 raz w momencie załadowania tego package w main.py
