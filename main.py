@@ -1,11 +1,6 @@
-import account
-import functions 
-import libraries
-from subprocess import call # lets run other files
-
-def Run_register():
-    call(["python","account/register.py"])
+def main():
+    pass
 
 
-Run_register() #running register file
-
+if __name__ == '__main__':
+    main()
