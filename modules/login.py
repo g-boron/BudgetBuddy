@@ -8,11 +8,10 @@ customtkinter.set_default_color_theme("blue")
 class Login(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-        self.root = customtkinter.CTk()
-        self.root.geometry("500x350")
-        self.root.minsize(500, 350)
-        self.root.title = "Login in to your account"
-        self.frame = customtkinter.CTkFrame(master=self.root, width=1000, height=350)
+        self.geometry("500x350")
+        self.minsize(500, 350)
+        self.title = "Login in to your account"
+        self.frame = customtkinter.CTkFrame(master=self, width=1000, height=350)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
         self.frame.grid_rowconfigure(0, weight=1)
