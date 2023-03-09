@@ -39,10 +39,12 @@ class Login(customtkinter.CTk):
 
         self.button = customtkinter.CTkButton(master=self.frame, fg_color="transparent",
                                               text="Forgot your password?", font=("Arial", 10, "normal"))
+        self.button.configure(width=50, height=20)
         self.button.grid(pady=10, padx=0, column=0, row=5)
 
         self.button = customtkinter.CTkButton(master=self.frame, fg_color="transparent",
                                               text="Register an account!", font=("Arial", 10, "normal"))
+        self.button.configure(width=50, height=20)
         self.button.grid(pady=10, padx=0, column=2, row=5, rowspan=2)
 
     def login(self):
