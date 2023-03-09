@@ -11,6 +11,7 @@ class Registration():
     root.geometry("500x350")
     root.minsize(500,350)
     root.title="BuddgetBuddy"
+    #self.resizable(False, False)
 
     def Login():
         print("Test")
