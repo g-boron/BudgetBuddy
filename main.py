@@ -1,6 +1,8 @@
 from modules.login import Login
 import tkinter
 import customtkinter
+from modules.database import database_connect
+
 
 def main():
     login_screen = Login()

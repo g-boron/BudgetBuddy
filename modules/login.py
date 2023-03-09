@@ -13,6 +13,7 @@ class Login(customtkinter.CTk):
         self.title = "Login in to your account"
         self.frame = customtkinter.CTkFrame(master=self, width=1000, height=350)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.resizable(False, False)
 
         self.frame.grid_rowconfigure(0, weight=1)
         self.frame.grid_rowconfigure(1, weight=1)
