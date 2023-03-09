@@ -5,7 +5,7 @@ customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
 
-class Login(customtkinter.CTkToplevel):
+class Login(customtkinter.CTk):
     def __init__(self):
         super().__init__()
         self.geometry("500x350")
@@ -19,7 +19,6 @@ class Login(customtkinter.CTkToplevel):
         self.frame.grid_rowconfigure(4, weight=1)
         self.resizable(False, False)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
-        self.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
 
         self.label = customtkinter.CTkLabel(master=self.frame, text="Enter your credentials",
                                             font=("Arial", 24, "normal"))
