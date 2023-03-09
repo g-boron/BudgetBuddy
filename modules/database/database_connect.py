@@ -27,11 +27,11 @@ class DatabaseConnector:
     
     def insert_data(self, query):
         '''
-        jak chce sie uzyc inserta to trzeba wpisac tak:
+        jak chce sie uzyc inserta do zarejestrowania to trzeba wpisac tak:
         from modules.database import database_connect
 
         db = database_connect.DatabaseConnector() <- utworzenie obiektu klasy
-        query = "INSERT INTO users (username, password, email) VALUES('test5', 'test', 'test@test.com')" <- polecenie do inserta
+        query = f"INSERT INTO users (username, password, email) VALUES('{usernameEntry}', '{passwordEntry}', '{emailEntry}')" <- polecenie do inserta
         db.insert_data(query) <- wykonanie inserta
         '''
         conn = None
