@@ -1,7 +1,5 @@
 from modules.login import Login
-import tkinter
-import customtkinter
-from modules.database import database_connect
+#from modules.database import database_connect
 
 
 def main():
