@@ -18,6 +18,7 @@ class Login(customtkinter.CTk):
         self.frame.grid_rowconfigure(3, weight=1)
         self.frame.grid_rowconfigure(4, weight=1)
         self.resizable(False, False)
+        #self.iconphoto() here is the place to put our logo
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
 
         self.label = customtkinter.CTkLabel(master=self.frame, text="Enter your credentials",
