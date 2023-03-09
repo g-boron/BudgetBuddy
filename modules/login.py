@@ -23,7 +23,7 @@ class Login(customtkinter.CTk):
 
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
 
-        self.label = customtkinter.CTkLabel(master=self.frame, text="Budget Buddy", font=("Arial", 24))
+        self.label = customtkinter.CTkLabel(master=self.frame, text="Budget Buddy", font=("Arial", 24, "normal"))
         self.label.grid(pady=12, padx=10, row=0, column=1)
 
         self.entry1 = customtkinter.CTkEntry(master=self.frame, placeholder_text="Login")
