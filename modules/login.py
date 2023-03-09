@@ -38,14 +38,22 @@ class Login(customtkinter.CTk):
         self.checkbox.grid(pady=12, padx=10, row=4, column=1)
 
         self.button = customtkinter.CTkButton(master=self.frame, fg_color="transparent",
-                                              text="Forgot your password?", font=("Arial", 10, "normal"))
+                                              text="Forgot your password?", font=("Arial", 10, "normal"),
+                                              command=self.forgot_password)
         self.button.configure(width=50, height=20)
         self.button.grid(pady=10, padx=0, column=0, row=5)
 
         self.button = customtkinter.CTkButton(master=self.frame, fg_color="transparent",
-                                              text="Register an account!", font=("Arial", 10, "normal"))
+                                              text="Register an account!", font=("Arial", 10, "normal"),
+                                              command=self.get_me_to_registration)
         self.button.configure(width=50, height=20)
         self.button.grid(pady=10, padx=0, column=2, row=5, rowspan=2)
 
     def login(self):
-        print("Test")
+        pass
+
+    def get_me_to_registration(self):
+        pass
+
+    def forgot_password(self):
+        pass
