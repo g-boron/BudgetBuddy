@@ -12,6 +12,7 @@ class Registration():
     root.geometry("700x500")
     root.minsize(700,500)
     root.title="BuddgetBuddy"
+    #self.resizable(False, False)
 
     def Login():
         tkinter.messagebox.showinfo("Welcome to GFG.",  "Hi I'm your message")
