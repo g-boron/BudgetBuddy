@@ -10,17 +10,15 @@ class Login(customtkinter.CTk):
         super().__init__()
         self.geometry("800x600")
         self.title("Login in to your account")
-        icon_photo = PhotoImage(file="./images/budget_buddy_logo.png")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.iconphoto(False, PhotoImage(file="./images/budget_buddy_logo.png"))
         self.frame.grid_rowconfigure(0, weight=1)
         self.frame.grid_rowconfigure(1, weight=1)
         self.frame.grid_rowconfigure(2, weight=1)
         self.frame.grid_rowconfigure(3, weight=1)
         self.frame.grid_rowconfigure(4, weight=1)
         self.resizable(False, False)
-
-        self.iconphoto(False, icon_photo)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
 
         self.label = customtkinter.CTkLabel(master=self.frame, text="Enter your credentials",
