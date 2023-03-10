@@ -1,5 +1,6 @@
 from tkinter import *
 import customtkinter
+from PIL import ImageTk
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
