@@ -48,3 +48,29 @@ class DatabaseConnector:
         finally:
             if conn is not None:
                 conn.close()
+
+    
+    def select_data(self, query):
+        '''
+        uzywanie:
+        db = database_connect.DatabaseConnector()
+        query = 'SELECT username, password, email from users'
+        records = db.select_data(query)
+
+        for row in records:
+            print(row)
+        '''
+        conn = None
+
+        try:
+            conn = psycopg2.connect(**self.params)
+            cur = conn.cursor()
+            cur.execute(query)
+            records = cur.fetchall()
+            cur.close()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        finally:
+            if conn is not None:
+                conn.close()
+                return records
