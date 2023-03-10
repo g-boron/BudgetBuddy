@@ -25,10 +25,10 @@ class Login(customtkinter.CTk):
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=16, padx=10, row=0, column=1)
 
-        self.entry1 = customtkinter.CTkEntry(master=self.frame, placeholder_text="Login")
+        self.entry1 = customtkinter.CTkEntry(master=self.frame, placeholder_text="Login", justify=CENTER)
         self.entry1.grid(pady=16, padx=10, row=1, column=1, sticky="ew")
 
-        self.entry2 = customtkinter.CTkEntry(master=self.frame, placeholder_text="Password", show="*")
+        self.entry2 = customtkinter.CTkEntry(master=self.frame, placeholder_text="Password", show="*", justify=CENTER)
         self.entry2.grid(pady=16, padx=10, row=2, column=1, sticky="ew")
 
         self.button_login = customtkinter.CTkButton(master=self.frame, text="Login", command=self.login)
