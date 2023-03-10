@@ -25,7 +25,7 @@ class DatabaseConnector:
         return db
 
     
-    def insert_data(self, query):
+    def insert_or_delete_data(self, query):
         '''
         jak chce sie uzyc inserta do zarejestrowania to trzeba wpisac tak:
         from modules.database import database_connect
@@ -33,6 +33,11 @@ class DatabaseConnector:
         db = database_connect.DatabaseConnector() <- utworzenie obiektu klasy
         query = f"INSERT INTO users (username, password, email) VALUES('{usernameEntry}', '{passwordEntry}', '{emailEntry}')" <- polecenie do inserta
         db.insert_data(query) <- wykonanie inserta
+
+        lub do usuwania:
+        db = database_connect.DatabaseConnector()
+        query = 'DELETE FROM users where id=11'
+        db.insert_data(query)
         '''
         conn = None
 
