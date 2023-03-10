@@ -1,21 +1,22 @@
 from tkinter import *
 import customtkinter 
+import tkinter.messagebox
 
 
 class Registration():
 
-    customtkinter.set_appearance_mode("System")  
+    customtkinter.set_appearance_mode("light")  
     customtkinter.set_default_color_theme("green")  
 
     root=customtkinter.CTk()
-    root.geometry("500x350")
-    root.minsize(500,350)
+    root.geometry("700x500")
+    root.minsize(700,500)
     root.title="BuddgetBuddy"
 
     def Login():
-        print("Test")
+        tkinter.messagebox.showinfo("Welcome to GFG.",  "Hi I'm your message")
 
-    frame=customtkinter.CTkFrame(master=root,width=1000, height=350)
+    frame=customtkinter.CTkFrame(master=root)
     frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
     frame.grid_rowconfigure(0,weight=1)
@@ -30,14 +31,14 @@ class Registration():
     label = customtkinter.CTkLabel(master=frame, text="Budget Buddy", font=("Arial", 24 ))
     label.grid(pady=12, padx=10,row=0, column=1)
 
-    entery1=customtkinter.CTkEntry(master=frame, placeholder_text="Login")
-    entery1.grid(pady=12, padx=10,row=1, column=1)
+    login=customtkinter.CTkEntry(master=frame, placeholder_text="Login",height=30)
+    login.grid(pady=12, padx=10,row=1, column=1)
     
-    entery2=customtkinter.CTkEntry(master=frame, placeholder_text="Password",show="*")
-    entery2.grid(pady=12, padx=10, row=2, column=1)
+    password=customtkinter.CTkEntry(master=frame, placeholder_text="Password",show="*",height=30)
+    password.grid(pady=12, padx=10, row=2, column=1)
 
-    button=customtkinter.CTkButton(master=frame, text="Login",command=Login)
-    button.grid(pady=12, padx=10, row=3, column=1)
+    submit=customtkinter.CTkButton(master=frame, text="Submit",command=Login,height=30)
+    submit.grid(pady=12, padx=10, row=3, column=1)
 
     checkbox=customtkinter.CTkCheckBox(master=frame, text="Remember me")
     checkbox.grid(pady=12, padx=10, row=4, column=1)
