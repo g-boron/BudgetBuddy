@@ -16,7 +16,7 @@ class Registration:
 
     def register(self):
         tkinter.messagebox.showinfo("Welcome to GFG.",  "Hi I'm your message")
-        
+
 
     frame=customtkinter.CTkFrame(master=root)
     frame.place(relx=0.5, rely=0.5, anchor=CENTER)
