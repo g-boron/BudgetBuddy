@@ -1,6 +1,7 @@
 from tkinter import *
 import customtkinter
 from PIL import ImageTk
+from modules.home_window import HomeWindow
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -53,7 +54,8 @@ class Login(customtkinter.CTk):
         self.button.grid(pady=10, padx=0, column=2, row=5, rowspan=2, sticky="sw")
 
     def login(self):
-        pass
+        home_window = HomeWindow()
+        home_window.mainloop()
 
     def get_me_to_registration(self):
         pass
