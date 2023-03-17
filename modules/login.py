@@ -3,6 +3,7 @@ from tkinter import messagebox
 import customtkinter
 from PIL import ImageTk
 from modules.home_window import HomeWindow
+from modules.database import database_connect
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -26,7 +27,6 @@ class Login(customtkinter.CTk):
         self.resizable(False, False)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
         self.are_valid = False
-
 
         self.label = customtkinter.CTkLabel(master=self.frame, text="Enter your credentials",
                                             font=("Arial", 30, "normal"))
@@ -56,10 +56,24 @@ class Login(customtkinter.CTk):
         self.button.configure(width=50, height=20)
         self.button.grid(pady=10, padx=0, column=2, row=5, rowspan=2, sticky="sw")
 
-
+    def check_login_credentials(self):
+        provided_username = self.entry1.get()
+        provided_password = self.entry2.get()
+        db = database_connect.DatabaseConnector()
+        login_query = f"SELECT username FROM users WHERE username='{provided_username}';"
+        user_login = db.select_data(login_query, 'one')
+        user_login = str(user_login).strip("('),")
+        password_query = f"SELECT password FROM users WHERE username = '{provided_username}'"
+        user_password = db.select_data(login_query, 'one')
+        user_password = str(user_password).strip("('),")
+        if provided_username == user_login and provided_password == user_password:
+            return True
+        else:
+            return False
 
     def login(self):
-        if self.are_valid == 1:
+        x = self.check_login_credentials()
+        if x:
             self.destroy()
             home_window = HomeWindow()
             home_window.mainloop()
