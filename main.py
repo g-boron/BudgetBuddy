@@ -4,6 +4,7 @@ from modules.login import Login
 
 def main():
     login_screen = Login()
+    #user_name = login_screen.get_user_name()
 
     login_screen.mainloop()
 
