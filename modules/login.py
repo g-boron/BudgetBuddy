@@ -54,6 +54,7 @@ class Login(customtkinter.CTk):
         self.button.grid(pady=10, padx=0, column=2, row=5, rowspan=2, sticky="sw")
 
     def login(self):
+        self.destroy()
         home_window = HomeWindow()
         home_window.mainloop()
 
