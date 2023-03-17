@@ -15,6 +15,9 @@ class HomeWindow(customtkinter.CTk):
         self.geometry("%dx%d" % (width, height))
         self.state('zoomed')
         self.title("Welcome to home window")
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_dark.png")
+        self.iconphoto(False, self.iconpath)
         self.resizable(True, True)
         self.label = customtkinter.CTkLabel(master=self, text="Welcome to home screen",
                                             font=("Arial", 30, "normal"))
