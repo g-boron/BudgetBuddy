@@ -55,7 +55,7 @@ class DatabaseConnector:
                 conn.close()
 
     
-    def select_data(self, query):
+    def select_data(self, query, fetch='all'):
         '''
         uzywanie:
         db = database_connect.DatabaseConnector()
@@ -64,6 +64,11 @@ class DatabaseConnector:
 
         for row in records:
             print(row)
+
+        jak sie chce zwrocic tylko 1 rekord to fetch = 'one':
+        db = DatabaseConnector()
+        query = f"SELECT balance FROM users WHERE username = '{username}'"
+        self.balance = db.select_data(query, 'one')
         '''
         conn = None
 
@@ -71,7 +76,10 @@ class DatabaseConnector:
             conn = psycopg2.connect(**self.params)
             cur = conn.cursor()
             cur.execute(query)
-            records = cur.fetchall()
+            if fetch == 'one':
+                records = cur.fetchone()
+            else:
+                records = cur.fetchall()
             cur.close()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
