@@ -46,7 +46,7 @@ class DatabaseConnector:
             cur = conn.cursor()
             cur.execute(query)
             conn.commit()
-            print('Inserted successfully')
+            print('Success')
             cur.close()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)

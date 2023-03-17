@@ -1,12 +1,30 @@
 from modules.database.database_connect import DatabaseConnector
+from datetime import date
 
 
 class Budget:
     def __init__(self, username):
-        db = DatabaseConnector()
+        self.username = username
+        self.db = DatabaseConnector()
         query = f"SELECT balance FROM users WHERE username = '{username}'"
-        self.balance = db.select_data(query, 'one')
+        self.balance = self.db.select_data(query, 'one')[0]
+        query = f"SELECT id FROM users WHERE username = '{username}'"
+        self.user_id = self.db.select_data(query, 'one')[0]
 
     
     def get_balance(self):
         return self.balance
+
+
+    def add_expense(self, name, desc, amount, category):
+        '''
+        uzycie:
+        user = Budget('admin')
+        user.add_expense('Testowy wydatek', 'Wydatek wprowadzony dla testow', 2500, 1)
+        '''
+        query = f"INSERT INTO expenses (name, description, amount, add_date, user_id, category_id) VALUES ('{name}', '{desc}', '{amount}', '{date.today()}', '{self.user_id}', '{category}')"
+        self.db.make_query(query)
+        
+        current_balance = self.balance - amount
+        query = f"UPDATE users SET balance = {current_balance} WHERE username = '{self.username}'"
+        self.db.make_query(query)
