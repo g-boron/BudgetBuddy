@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 import customtkinter
 from PIL import ImageTk
 from modules.home_window import HomeWindow
@@ -14,7 +15,7 @@ class Login(customtkinter.CTk):
         self.title("Login in to your account")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.wm_iconbitmap()
-        self.icopath = ImageTk.PhotoImage(file="./images/logo_dark.png")
+        self.icopath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
         self.iconphoto(False, self.icopath)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
         self.frame.grid_rowconfigure(0, weight=1)
@@ -24,6 +25,8 @@ class Login(customtkinter.CTk):
         self.frame.grid_rowconfigure(4, weight=1)
         self.resizable(False, False)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
+        self.are_valid = False
+
 
         self.label = customtkinter.CTkLabel(master=self.frame, text="Enter your credentials",
                                             font=("Arial", 30, "normal"))
@@ -53,10 +56,15 @@ class Login(customtkinter.CTk):
         self.button.configure(width=50, height=20)
         self.button.grid(pady=10, padx=0, column=2, row=5, rowspan=2, sticky="sw")
 
+
+
     def login(self):
-        self.destroy()
-        home_window = HomeWindow()
-        home_window.mainloop()
+        if self.are_valid == 1:
+            self.destroy()
+            home_window = HomeWindow()
+            home_window.mainloop()
+        else:
+            messagebox.showerror(title="login or password not valid", message="Login or password do not match!")
 
     def get_me_to_registration(self):
         pass
