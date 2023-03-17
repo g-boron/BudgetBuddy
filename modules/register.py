@@ -3,7 +3,7 @@ import customtkinter
 import tkinter.messagebox
 
 
-class Registration():
+class Registration:
 
     customtkinter.set_appearance_mode("light")  
     customtkinter.set_default_color_theme("green")  
@@ -14,8 +14,9 @@ class Registration():
     root.title="BuddgetBuddy"
     #self.resizable(False, False)
 
-    def Login():
+    def register(self):
         tkinter.messagebox.showinfo("Welcome to GFG.",  "Hi I'm your message")
+        
 
     frame=customtkinter.CTkFrame(master=root)
     frame.place(relx=0.5, rely=0.5, anchor=CENTER)
