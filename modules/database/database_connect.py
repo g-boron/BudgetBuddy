@@ -25,7 +25,7 @@ class DatabaseConnector:
         return db
 
     
-    def insert_or_delete_data(self, query):
+    def make_query(self, query):
         '''
         jak chce sie uzyc inserta do zarejestrowania to trzeba wpisac tak:
         from modules.database import database_connect
