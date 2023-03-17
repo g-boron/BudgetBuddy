@@ -62,11 +62,9 @@ class Login(customtkinter.CTk):
         db = database_connect.DatabaseConnector()
         login_query = f"SELECT username FROM users WHERE username='{provided_username}';"
         user_login = db.select_data(login_query, 'one')
-        user_login = str(user_login).strip("('),")
         password_query = f"SELECT password FROM users WHERE username = '{provided_username}'"
         user_password = db.select_data(login_query, 'one')
-        user_password = str(user_password).strip("('),")
-        if provided_username == user_login and provided_password == user_password:
+        if provided_username == user_login[0] and provided_password == user_password[0]:
             return True
         else:
             return False
