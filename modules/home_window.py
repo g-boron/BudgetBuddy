@@ -25,7 +25,7 @@ class HomeWindow(customtkinter.CTk):
         self.iconpath = ImageTk.PhotoImage(file="./images/logo_dark.png")
         self.iconphoto(False, self.iconpath)
         self.resizable(True, True)
-        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome, {self.get_user_name(self.username)} to home screen",
+        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome, {self.get_user_name(self.username)}",
                                             font=("Arial", 30, "normal"))
         self.label.pack()
 

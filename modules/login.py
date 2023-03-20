@@ -76,12 +76,6 @@ class Login(customtkinter.CTk):
             home_window.mainloop()
         else:
             messagebox.showerror(title="login or password not valid", message="Login or password do not match!")
-        '''try:
-            home_window = HomeWindow(x)
-            home_window.mainloop()
-            self.destroy()
-        except:
-            messagebox.showerror(title="login or password not valid", message="Login or password do not match!")'''
 
     def get_me_to_registration(self):
         pass
