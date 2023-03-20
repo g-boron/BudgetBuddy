@@ -66,21 +66,19 @@ class Login(customtkinter.CTk):
         user_password = db.select_data(login_query, 'one')
         #self.get_user_name(user_login)
         if provided_username == user_login[0] and provided_password == user_password[0]:
-            return True
+            return user_login[0]
         else:
             return False
 
-    '''def get_user_name(self, user_login):
-        db = database_connect.DatabaseConnector()
-        login_query = f"SELECT name FROM users WHERE username='{user_login[0]}';"
-        user_name = db.select_data(login_query, 'one')
-        return user_name'''
+
+
 
     def login(self):
         x = self.check_login_credentials()
+        print(x)
         if x:
             self.destroy()
-            home_window = HomeWindow()
+            home_window = HomeWindow(x)
             home_window.mainloop()
         else:
             messagebox.showerror(title="login or password not valid", message="Login or password do not match!")
