@@ -31,6 +31,6 @@ class HomeWindow(customtkinter.CTk):
 
     def get_user_name(self, user_login):
         db = database_connect.DatabaseConnector()
-        login_query = f"SELECT name FROM users WHERE username='{user_login}';"
-        user_name = db.select_data(login_query, 'one')
+        name_query = f"SELECT name FROM users WHERE username='{user_login}';"
+        user_name = db.select_data(name_query, 'one')
         return user_name[0]
