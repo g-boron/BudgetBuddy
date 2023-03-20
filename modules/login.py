@@ -26,17 +26,16 @@ class Login(customtkinter.CTk):
         self.frame.grid_rowconfigure(4, weight=1)
         self.resizable(False, False)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
-        self.are_valid = False
 
         self.label = customtkinter.CTkLabel(master=self.frame, text="Enter your credentials",
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=18, padx=10, row=0, column=1)
 
-        self.entry1 = customtkinter.CTkEntry(master=self.frame, placeholder_text="Login", justify=CENTER)
-        self.entry1.grid(pady=18, padx=10, row=1, column=1, sticky="ew")
+        self.login_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Login", justify=CENTER)
+        self.login_entry.grid(pady=18, padx=10, row=1, column=1, sticky="ew")
 
-        self.entry2 = customtkinter.CTkEntry(master=self.frame, placeholder_text="Password", show="*", justify=CENTER)
-        self.entry2.grid(pady=18, padx=10, row=2, column=1, sticky="ew")
+        self.password_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Password", show="*", justify=CENTER)
+        self.password_entry.grid(pady=18, padx=10, row=2, column=1, sticky="ew")
 
         self.button_login = customtkinter.CTkButton(master=self.frame, text="Login", command=self.login)
         self.button_login.grid(pady=18, padx=10, row=3, column=1, sticky="ew")
@@ -57,8 +56,8 @@ class Login(customtkinter.CTk):
         self.button.grid(pady=10, padx=0, column=2, row=5, rowspan=2, sticky="sw")
 
     def check_login_credentials(self):
-        provided_username = self.entry1.get()
-        provided_password = self.entry2.get()
+        provided_username = self.login_entry.get()
+        provided_password = self.password_entry.get()
         db = database_connect.DatabaseConnector()
         login_query = f"SELECT username, password FROM users WHERE username='{provided_username}';"
         user_pass = db.select_data(login_query, 'one')
