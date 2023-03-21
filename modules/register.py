@@ -54,8 +54,14 @@ class Register(customtkinter.CTk):
 
 
     def register(self):
-        pass
-
+        provided_email = self.email_entry.get()
+        provided_login = self.login_entry.get()
+        provided_password = self.password_entry.get()
+        db = database_connect.DatabaseConnector()
+        query = f"INSERT INTO users (username, password, email) VALUES('{provided_email}', '{provided_login}', '{provided_password}')"
+        db.make_query(query)
 
     def get_me_to_login(self):
         pass
+        
+        
