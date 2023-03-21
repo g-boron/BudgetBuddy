@@ -1,48 +1,61 @@
 from tkinter import *
-import customtkinter 
-import tkinter.messagebox
+from tkinter import messagebox
+import customtkinter
+from PIL import ImageTk
+from modules.database import database_connect
+
+customtkinter.set_appearance_mode("System")
+customtkinter.set_default_color_theme("blue")
+
+class Register(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
+        self.geometry("800x600")
+        self.title("Register an account")
+        self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
+        self.wm_iconbitmap()
+        self.icopath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.icopath)
+        self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_rowconfigure(1, weight=1)
+        self.frame.grid_rowconfigure(2, weight=1)
+        self.frame.grid_rowconfigure(3, weight=1)
+        self.frame.grid_rowconfigure(4, weight=1)
+        self.frame.grid_rowconfigure(5, weight=1)
+        self.frame.grid_rowconfigure(6, weight=1)
+        self.resizable(False, False)
+        self.frame.grid_columnconfigure((0, 1, 2), weight=1)
+
+        self.label = customtkinter.CTkLabel(master=self.frame, text="Enter your details", font=("Arial", 30, "normal")) #text
+        self.label.grid(pady=18, padx=10, row=0, column=1)
+
+        self.email_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="E-mail", justify=CENTER) #email
+        self.email_entry.grid(pady=18, padx=10, row=1, column=1, sticky="ew")
+
+        self.login_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Login", justify=CENTER) #login
+        self.login_entry.grid(pady=18, padx=10, row=2, column=1, sticky="ew")
+
+        self.password_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Password",show="*", justify=CENTER) #password
+        self.password_entry.grid(pady=18, padx=10, row=3, column=1, sticky="ew")
+
+        self.password2_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Repeat password",show="*", justify=CENTER) #repeat password
+        self.password2_entry.grid(pady=18, padx=10, row=4, column=1, sticky="ew")
+
+        self.button_register = customtkinter.CTkButton(master=self.frame, text="Register", command=self.register) #register button
+        self.button_register.grid(pady=18, padx=10, row=5, column=1, sticky="ew")
 
 
-class Registration:
+        self.button_login = customtkinter.CTkButton(master=self.frame, fg_color="transparent",
+                                              text="Already have an account", font=("Arial", 12, "normal"),
+                                              command=self.get_me_to_login)
+        self.button_login.configure(width=50, height=20)
+        self.button_login.grid(pady=10, padx=0, column=1, row=6)
 
-    customtkinter.set_appearance_mode("light")  
-    customtkinter.set_default_color_theme("green")  
-
-    root=customtkinter.CTk()
-    root.geometry("700x500")
-    root.minsize(700,500)
-    root.title="BuddgetBuddy"
-    #self.resizable(False, False)
 
     def register(self):
-        tkinter.messagebox.showinfo("Welcome to GFG.",  "Hi I'm your message")
+        pass
 
 
-    frame=customtkinter.CTkFrame(master=root)
-    frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-
-    frame.grid_rowconfigure(0,weight=1)
-    frame.grid_rowconfigure(1,weight=1)
-    frame.grid_rowconfigure(2,weight=1)
-    frame.grid_rowconfigure(3,weight=1)
-    frame.grid_rowconfigure(4,weight=1)
-    
-    frame.grid_columnconfigure((0,1,2), weight=1)
-
-
-    label = customtkinter.CTkLabel(master=frame, text="Budget Buddy", font=("Arial", 24 ))
-    label.grid(pady=12, padx=10,row=0, column=1)
-
-    login=customtkinter.CTkEntry(master=frame, placeholder_text="Login",height=30)
-    login.grid(pady=12, padx=10,row=1, column=1)
-    
-    password=customtkinter.CTkEntry(master=frame, placeholder_text="Password",show="*",height=30)
-    password.grid(pady=12, padx=10, row=2, column=1)
-
-    submit=customtkinter.CTkButton(master=frame, text="Submit",command=Login,height=30)
-    submit.grid(pady=12, padx=10, row=3, column=1)
-
-    checkbox=customtkinter.CTkCheckBox(master=frame, text="Remember me")
-    checkbox.grid(pady=12, padx=10, row=4, column=1)
-
-    root.mainloop()
+    def get_me_to_login(self):
+        pass
