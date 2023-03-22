@@ -59,9 +59,9 @@ class Login(customtkinter.CTk):
         provided_username = self.login_entry.get()
         provided_password = self.password_entry.get()
         db = database_connect.DatabaseConnector()
-        login_query = f"SELECT username, password FROM users WHERE username='{provided_username}';"
+        login_query = f"SELECT username FROM users WHERE username = '{provided_username}' AND password = crypt('{provided_password}', password);"
         user_pass = db.select_data(login_query, 'one')
-        if user_pass is not None and provided_username == user_pass[0] and provided_password == user_pass[1]:
+        if user_pass is not None:
             return user_pass[0]
         else:
             return False

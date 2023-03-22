@@ -58,7 +58,7 @@ class Register(customtkinter.CTk):
         provided_login = self.login_entry.get()
         provided_password = self.password_entry.get()
         db = database_connect.DatabaseConnector()
-        query = f"INSERT INTO users (username, password, email) VALUES('{provided_email}', '{provided_login}', '{provided_password}')"
+        query = f"INSERT INTO users (username, password, email) VALUES ('{provided_login}', crypt('{provided_password}', gen_salt('bf')), '{provided_email}');"
         db.make_query(query)
 
     def get_me_to_login(self):
