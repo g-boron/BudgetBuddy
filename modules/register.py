@@ -5,7 +5,7 @@ from PIL import ImageTk
 from modules.database import database_connect
 
 customtkinter.set_appearance_mode("System")
-customtkinter.set_default_color_theme("blue")
+customtkinter.set_default_color_theme("green")
 
 
 class Register(customtkinter.CTk):
