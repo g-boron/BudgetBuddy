@@ -4,6 +4,7 @@ import customtkinter
 from PIL import ImageTk
 from modules.home_window import HomeWindow
 from modules.database import database_connect
+import modules.register
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -26,6 +27,7 @@ class Login(customtkinter.CTk):
         self.frame.grid_rowconfigure(4, weight=1)
         self.resizable(False, False)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
+        self.window_flag = 1
 
         self.label = customtkinter.CTkLabel(master=self.frame, text="Enter your credentials",
                                             font=("Arial", 30, "normal"))
@@ -79,7 +81,10 @@ class Login(customtkinter.CTk):
             messagebox.showerror(title="login or password not valid", message="Login or password do not match!")
 
     def get_me_to_registration(self):
-        pass
+        self.window_flag = 0
+        self.destroy()
+        register_page = modules.register.Register()
+        register_page.mainloop()
 
     def forgot_password(self):
         pass

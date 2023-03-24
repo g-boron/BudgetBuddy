@@ -16,8 +16,6 @@ class HomeWindow(customtkinter.CTk):
         super().__init__()
         width = self.winfo_screenwidth()
         height = self.winfo_screenheight()
-        '''self.login_instance = Login()
-        self.user_name = self.login_instance.get_user_name()'''
         self.geometry("%dx%d" % (width, height))
         self.state('zoomed')
         self.title("Welcome to home window")

@@ -3,6 +3,7 @@ from tkinter import messagebox
 import customtkinter
 from PIL import ImageTk
 from modules.database import database_connect
+import modules.login
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("green")
@@ -64,6 +65,8 @@ class Register(customtkinter.CTk):
         db.make_query(query)
 
     def get_me_to_login(self):
-        pass
+        self.destroy()
+        login_page = modules.login.Login()
+        login_page.mainloop()
         
         
