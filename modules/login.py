@@ -34,7 +34,8 @@ class Login(customtkinter.CTk):
         self.login_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Login", justify=CENTER)
         self.login_entry.grid(pady=18, padx=10, row=1, column=1, sticky="ew")
 
-        self.password_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Password", show="*", justify=CENTER)
+        self.password_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Password", show="*",
+                                                     justify=CENTER)
         self.password_entry.grid(pady=18, padx=10, row=2, column=1, sticky="ew")
 
         self.button_login = customtkinter.CTkButton(master=self.frame, text="Login", command=self.login)
@@ -59,7 +60,8 @@ class Login(customtkinter.CTk):
         provided_username = self.login_entry.get()
         provided_password = self.password_entry.get()
         db = database_connect.DatabaseConnector()
-        login_query = f"SELECT username FROM users WHERE username = '{provided_username}' AND password = crypt('{provided_password}', password);"
+        login_query = f"SELECT username FROM users WHERE username = '{provided_username}' " \
+                      f"AND password = crypt('{provided_password}', password);"
         user_pass = db.select_data(login_query, 'one')
         if user_pass is not None:
             return user_pass[0]

@@ -7,6 +7,7 @@ from modules.database import database_connect
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
+
 class Register(customtkinter.CTk):
     def __init__(self):
         super().__init__()
@@ -27,24 +28,25 @@ class Register(customtkinter.CTk):
         self.resizable(False, False)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
 
-        self.label = customtkinter.CTkLabel(master=self.frame, text="Enter your details", font=("Arial", 30, "normal")) #text
+        self.label = customtkinter.CTkLabel(master=self.frame, text="Enter your details", font=("Arial", 30, "normal"))
         self.label.grid(pady=18, padx=10, row=0, column=1)
 
-        self.email_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="E-mail", justify=CENTER) #email
+        self.email_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="E-mail", justify=CENTER)
         self.email_entry.grid(pady=18, padx=10, row=1, column=1, sticky="ew")
 
-        self.login_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Login", justify=CENTER) #login
+        self.login_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Login", justify=CENTER)
         self.login_entry.grid(pady=18, padx=10, row=2, column=1, sticky="ew")
 
-        self.password_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Password",show="*", justify=CENTER) #password
+        self.password_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Password", show="*",
+                                                     justify=CENTER)
         self.password_entry.grid(pady=18, padx=10, row=3, column=1, sticky="ew")
 
-        self.password2_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Repeat password",show="*", justify=CENTER) #repeat password
+        self.password2_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Repeat password", show="*",
+                                                      justify=CENTER)
         self.password2_entry.grid(pady=18, padx=10, row=4, column=1, sticky="ew")
 
-        self.button_register = customtkinter.CTkButton(master=self.frame, text="Register", command=self.register) #register button
+        self.button_register = customtkinter.CTkButton(master=self.frame, text="Register", command = self.register)
         self.button_register.grid(pady=18, padx=10, row=5, column=1, sticky="ew")
-
 
         self.button_login = customtkinter.CTkButton(master=self.frame, fg_color="transparent",
                                               text="Already have an account", font=("Arial", 12, "normal"),
@@ -52,13 +54,13 @@ class Register(customtkinter.CTk):
         self.button_login.configure(width=50, height=20)
         self.button_login.grid(pady=10, padx=0, column=1, row=6)
 
-
     def register(self):
         provided_email = self.email_entry.get()
         provided_login = self.login_entry.get()
         provided_password = self.password_entry.get()
         db = database_connect.DatabaseConnector()
-        query = f"INSERT INTO users (username, password, email) VALUES ('{provided_login}', crypt('{provided_password}', gen_salt('bf')), '{provided_email}');"
+        query = f"INSERT INTO users (username, password, email) VALUES ('{provided_login}', " \
+                f"crypt('{provided_password}', gen_salt('bf')), '{provided_email}');"
         db.make_query(query)
 
     def get_me_to_login(self):
