@@ -11,9 +11,9 @@ class Email:
                            f"konto użytkownika zostało utworzone prawidłowo i jesteś gotów do działania!\nZ " \
                           f"poważaniem,\nZespół BudgetBuddy"
 
-    def send_confirmation_mail_eng(self):
-        user_email = "" # uzupełnić o wpisany przy rejestracji mail
-        username = "" # uzupełnić o wpisane przy rejestracji imię
+    def send_confirmation_mail_eng(self,provided_email,provided_login):
+        user_email = provided_email
+        username = provided_login
         final_message = self.MESSAGE_ENG.replace("xxx", username)
         with smtplib.SMTP("smtp.gmail.com", 587, timeout=120) as connection:
             connection.starttls()

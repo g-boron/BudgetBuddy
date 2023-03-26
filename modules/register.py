@@ -4,6 +4,8 @@ import customtkinter
 from PIL import ImageTk
 from modules.database import database_connect
 import modules.login
+from modules.confirmation_mail import Email
+import re
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("green")
@@ -59,10 +61,45 @@ class Register(customtkinter.CTk):
         provided_email = self.email_entry.get()
         provided_login = self.login_entry.get()
         provided_password = self.password_entry.get()
-        db = database_connect.DatabaseConnector()
-        query = f"INSERT INTO users (username, password, email) VALUES ('{provided_login}', " \
-                f"crypt('{provided_password}', gen_salt('bf')), '{provided_email}');"
-        db.make_query(query)
+        provided_password2 = self.password2_entry.get()
+
+
+        def validate_input(self):
+            
+
+            if not re.match(r"[^@]+@[^@]+\.[^@]+", provided_email):
+                messagebox.showerror("Invalid email", "Please enter a valid email address.")
+                return False
+
+            if len(provided_login) < 3 :
+                messagebox.showerror("Invalid Login","Login should be at least 3 characters long")
+                return False
+
+            if len(provided_password) < 8 or not any(char.isupper() for char in provided_password) or not any(char.islower() for char in provided_password) or not any(char.isdigit() for char in provided_password):
+                messagebox.showerror("Invalid password", "Password should be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.")
+                return False
+
+            if provided_password != provided_password2:
+                messagebox.showerror("Passwords don't match", "Please make sure the passwords match.")
+                return False
+
+            return True
+
+
+        if validate_input(self):
+
+            db = database_connect.DatabaseConnector()
+            query = f"INSERT INTO users (username, password, email) VALUES ('{provided_login}', " \
+                    f"crypt('{provided_password}', gen_salt('bf')), '{provided_email}');"
+            db.make_query(query)
+
+        
+            email_sender = Email()
+            email_sender.send_confirmation_mail_eng(provided_email, provided_login)
+
+            self.get_me_to_login()
+
+
 
     def get_me_to_login(self):
         self.destroy()
