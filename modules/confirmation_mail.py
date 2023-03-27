@@ -1,10 +1,11 @@
 import smtplib
+import modules.email_credentials
 
 
 class Email:
     def __init__(self):
-        self.MY_EMAIL = "verify.budgetbuddy@gmail.com"
-        self.MY_PASSWORD = "nwwbokinryjauuql"
+        self.MY_EMAIL = modules.email_credentials.email
+        self.MY_PASSWORD = modules.email_credentials.password
         self.MESSAGE_ENG = f"Hi, xxx.\nWe are so happy that since today you will manage your budget better. Your " \
                            f"account was created successfully and you're ready to rock!\nSincerely,\nBudgetBuddy team"
         self.MESSAGE_PL = f"Cześć, xxx.\nCieszymy się, że od dziś będziesz lepiej zarządzasz swoim budżetem. Twoje " \
