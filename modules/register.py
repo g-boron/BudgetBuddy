@@ -63,10 +63,7 @@ class Register(customtkinter.CTk):
         provided_password = self.password_entry.get()
         provided_password2 = self.password2_entry.get()
 
-
         def validate_input(self):
-            
-
             if not re.match(r"[^@]+@[^@]+\.[^@]+", provided_email):
                 messagebox.showerror("Invalid email", "Please enter a valid email address.")
                 return False
@@ -85,21 +82,16 @@ class Register(customtkinter.CTk):
 
             return True
 
-
         if validate_input(self):
-
             db = database_connect.DatabaseConnector()
             query = f"INSERT INTO users (username, password, email) VALUES ('{provided_login}', " \
                     f"crypt('{provided_password}', gen_salt('bf')), '{provided_email}');"
             db.make_query(query)
 
-        
             email_sender = Email()
             email_sender.send_confirmation_mail_eng(provided_email, provided_login)
 
             self.get_me_to_login()
-
-
 
     def get_me_to_login(self):
         self.destroy()
