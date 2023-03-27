@@ -5,9 +5,9 @@ class Email:
     def __init__(self):
         self.MY_EMAIL = "verify.budgetbuddy@gmail.com"
         self.MY_PASSWORD = "nwwbokinryjauuql"
-        self.MESSAGE_ENG = f"Hi, xxx. We are so happy that since today you will manage your budget better. Your" \
+        self.MESSAGE_ENG = f"Hi, xxx.\nWe are so happy that since today you will manage your budget better. Your " \
                            f"account was created successfully and you're ready to rock!\nSincerely,\nBudgetBuddy team"
-        self.MESSAGE_PL = f"Cześć, xxx. Cieszymy się, że od dziś będziesz lepiej zarządzasz swoim budżetem. Twoje" \
+        self.MESSAGE_PL = f"Cześć, xxx.\nCieszymy się, że od dziś będziesz lepiej zarządzasz swoim budżetem. Twoje " \
                            f"konto użytkownika zostało utworzone prawidłowo i jesteś gotów do działania!\nZ " \
                           f"poważaniem,\nZespół BudgetBuddy"
 
