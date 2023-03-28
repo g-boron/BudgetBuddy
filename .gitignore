@@ -160,3 +160,4 @@ cython_debug/
 .idea/
 database.ini
 email_credentials.py
+login_pass.txt
