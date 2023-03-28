@@ -27,3 +27,11 @@ class Budget:
             current_balance = self.balance - amount
             query = f"UPDATE users SET balance = {current_balance} WHERE username = '{self.username}'"
             self.db.make_query(query)
+
+    
+    def add_revenue(self, name, desc, amount):
+        query = f"INSERT INTO revenues (name, description, amount, add_date, user_id) VALUES ('{name}', '{desc}', '{amount}', '{date.today()}', '{self.user_id}')"
+        self.db.make_query(query)
+        current_balance = self.balance + amount
+        query = f"UPDATE users SET balance = {current_balance} WHERE username = '{self.username}'"
+        self.db.make_query(query)
