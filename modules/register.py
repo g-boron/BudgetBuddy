@@ -6,6 +6,7 @@ from modules.database import database_connect
 import modules.login
 from modules.confirmation_mail import Email
 import re
+import modules.welcome_window
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("green")
@@ -68,12 +69,16 @@ class Register(customtkinter.CTk):
                 messagebox.showerror("Invalid email", "Please enter a valid email address.")
                 return False
 
-            if len(provided_login) < 3 :
+            if len(provided_login) < 3:
                 messagebox.showerror("Invalid Login","Login should be at least 3 characters long")
                 return False
 
-            if len(provided_password) < 8 or not any(char.isupper() for char in provided_password) or not any(char.islower() for char in provided_password) or not any(char.isdigit() for char in provided_password):
-                messagebox.showerror("Invalid password", "Password should be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.")
+            if len(provided_password) < 8 or not any(char.isupper() for char in provided_password) or \
+                    not any(char.islower() for char in provided_password) or not any(char.isdigit() for char
+                                                                                     in provided_password):
+                messagebox.showerror("Invalid password", "Password should be at least 8 characters long and contain at "
+                                                         "least one uppercase letter, one lowercase letter, and "
+                                                         "one digit.")
                 return False
 
             if provided_password != provided_password2:
@@ -90,12 +95,20 @@ class Register(customtkinter.CTk):
 
             email_sender = Email()
             email_sender.send_confirmation_mail_eng(provided_email, provided_login)
-
-            self.get_me_to_login()
+            self.get_me_to_welcome_page()
 
     def get_me_to_login(self):
         self.destroy()
         login_page = modules.login.Login()
         login_page.mainloop()
-        
+
+    def get_me_to_welcome_page(self):
+        x = self.login_entry.get()
+        print(x)
+        if x:
+            self.destroy()
+            home_window = modules.welcome_window.WelcomeWindow(x)
+            home_window.mainloop()
+        else:
+            messagebox.showerror(title="error2", message="Something went wrong")
         
