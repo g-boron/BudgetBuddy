@@ -68,7 +68,7 @@ class Register(customtkinter.CTk):
                 messagebox.showerror("Invalid email", "Please enter a valid email address.")
                 return False
 
-            if len(provided_login) < 3 :
+            if len(provided_login) < 3:
                 messagebox.showerror("Invalid Login","Login should be at least 3 characters long")
                 return False
 
