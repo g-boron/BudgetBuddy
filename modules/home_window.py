@@ -10,8 +10,8 @@ customtkinter.set_default_color_theme("blue")
 
 
 class HomeWindow(customtkinter.CTk):
-    def __init__(self, user_name):
-        self.username = user_name
+    def __init__(self, user_login):
+        self.username = user_login
         super().__init__()
         width = self.winfo_screenwidth()
         height = self.winfo_screenheight()
