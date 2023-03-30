@@ -4,6 +4,7 @@ import customtkinter
 from PIL import ImageTk
 from modules.database import database_connect
 from modules.expense_detail import ExpenseDetail
+from modules.add_expense import AddExpense
 import textwrap
 
 
@@ -26,12 +27,13 @@ class AllExpenses(customtkinter.CTk):
         self.resizable(True, True)
         self.label = customtkinter.CTkLabel(master=self, text=f"{self.get_user_name(self.username)[1]}'s expenses",
                                             font=("Arial", 35, "normal"))
-        self.label.pack()
+        self.label.pack(pady=20)
 
         self.frame = customtkinter.CTkScrollableFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
         self.frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
         self.frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
+
         db = database_connect.DatabaseConnector()
         query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE expenses.user_id={self.get_user_name(self.username)[0]}"
         expenses = db.select_data(query)
@@ -50,10 +52,18 @@ class AllExpenses(customtkinter.CTk):
             self.detailbtn = customtkinter.CTkButton(master=self.frame, text="Detail", command = lambda exp_id=exp_id: self.see_details(exp_id), font=('Arial', 24, 'normal'))
             self.detailbtn.grid(pady=20, padx=10, row=idx, column=3)
 
+        self.addbtn = customtkinter.CTkButton(master=self, text='Add new expense', command = self.add_new_expense, font=('Arial', 30, 'normal'))
+        self.addbtn.place(relx=0.5, rely=0.9, anchor='center')
+
 
     def see_details(self, exp_id):
         exp_detail = ExpenseDetail(exp_id)
         exp_detail.mainloop()
+
+    
+    def add_new_expense(self):
+        add_exp = AddExpense(self.get_user_name(self.username)[0])
+        add_exp.mainloop()
 
 
     def get_user_name(self, user_login):

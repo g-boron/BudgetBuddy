@@ -3,13 +3,11 @@ from datetime import date
 
 
 class Budget:
-    def __init__(self, username):
-        self.username = username
+    def __init__(self, user_id):
+        self.user_id = user_id
         self.db = DatabaseConnector()
-        query = f"SELECT balance FROM users WHERE username = '{self.username}'"
-        self.balance = self.db.select_data(query, 'one')[0]
-        query = f"SELECT id FROM users WHERE username = '{self.username}'"
-        self.user_id = self.db.select_data(query, 'one')[0]
+        query = f"SELECT balance FROM users WHERE id = '{self.user_id}'"
+        self.balance = float(self.db.select_data(query, 'one')[0])
 
 
     def add_expense(self, name, desc, amount, category):
@@ -25,7 +23,7 @@ class Budget:
             self.db.make_query(query)
             
             current_balance = self.balance - amount
-            query = f"UPDATE users SET balance = {current_balance} WHERE username = '{self.username}'"
+            query = f"UPDATE users SET balance = {current_balance} WHERE id = '{self.user_id}'"
             self.db.make_query(query)
 
     
@@ -33,5 +31,10 @@ class Budget:
         query = f"INSERT INTO revenues (name, description, amount, add_date, user_id) VALUES ('{name}', '{desc}', '{amount}', '{date.today()}', '{self.user_id}')"
         self.db.make_query(query)
         current_balance = self.balance + amount
-        query = f"UPDATE users SET balance = {current_balance} WHERE username = '{self.username}'"
+        query = f"UPDATE users SET balance = {current_balance} WHERE id = '{self.user_id}'"
         self.db.make_query(query)
+
+
+    def get_category_id(self, name):
+        query = f"SELECT id FROM categories WHERE name = '{name}'"
+        return self.db.select_data(query, 'one')[0]
