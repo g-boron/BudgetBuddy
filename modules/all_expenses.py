@@ -3,6 +3,8 @@ from tkinter import *
 import customtkinter
 from PIL import ImageTk
 from modules.database import database_connect
+from modules.expense_detail import ExpenseDetail
+import textwrap
 
 
 customtkinter.set_appearance_mode("System")
@@ -34,7 +36,7 @@ class AllExpenses(customtkinter.CTk):
         query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE expenses.user_id={self.get_user_name(self.username)[0]}"
         expenses = db.select_data(query)
         for idx, expense in enumerate(expenses):
-            self.expname = customtkinter.CTkLabel(master=self.frame, text=expense[0], font=("Arial", 24, "normal"))
+            self.expname = customtkinter.CTkLabel(master=self.frame, text=textwrap.shorten(expense[0], width=25, placeholder='...'), font=("Arial", 24, "normal"))
             self.expname.grid(pady=20, padx=10, row=idx, column=0)
             
             self.category = customtkinter.CTkLabel(master=self.frame, text=expense[4], font=("Arial", 24, "normal"))
@@ -42,13 +44,16 @@ class AllExpenses(customtkinter.CTk):
 
             self.date = customtkinter.CTkLabel(master=self.frame, text=expense[2], font=("Arial", 24, "normal"))
             self.date.grid(pady=20, padx=10, row=idx, column=2)
+            
+            exp_id = expense[5]
 
-            self.detailbtn = customtkinter.CTkButton(master=self.frame, text=f"Detail", command = self.see_details, font=('Arial', 24, 'normal'))
+            self.detailbtn = customtkinter.CTkButton(master=self.frame, text="Detail", command = lambda exp_id=exp_id: self.see_details(exp_id), font=('Arial', 24, 'normal'))
             self.detailbtn.grid(pady=20, padx=10, row=idx, column=3)
 
 
     def see_details(self, exp_id):
-        pass
+        exp_detail = ExpenseDetail(exp_id)
+        exp_detail.mainloop()
 
 
     def get_user_name(self, user_login):
