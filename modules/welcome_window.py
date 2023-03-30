@@ -41,13 +41,20 @@ class WelcomeWindow(customtkinter.CTk):
                                                     justify=customtkinter.CENTER)
         self.balance_entry.grid(pady=18, padx=10, row=4, column=1, sticky="ew")
 
+        self.currency_select = customtkinter.CTkOptionMenu(master=self.frame, values=["PLN", "EUR", "USD", "GBP",
+                                                                                      "CAD", "DKK", "CZK", "HKD",
+                                                                                      "INR", "JPY", "KRW", "NOK",
+                                                                                      "TRY", "TWD", "CHF", "SEK"])
+        self.currency_select.grid(pady=18, padx=10, row=5, column=1, sticky="ew")
+
         self.button = customtkinter.CTkButton(master=self.frame, text="Confirm!",
                                               command=self.get_me_to_home_window)
-        self.button.grid(pady=18, padx=10, row=5, column=1, sticky="ew")
+        self.button.grid(pady=18, padx=10, row=6, column=1, sticky="ew")
 
     def validate(self):
         name = int(self.name_entry.get())
         balance = float(self.balance_entry.get())
+
         if name is not None and balance is not None:
             self.get_me_to_home_window()
         else:
@@ -57,11 +64,13 @@ class WelcomeWindow(customtkinter.CTk):
     def get_me_to_home_window(self):
         name = self.name_entry.get()
         balance = self.balance_entry.get()
+        currency = str(self.currency_select.get())
         x = self.userlogin
         print(x)
         if x:
             db = database_connect.DatabaseConnector()
-            set_name_query = f" UPDATE users SET name = '{name}', balance = '{balance}' WHERE username = '{x}';"
+            set_name_query = f" UPDATE users SET name = '{name}', balance = '{balance}', currency = '{currency}' " \
+                             f"WHERE username = '{x}';"
             db.make_query(set_name_query)
             self.destroy()
             home_window = HomeWindow(x)
