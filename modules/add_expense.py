@@ -32,7 +32,8 @@ class AddExpense(customtkinter.CTk):
         self.name_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Name", justify=CENTER)
         self.name_entry.grid(pady=20, padx=10, row=1, column=0, sticky="ew")
 
-        self.desc_text = customtkinter.CTkTextbox(master=self.frame, width=200, fg_color='#343638', border_color='#565b5e', border_width=2, text_color='#8e9e8f')
+        self.desc_text = customtkinter.CTkTextbox(master=self.frame, width=200, fg_color='#343638',
+                                                  border_color='#565b5e', border_width=2, text_color='#8e9e8f')
         self.desc_text.grid(pady=10, padx=10, row=2, column=0, sticky='ew')
         self.desc_text.insert(1.0, 'Description')
 
@@ -57,9 +58,9 @@ class AddExpense(customtkinter.CTk):
         self.category = customtkinter.CTkOptionMenu(master=self.frame, values=categories)
         self.category.grid(pady=20, padx=10, row=4, column=0, sticky="ew")
 
-        self.addbtn = customtkinter.CTkButton(master=self.frame, text='Add new expense', command = self.add_new_expense, font=('Arial', 25, 'normal'))
+        self.addbtn = customtkinter.CTkButton(master=self.frame, text='Add new expense',
+                                              command=self.add_new_expense, font=('Arial', 25, 'normal'))
         self.addbtn.grid(padx=20, pady=10, row=5, column=0, sticky='ew')
-
 
     def add_new_expense(self):
         name = self.name_entry.get()
@@ -76,7 +77,6 @@ class AddExpense(customtkinter.CTk):
         else:
             messagebox.showerror("Error","Please enter valid data.")
 
-    
     def isfloat(self, num):
         try:
             float(num)

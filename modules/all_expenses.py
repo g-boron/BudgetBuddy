@@ -36,32 +36,36 @@ class AllExpenses(customtkinter.CTk):
 
         self.refresh()
 
-        self.addbtn = customtkinter.CTkButton(master=self, text='Add new expense', command = self.add_new_expense, font=('Arial', 30, 'normal'))
+        self.addbtn = customtkinter.CTkButton(master=self, text='Add new expense', command=self.add_new_expense,
+                                              font=('Arial', 30, 'normal'))
         self.addbtn.place(relx=0.2, rely=0.9, anchor='center')
 
-        self.addbtn = customtkinter.CTkButton(master=self, text='Refresh', command = self.refresh, font=('Arial', 30, 'normal'))
+        self.addbtn = customtkinter.CTkButton(master=self, text='Refresh', command=self.refresh,
+                                              font=('Arial', 30, 'normal'))
         self.addbtn.place(relx=0.5, rely=0.9, anchor='center')
 
-        self.addbtn = customtkinter.CTkButton(master=self, text='Exit', command = lambda: self.destroy(), font=('Arial', 30, 'normal'))
+        self.addbtn = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.destroy(),
+                                              font=('Arial', 30, 'normal'))
         self.addbtn.place(relx=0.8, rely=0.9, anchor='center')
-
 
     def see_details(self, exp_id):
         exp_detail = ExpenseDetail(exp_id)
         exp_detail.mainloop()
 
-    
     def add_new_expense(self):
         add_exp = AddExpense(self.get_user_name(self.username)[0])
         add_exp.mainloop()
-
     
     def refresh(self):
         db = database_connect.DatabaseConnector()
-        query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE expenses.user_id={self.get_user_name(self.username)[0]}"
+        query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, " \
+                f"expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE " \
+                f"expenses.user_id={self.get_user_name(self.username)[0]}"
         expenses = db.select_data(query)
         for idx, expense in enumerate(expenses):
-            self.expname = customtkinter.CTkLabel(master=self.frame, text=textwrap.shorten(expense[0], width=25, placeholder='...'), font=("Arial", 24, "normal"))
+            self.expname = customtkinter.CTkLabel(master=self.frame, text=textwrap.shorten(expense[0], width=25,
+                                                                                           placeholder='...'),
+                                                  font=("Arial", 24, "normal"))
             self.expname.grid(pady=20, padx=10, row=idx, column=0)
             
             self.category = customtkinter.CTkLabel(master=self.frame, text=expense[4], font=("Arial", 24, "normal"))
@@ -72,7 +76,9 @@ class AllExpenses(customtkinter.CTk):
             
             exp_id = expense[5]
 
-            self.detailbtn = customtkinter.CTkButton(master=self.frame, text="Detail", command = lambda exp_id=exp_id: self.see_details(exp_id), font=('Arial', 24, 'normal'))
+            self.detailbtn = customtkinter.CTkButton(master=self.frame, text="Detail",
+                                                     command=lambda exp_id=exp_id: self.see_details(exp_id),
+                                                     font=('Arial', 24, 'normal'))
             self.detailbtn.grid(pady=20, padx=10, row=idx, column=3)
 
 

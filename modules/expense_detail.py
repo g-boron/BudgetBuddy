@@ -27,10 +27,13 @@ class ExpenseDetail(customtkinter.CTk):
         self.window_flag = 1
 
         db = database_connect.DatabaseConnector()
-        query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, expenses.id, users.currency FROM expenses JOIN categories ON expenses.category_id=categories.id JOIN users ON expenses.user_id=users.id WHERE expenses.id={self.id}"
+        query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, " \
+                f"expenses.id, users.currency FROM expenses JOIN categories ON expenses.category_id=categories.id " \
+                f"JOIN users ON expenses.user_id=users.id WHERE expenses.id={self.id}"
         expense = db.select_data(query, 'one')
 
-        self.name = customtkinter.CTkLabel(master=self.frame, text=expense[0], font=("Arial", 30, "normal"), wraplength=200)
+        self.name = customtkinter.CTkLabel(master=self.frame, text=expense[0], font=("Arial", 30, "normal"),
+                                           wraplength=200)
         self.name.grid(pady=18, padx=10, row=0, column=0, sticky='nw')
 
         self.category = customtkinter.CTkLabel(master=self.frame, text=expense[4], font=("Arial", 30, "normal"))
@@ -39,8 +42,10 @@ class ExpenseDetail(customtkinter.CTk):
         self.date = customtkinter.CTkLabel(master=self.frame, text=expense[2], font=("Arial", 30, "normal"))
         self.date.grid(pady=18, padx=10, row=0, column=2, sticky='ne')
 
-        self.desc = customtkinter.CTkLabel(master=self.frame, text=expense[1], font=("Arial", 30, "normal"), wraplength=700)
+        self.desc = customtkinter.CTkLabel(master=self.frame, text=expense[1], font=("Arial", 30, "normal"),
+                                           wraplength=700)
         self.desc.grid(pady=18, padx=10, row=1, column=0, columnspan=3)
 
-        self.amount = customtkinter.CTkLabel(master=self.frame, text=str(expense[3]) + ' ' + expense[6], font=("Arial", 30, "normal"))
+        self.amount = customtkinter.CTkLabel(master=self.frame, text=str(expense[3]) + ' ' + expense[6],
+                                             font=("Arial", 30, "normal"))
         self.amount.grid(pady=18, padx=10, row=2, column=0, sticky='w')
