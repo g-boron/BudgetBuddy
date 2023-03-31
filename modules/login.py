@@ -71,15 +71,15 @@ class Login(customtkinter.CTk):
             return False
 
     def login(self):
-        x = self.check_login_credentials()
-        if x:
+        user_login = self.check_login_credentials()
+        if user_login:
             self.destroy()
             if self.checkbox.get() == 1:
                 with open('login_pass.txt', 'w') as f:
-                    f.write(x[0] + '\n')
-                    f.write(x[1])
+                    f.write(user_login[0] + '\n')
+                    f.write(user_login[1])
                     
-            home_window = HomeWindow(x[0])
+            home_window = HomeWindow(user_login[0])
             home_window.mainloop()
         else:
             messagebox.showerror(title="login or password not valid", message="Login or password do not match!")

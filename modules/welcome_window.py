@@ -65,15 +65,15 @@ class WelcomeWindow(customtkinter.CTk):
         name = self.name_entry.get()
         balance = self.balance_entry.get()
         currency = str(self.currency_select.get())
-        x = self.userlogin
-        print(x)
-        if x:
+        user_login = self.userlogin
+        print(user_login)
+        if user_login:
             db = database_connect.DatabaseConnector()
             set_name_query = f" UPDATE users SET name = '{name}', balance = '{balance}', currency = '{currency}' " \
-                             f"WHERE username = '{x}';"
+                             f"WHERE username = '{user_login}';"
             db.make_query(set_name_query)
             self.destroy()
-            home_window = HomeWindow(x)
+            home_window = HomeWindow(user_login)
             home_window.mainloop()
         else:
             messagebox.showerror(title="error2", message="Something went wrong")

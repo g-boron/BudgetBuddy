@@ -1,6 +1,5 @@
 from modules.login import Login
 from modules.home_window import HomeWindow
-import os
 from modules.database.database_connect import DatabaseConnector
 
 

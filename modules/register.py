@@ -103,11 +103,11 @@ class Register(customtkinter.CTk):
         login_page.mainloop()
 
     def get_me_to_welcome_page(self):
-        x = self.login_entry.get()
-        print(x)
-        if x:
+        user_login = self.login_entry.get()
+        print(user_login)
+        if user_login:
             self.destroy()
-            home_window = modules.welcome_window.WelcomeWindow(x)
+            home_window = modules.welcome_window.WelcomeWindow(user_login)
             home_window.mainloop()
         else:
             messagebox.showerror(title="error2", message="Something went wrong")
