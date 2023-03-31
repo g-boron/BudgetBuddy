@@ -53,8 +53,8 @@ class Register(customtkinter.CTk):
         self.button_register.grid(pady=18, padx=10, row=5, column=1, sticky="ew")
 
         self.button_login = customtkinter.CTkButton(master=self.frame, fg_color="transparent",
-                                              text="Already have an account", font=("Arial", 12, "normal"),
-                                              command=self.get_me_to_login)
+                                                    text="Already have an account", font=("Arial", 12, "normal"),
+                                                    command=self.get_me_to_login)
         self.button_login.configure(width=50, height=20)
         self.button_login.grid(pady=10, padx=0, column=1, row=6)
 
@@ -64,7 +64,7 @@ class Register(customtkinter.CTk):
         provided_password = self.password_entry.get()
         provided_password2 = self.password2_entry.get()
 
-        def validate_input(self):
+        def validate_input():
             if not re.match(r"[^@]+@[^@]+\.[^@]+", provided_email):
                 messagebox.showerror("Invalid email", "Please enter a valid email address.")
                 return False
@@ -87,7 +87,7 @@ class Register(customtkinter.CTk):
 
             return True
 
-        if validate_input(self):
+        if validate_input():
             db = database_connect.DatabaseConnector()
             query = f"INSERT INTO users (username, password, email) VALUES ('{provided_login}', " \
                     f"crypt('{provided_password}', gen_salt('bf')), '{provided_email}');"

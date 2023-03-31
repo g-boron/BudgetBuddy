@@ -17,7 +17,7 @@ class HomeWindow(customtkinter.CTk):
         height = self.winfo_screenheight()
         self.geometry("%dx%d" % (width, height))
         self.state('zoomed')
-        self.title("Welcome to home window")
+        self.title("BudgetBuddy")
         self.wm_iconbitmap()
         self.iconpath = ImageTk.PhotoImage(file="./images/logo_dark.png")
         self.iconphoto(False, self.iconpath)
