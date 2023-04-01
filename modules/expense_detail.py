@@ -15,7 +15,7 @@ class ExpenseDetail(customtkinter.CTk):
         super().__init__()
         self.geometry("800x600")
         self.title("Expense detail")
-        self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
+        self.frame = customtkinter.CTkScrollableFrame(master=self, width=700, height=500)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
         self.frame.grid_rowconfigure(0, weight=1)
         self.frame.grid_rowconfigure(1, weight=1)
@@ -47,5 +47,5 @@ class ExpenseDetail(customtkinter.CTk):
         self.desc.grid(pady=18, padx=10, row=1, column=0, columnspan=3)
 
         self.amount = customtkinter.CTkLabel(master=self.frame, text=str(expense[3]) + ' ' + expense[6],
-                                             font=("Arial", 30, "normal"))
-        self.amount.grid(pady=18, padx=10, row=2, column=0, sticky='w')
+                                             font=("Arial", 30, "normal"), bg_color='#424543')
+        self.amount.grid(pady=18, padx=10, row=2, column=0, sticky='sw')

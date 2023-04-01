@@ -1,5 +1,5 @@
 from modules.database.database_connect import DatabaseConnector
-from datetime import date
+from datetime import datetime
 
 
 class Budget:
@@ -19,7 +19,7 @@ class Budget:
         if amount > self.balance:
             return 'You do not have enough money!'
         else:
-            query = f"INSERT INTO expenses (name, description, amount, add_date, user_id, category_id) VALUES ('{name}', '{desc}', '{amount}', '{date.today()}', '{self.user_id}', '{category}')"
+            query = f"INSERT INTO expenses (name, description, amount, add_date, user_id, category_id) VALUES ('{name}', '{desc}', '{amount}', '{datetime.now().isoformat(sep=' ', timespec='seconds')}', '{self.user_id}', '{category}')"
             self.db.make_query(query)
             
             current_balance = self.balance - amount
