@@ -27,8 +27,8 @@ class AllExpenses(customtkinter.CTk):
         self.iconphoto(False, self.iconpath)'''
         self.resizable(True, True)
         self.label = customtkinter.CTkLabel(master=self, text=f"{self.get_user_name(self.username)[1]}'s expenses",
-                                            font=("Arial", 35, "normal"))
-        self.label.pack(pady=20)
+                                            font=("Arial", 50, "normal"))
+        self.label.pack(pady=50)
 
         self.frame = customtkinter.CTkScrollableFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)

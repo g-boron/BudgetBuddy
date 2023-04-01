@@ -47,10 +47,13 @@ class AddExpense(customtkinter.CTk):
 
         self.desc_text.bind("<Button-1>", on_click)
 
-        self.amount_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text='Amount', justify=CENTER)
+        db = database_connect.DatabaseConnector()
+        query = f'SELECT currency FROM users WHERE id = {self.id}'
+        currency = db.select_data(query, 'one')[0]
+
+        self.amount_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text=f'Amount [{currency}]', justify=CENTER)
         self.amount_entry.grid(pady=10, padx=10, row=3, column=0, sticky='ew')
 
-        db = database_connect.DatabaseConnector()
         query = 'SELECT name FROM categories'
         results = db.select_data(query)
         categories = [r[0] for r in results]
