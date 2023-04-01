@@ -21,9 +21,10 @@ class AllExpenses(customtkinter.CTk):
         self.geometry("%dx%d" % (width, height))
         self.state('zoomed')
         self.title("See all your expenses")
+        '''
         self.wm_iconbitmap()
         self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
-        self.iconphoto(False, self.iconpath)
+        self.iconphoto(False, self.iconpath)'''
         self.resizable(True, True)
         self.label = customtkinter.CTkLabel(master=self, text=f"{self.get_user_name(self.username)[1]}'s expenses",
                                             font=("Arial", 35, "normal"))

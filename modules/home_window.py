@@ -3,6 +3,7 @@ from tkinter import *
 import customtkinter
 from PIL import ImageTk
 from modules.database import database_connect
+from modules.all_expenses import AllExpenses
 
 
 customtkinter.set_appearance_mode("System")
@@ -39,8 +40,8 @@ class HomeWindow(customtkinter.CTk):
         self.label = customtkinter.CTkLabel(master=self.menu_frame, text="Main menu",
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=18, padx=10, row=0, column=0)
-        self.element1 = customtkinter.CTkButton(master=self.menu_frame, text="element1", fg_color="transparent",
-                                                font=("Arial", 26, "normal"))
+        self.element1 = customtkinter.CTkButton(master=self.menu_frame, text="My expenses", fg_color="transparent",
+                                                font=("Arial", 26, "normal"), command=self.show_expenses)
         self.element1.grid(pady=18, padx=10, row=1, column=0, sticky="new")
         self.element2 = customtkinter.CTkButton(master=self.menu_frame, text="element2", fg_color="transparent",
                                                 font=("Arial", 26, "normal"))
@@ -109,8 +110,14 @@ class HomeWindow(customtkinter.CTk):
         self.description6 = customtkinter.CTkLabel(master=self, text="second graph", font=("Arial", 30, "normal"))
         self.description6.grid(pady=18, padx=10, row=2, column=2)
 
+
     def get_user_name(self, user_login):
         db = database_connect.DatabaseConnector()
         name_query = f"SELECT name FROM users WHERE username='{user_login}';"
         user_name = db.select_data(name_query, 'one')
         return user_name[0]
+
+
+    def show_expenses(self):
+        expenses = AllExpenses(self.username)
+        expenses.mainloop()
