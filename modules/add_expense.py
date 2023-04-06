@@ -74,9 +74,12 @@ class AddExpense(customtkinter.CTk):
         if name != '' and self.isfloat(amount) and float(amount) > 0:
             budget = Budget(self.id)
             cat_id = budget.get_category_id(category)
-            budget.add_expense(name, desc, float(amount), cat_id)
-            messagebox.showinfo('Success', 'You successfully added new expense!')
-            self.destroy()
+            check = budget.add_expense(name, desc, float(amount), cat_id)
+            if check == True:
+                messagebox.showinfo('Success', 'You successfully added new expense!')
+                self.destroy()
+            else:
+                messagebox.showerror('Error', 'You do not have enough money!')
         else:
             messagebox.showerror("Error","Please enter valid data.")
 

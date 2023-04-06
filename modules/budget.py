@@ -17,7 +17,7 @@ class Budget:
         user.add_expense('Testowy wydatek', 'Wydatek wprowadzony dla testow', 2500, 1)
         '''
         if amount > self.balance:
-            return 'You do not have enough money!'
+            return False
         else:
             query = f"INSERT INTO expenses (name, description, amount, add_date, user_id, category_id) VALUES ('{name}', '{desc}', '{amount}', '{datetime.now().isoformat(sep=' ', timespec='seconds')}', '{self.user_id}', '{category}')"
             self.db.make_query(query)
@@ -25,6 +25,7 @@ class Budget:
             current_balance = self.balance - amount
             query = f"UPDATE users SET balance = {current_balance} WHERE id = '{self.user_id}'"
             self.db.make_query(query)
+            return True
 
     
     def add_revenue(self, name, desc, amount):
