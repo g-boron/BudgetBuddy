@@ -29,7 +29,7 @@ class Budget:
 
     
     def add_revenue(self, name, desc, amount):
-        query = f"INSERT INTO revenues (name, description, amount, add_date, user_id) VALUES ('{name}', '{desc}', '{amount}', '{date.today()}', '{self.user_id}')"
+        query = f"INSERT INTO revenues (name, description, amount, add_date, user_id) VALUES ('{name}', '{desc}', '{amount}', '{datetime.now().isoformat(sep=' ', timespec='seconds')}', '{self.user_id}')"
         self.db.make_query(query)
         current_balance = self.balance + amount
         query = f"UPDATE users SET balance = {current_balance} WHERE id = '{self.user_id}'"

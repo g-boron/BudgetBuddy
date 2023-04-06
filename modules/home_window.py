@@ -4,6 +4,7 @@ import customtkinter
 from PIL import ImageTk
 from modules.database import database_connect
 from modules.all_expenses import AllExpenses
+from modules.all_revenues import AllRevenues
 
 
 customtkinter.set_appearance_mode("System")
@@ -40,12 +41,12 @@ class HomeWindow(customtkinter.CTk):
         self.label = customtkinter.CTkLabel(master=self.menu_frame, text="Main menu",
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=18, padx=10, row=0, column=0)
-        self.element1 = customtkinter.CTkButton(master=self.menu_frame, text="My expenses", fg_color="transparent",
+        self.expenses = customtkinter.CTkButton(master=self.menu_frame, text="My expenses", fg_color="transparent",
                                                 font=("Arial", 26, "normal"), command=self.show_expenses)
-        self.element1.grid(pady=18, padx=10, row=1, column=0, sticky="new")
-        self.element2 = customtkinter.CTkButton(master=self.menu_frame, text="element2", fg_color="transparent",
-                                                font=("Arial", 26, "normal"))
-        self.element2.grid(pady=18, padx=10, row=2, column=0, sticky="new")
+        self.expenses.grid(pady=18, padx=10, row=1, column=0, sticky="new")
+        self.revenues = customtkinter.CTkButton(master=self.menu_frame, text="My revenues", fg_color="transparent",
+                                                font=("Arial", 26, "normal"), command=self.show_revenues)
+        self.revenues.grid(pady=18, padx=10, row=2, column=0, sticky="new")
         self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="element3", fg_color="transparent",
                                                 font=("Arial", 26, "normal"))
         self.element3.grid(pady=18, padx=10, row=3, column=0, sticky="new")
@@ -121,3 +122,8 @@ class HomeWindow(customtkinter.CTk):
     def show_expenses(self):
         expenses = AllExpenses(self.username)
         expenses.mainloop()
+
+    
+    def show_revenues(self):
+        revenues = AllRevenues(self.username)
+        revenues.mainloop()
