@@ -1,10 +1,12 @@
 import tkinter
 from tkinter import *
+from tkinter import ttk
 import customtkinter
 from PIL import ImageTk
 from modules.database import database_connect
 from modules.all_expenses import AllExpenses
 from modules.all_revenues import AllRevenues
+from tkcalendar import Calendar
 
 
 customtkinter.set_appearance_mode("System")
@@ -60,12 +62,16 @@ class HomeWindow(customtkinter.CTk):
                                                 font=("Arial", 26, "normal"))
         self.element3.grid(pady=18, padx=10, row=6, column=0, sticky="new")
 
-        self.calendar_frame = customtkinter.CTkFrame(master=self, width=(screen_width / 3), height=450, fg_color="blue")
+        self.calendar_frame = customtkinter.CTkFrame(master=self, width=(screen_width / 3), height=450, fg_color='#242424')
         self.calendar_frame.grid(column=0, row=2, sticky="n", rowspan=2)
         self.calendar_frame.grid_columnconfigure(0, weight=1)
-        self.calendar_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
-        self.description1 = customtkinter.CTkLabel(master=self, text="Calendar", font=("Arial", 30, "normal"))
-        self.description1.grid(pady=18, padx=10, row=2, column=0)
+        self.calendar_frame.grid_rowconfigure(0, weight=1)
+        style = ttk.Style(self)
+        style.theme_use('clam') 
+        cal = Calendar(self.calendar_frame, selectmode='day', font='Arial 24', background="#242424", disabledbackground="black", bordercolor="black", 
+               headersbackground="black", normalbackground="black", foreground='white', 
+               normalforeground='white', headersforeground='white', selectbackground='#1f6aa5')
+        cal.grid(column=0, row=0, pady=35, padx=15)
         #   -------------------------------- center panel --------------------------------
         self.user_balance_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)), height=400,
                                                          fg_color="green")
