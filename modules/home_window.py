@@ -1,4 +1,3 @@
-import tkinter
 from tkinter import *
 from tkinter import ttk
 import customtkinter
@@ -117,19 +116,16 @@ class HomeWindow(customtkinter.CTk):
         self.description6 = customtkinter.CTkLabel(master=self, text="second graph", font=("Arial", 30, "normal"))
         self.description6.grid(pady=18, padx=10, row=2, column=2)
 
-
     def get_user_name(self, user_login):
         db = database_connect.DatabaseConnector()
         name_query = f"SELECT name FROM users WHERE username='{user_login}';"
         user_name = db.select_data(name_query, 'one')
         return user_name[0]
 
-
     def show_expenses(self):
         expenses = AllExpenses(self.username)
         expenses.mainloop()
 
-    
     def show_revenues(self):
         revenues = AllRevenues(self.username)
         revenues.mainloop()
