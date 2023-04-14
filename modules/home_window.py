@@ -5,6 +5,7 @@ from PIL import ImageTk
 from modules.database import database_connect
 from modules.all_expenses import AllExpenses
 from modules.all_revenues import AllRevenues
+from modules.change_password import ChangePassword
 
 
 customtkinter.set_appearance_mode("System")
@@ -56,8 +57,9 @@ class HomeWindow(customtkinter.CTk):
         self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="element5", fg_color="transparent",
                                                 font=("Arial", 26, "normal"))
         self.element3.grid(pady=18, padx=10, row=5, column=0, sticky="new")
-        self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="element6", fg_color="transparent",
-                                                font=("Arial", 26, "normal"))
+        self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
+                                                command = self.change_password,font=("Arial", 26, "normal"))
+        
         self.element3.grid(pady=18, padx=10, row=6, column=0, sticky="new")
 
         self.calendar_frame = customtkinter.CTkFrame(master=self, width=(screen_width / 3), height=450, fg_color="blue")
@@ -127,3 +129,7 @@ class HomeWindow(customtkinter.CTk):
     def show_revenues(self):
         revenues = AllRevenues(self.username)
         revenues.mainloop()
+
+    def change_password(self):
+        changepass = ChangePassword(self.username)
+        changepass.mainloop()

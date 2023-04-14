@@ -88,23 +88,20 @@ class Register(customtkinter.CTk):
 
             db = database_connect.DatabaseConnector()
 
-            query_login = f"SELECT username FROM users WHERE username = '{provided_login}' ;" 
-                      
+            query_login = f"SELECT username FROM users WHERE username = '{provided_login}' ;"       
             result_login = db.select_data(query_login, 'one')
 
             if result_login is not None:
                 messagebox.showerror("Login exists", "This login already exists.")
                 return False
                 
-            query_email = f"SELECT email FROM users WHERE email = '{provided_email}' ;" 
-                      
+            query_email = f"SELECT email FROM users WHERE email = '{provided_email}' ;"        
             result_email = db.select_data(query_email, 'one')
 
             if result_email is not None:
                 messagebox.showerror("Email exists", "This email already exists.")
                 return False
             
-
             return True
 
         if validate_input():
