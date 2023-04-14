@@ -84,6 +84,26 @@ class Register(customtkinter.CTk):
             if provided_password != provided_password2:
                 messagebox.showerror("Passwords don't match", "Please make sure the passwords match.")
                 return False
+            
+
+            db = database_connect.DatabaseConnector()
+
+            query_login = f"SELECT username FROM users WHERE username = '{provided_login}' ;" 
+                      
+            result_login = db.select_data(query_login, 'one')
+
+            if result_login is not None:
+                messagebox.showerror("Login exists", "This login already exists.")
+                return False
+                
+            query_email = f"SELECT email FROM users WHERE email = '{provided_email}' ;" 
+                      
+            result_email = db.select_data(query_email, 'one')
+
+            if result_email is not None:
+                messagebox.showerror("Email exists", "This email already exists.")
+                return False
+            
 
             return True
 
