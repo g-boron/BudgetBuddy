@@ -10,7 +10,7 @@ class Budget:
         self.balance = float(self.db.select_data(query, 'one')[0])
 
 
-    def add_expense(self, name, desc, amount, category):
+    def add_expense(self, name, desc, amount, category, day):
         '''
         uzycie:
         user = Budget('admin')
@@ -19,7 +19,7 @@ class Budget:
         if amount > self.balance:
             return False
         else:
-            query = f"INSERT INTO expenses (name, description, amount, add_date, user_id, category_id) VALUES ('{name}', '{desc}', '{amount}', '{datetime.now().isoformat(sep=' ', timespec='seconds')}', '{self.user_id}', '{category}')"
+            query = f"INSERT INTO expenses (name, description, amount, add_date, user_id, category_id) VALUES ('{name}', '{desc}', '{amount}', '{day}', '{self.user_id}', '{category}')"
             self.db.make_query(query)
             
             current_balance = self.balance - amount
@@ -28,8 +28,8 @@ class Budget:
             return True
 
     
-    def add_revenue(self, name, desc, amount):
-        query = f"INSERT INTO revenues (name, description, amount, add_date, user_id) VALUES ('{name}', '{desc}', '{amount}', '{datetime.now().isoformat(sep=' ', timespec='seconds')}', '{self.user_id}')"
+    def add_revenue(self, name, desc, amount, day):
+        query = f"INSERT INTO revenues (name, description, amount, add_date, user_id) VALUES ('{name}', '{desc}', '{amount}', '{day}', '{self.user_id}')"
         self.db.make_query(query)
         current_balance = self.balance + amount
         query = f"UPDATE users SET balance = {current_balance} WHERE id = '{self.user_id}'"
