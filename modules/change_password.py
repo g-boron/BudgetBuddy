@@ -64,7 +64,6 @@ class ChangePassword(customtkinter.CTk):
                                                          "least one uppercase letter, one lowercase letter, and "
                                                          "one digit.")
                 return False
-        
 
         db = database_connect.DatabaseConnector()
 
@@ -81,5 +80,5 @@ class ChangePassword(customtkinter.CTk):
 
             query_update = f"UPDATE users SET password = crypt('{password}', gen_salt('bf')) WHERE username = '{self.username}';"       
             result = db.make_query(query_update)
-
-            return False 
+            self.destroy()
+            return False
