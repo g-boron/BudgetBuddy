@@ -39,7 +39,7 @@ class ExpenseDetail(customtkinter.CTk):
         self.category = customtkinter.CTkLabel(master=self.frame, text=expense[4], font=("Arial", 30, "normal"))
         self.category.grid(pady=18, padx=10, row=0, column=1, sticky='n')
 
-        self.date = customtkinter.CTkLabel(master=self.frame, text=expense[2], font=("Arial", 30, "normal"))
+        self.date = customtkinter.CTkLabel(master=self.frame, text=str(expense[2]).split(' ')[0], font=("Arial", 30, "normal"))
         self.date.grid(pady=18, padx=10, row=0, column=2, sticky='ne')
 
         self.desc = customtkinter.CTkLabel(master=self.frame, text=expense[1], font=("Arial", 30, "normal"),

@@ -70,8 +70,8 @@ class AllExpenses(customtkinter.CTk):
             
             self.category = customtkinter.CTkLabel(master=self.frame, text=expense[4], font=("Arial", 24, "normal"))
             self.category.grid(pady=20, padx=10, row=idx, column=1)
-
-            self.date = customtkinter.CTkLabel(master=self.frame, text=expense[2], font=("Arial", 24, "normal"))
+            
+            self.date = customtkinter.CTkLabel(master=self.frame, text=str(expense[2]).split(' ')[0], font=("Arial", 24, "normal"))
             self.date.grid(pady=20, padx=10, row=idx, column=2)
             
             exp_id = expense[5]

@@ -67,7 +67,7 @@ class AllRevenues(customtkinter.CTk):
                                                   font=("Arial", 24, "normal"))
             self.revname.grid(pady=20, padx=10, row=idx, column=0)
             
-            self.date = customtkinter.CTkLabel(master=self.frame, text=revenue[2], font=("Arial", 24, "normal"))
+            self.date = customtkinter.CTkLabel(master=self.frame, text=str(revenue[2]).split(' ')[0], font=("Arial", 24, "normal"))
             self.date.grid(pady=20, padx=10, row=idx, column=1)
             
             rev_id = revenue[4]

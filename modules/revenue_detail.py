@@ -34,7 +34,7 @@ class RevenueDetail(customtkinter.CTk):
                                            wraplength=200)
         self.name.grid(pady=18, padx=10, row=0, column=0, sticky='nw')
 
-        self.date = customtkinter.CTkLabel(master=self.frame, text=revenue[2], font=("Arial", 30, "normal"))
+        self.date = customtkinter.CTkLabel(master=self.frame, text=str(revenue[2]).split(' ')[0], font=("Arial", 30, "normal"))
         self.date.grid(pady=18, padx=10, row=0, column=2, sticky='ne')
 
         self.desc = customtkinter.CTkLabel(master=self.frame, text=revenue[1], font=("Arial", 30, "normal"),
