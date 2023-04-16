@@ -9,9 +9,6 @@ from tkcalendar import Calendar
 from tkinter import ttk
 
 
-
-
-
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
@@ -42,23 +39,20 @@ class AddExpense(customtkinter.CTk):
         self.desc_text.grid(pady=10, padx=10, row=2, column=0, sticky='ew')
         self.desc_text.insert(1.0, 'Description')
 
-
-        #calendar
+        # calendar
         style = ttk.Style(self)
         style.theme_use('clam') 
-        self.cal = Calendar(self.frame, selectmode='day', font='Arial 12', background="#242424", disabledbackground="black", bordercolor="black", 
-               headersbackground="black", normalbackground="black", foreground='white', 
-               normalforeground='white', headersforeground='white', selectbackground='#1f6aa5')
+        self.cal = Calendar(self.frame, selectmode='day', font='Arial 12', background="#242424",
+                            disabledbackground="black", bordercolor="black",
+                            headersbackground="black", normalbackground="black", foreground='white',
+                            normalforeground='white', headersforeground='white', selectbackground='#1f6aa5')
         self.cal.grid(column=0, row=3, pady=35, padx=15)
-
-    
 
         def on_click(event):
             current_text = self.desc_text.get("1.0", "end-1c")
             if current_text == 'Description':
                 self.desc_text.delete("1.0", "end")
                 self.desc_text.configure(text_color='#dce4ee')
-
 
         self.desc_text.bind("<Button-1>", on_click)
 
@@ -82,7 +76,7 @@ class AddExpense(customtkinter.CTk):
 
     def add_new_expense(self):
         name = self.name_entry.get()
-        desc = self.desc_text.get("1.0",END)
+        desc = self.desc_text.get("1.0", END)
         amount = self.amount_entry.get()
         day = self.cal.selection_get().strftime('%Y-%m-%d')
 
@@ -93,13 +87,13 @@ class AddExpense(customtkinter.CTk):
             #cat_id = budget.get_category_id(category)
             check = budget.add_expense(name, desc, float(amount), 5, day)
             #check = budget.add_expense(name, desc, float(amount), cat_id)
-            if check == True:
+            if check:
                 messagebox.showinfo('Success', 'You successfully added new expense!')
                 self.destroy()
             else:
                 messagebox.showerror('Error', 'You do not have enough money!')
         else:
-            messagebox.showerror("Error","Please enter valid data.")
+            messagebox.showerror('Error', 'Please enter valid data.')
 
     def isfloat(self, num):
         try:

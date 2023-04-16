@@ -59,7 +59,7 @@ class HomeWindow(customtkinter.CTk):
                                                 font=("Arial", 26, "normal"))
         self.element3.grid(pady=18, padx=10, row=5, column=0, sticky="new")
         self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
-                                                command = self.change_password,font=("Arial", 26, "normal"))
+                                                command=self.change_password, font=("Arial", 26, "normal"))
         
         self.element3.grid(pady=18, padx=10, row=6, column=0, sticky="new")
 
@@ -69,9 +69,10 @@ class HomeWindow(customtkinter.CTk):
         self.calendar_frame.grid_rowconfigure(0, weight=1)
         style = ttk.Style(self)
         style.theme_use('clam') 
-        cal = Calendar(self.calendar_frame, selectmode='day', font='Arial 24', background="#242424", disabledbackground="black", bordercolor="black", 
-               headersbackground="black", normalbackground="black", foreground='white', 
-               normalforeground='white', headersforeground='white', selectbackground='#1f6aa5')
+        cal = Calendar(self.calendar_frame, selectmode='day', font='Arial 24', background="#242424",
+                       disabledbackground="black", bordercolor="black",
+                       headersbackground="black", normalbackground="black", foreground='white',
+                       normalforeground='white', headersforeground='white', selectbackground='#1f6aa5')
         cal.grid(column=0, row=0, pady=35, padx=15)
         #   -------------------------------- center panel --------------------------------
         self.user_balance_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)), height=400,

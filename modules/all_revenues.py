@@ -7,7 +7,6 @@ from modules.revenue_detail import RevenueDetail
 from modules.add_revenue import AddRevenue
 import textwrap
 
-
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
@@ -62,8 +61,9 @@ class AllRevenues(customtkinter.CTk):
         query = f"SELECT name, description, add_date, amount, id FROM revenues WHERE user_id={self.get_user_name(self.username)[0]}"
         revenues = db.select_data(query)
         for idx, revenue in enumerate(revenues):
-            self.revname = customtkinter.CTkLabel(master=self.frame, text=textwrap.shorten(revenue[0], width=25,
-                                                                                           placeholder='...'),
+            self.revname = customtkinter.CTkLabel(master=self.frame,
+                                                  text=textwrap.shorten(revenue[0], width=25,
+                                                                        placeholder='...'),
                                                   font=("Arial", 24, "normal"))
             self.revname.grid(pady=20, padx=10, row=idx, column=0)
             
@@ -76,7 +76,6 @@ class AllRevenues(customtkinter.CTk):
                                                      command=lambda rev_id=rev_id: self.see_details(rev_id),
                                                      font=('Arial', 24, 'normal'))
             self.detailbtn.grid(pady=20, padx=10, row=idx, column=2)
-
 
     def get_user_name(self, user_login):
         db = database_connect.DatabaseConnector()

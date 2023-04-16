@@ -38,22 +38,20 @@ class AddRevenue(customtkinter.CTk):
         self.desc_text.grid(pady=10, padx=10, row=2, column=0, sticky='ew')
         self.desc_text.insert(1.0, 'Description')
 
-        #calendar
+        # calendar
         style = ttk.Style(self)
         style.theme_use('clam') 
-        self.cal = Calendar(self.frame, selectmode='day', font='Arial 12', background="#242424", disabledbackground="black", bordercolor="black", 
-               headersbackground="black", normalbackground="black", foreground='white', 
-               normalforeground='white', headersforeground='white', selectbackground='#1f6aa5')
+        self.cal = Calendar(self.frame, selectmode='day', font='Arial 12', background="#242424",
+                            disabledbackground="black", bordercolor="black",
+                            headersbackground="black", normalbackground="black", foreground='white',
+                            normalforeground='white', headersforeground='white', selectbackground='#1f6aa5')
         self.cal.grid(column=0, row=3, pady=35, padx=15)
-
 
         def on_click(event):
             current_text = self.desc_text.get("1.0", "end-1c")
             if current_text == 'Description':
                 self.desc_text.delete("1.0", "end")
                 self.desc_text.configure(text_color='#dce4ee')
-
-
         self.desc_text.bind("<Button-1>", on_click)
 
         db = database_connect.DatabaseConnector()

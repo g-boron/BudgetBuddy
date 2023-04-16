@@ -7,7 +7,6 @@ from modules.expense_detail import ExpenseDetail
 from modules.add_expense import AddExpense
 import textwrap
 
-
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
@@ -81,7 +80,6 @@ class AllExpenses(customtkinter.CTk):
                                                      command=lambda exp_id=exp_id: self.see_details(exp_id),
                                                      font=('Arial', 24, 'normal'))
             self.detailbtn.grid(pady=20, padx=10, row=idx, column=3)
-
 
     def get_user_name(self, user_login):
         db = database_connect.DatabaseConnector()
