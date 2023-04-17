@@ -76,7 +76,7 @@ class ChangePassword(customtkinter.CTk):
             return False 
 
         if user_pass is not None:
-            messagebox.showerror("Success", "Password has been changed.")
+            messagebox.showinfo("Success", "Password has been changed.")
 
             query_update = f"UPDATE users SET password = crypt('{password}', gen_salt('bf')) WHERE username = '{self.username}';"       
             result = db.make_query(query_update)
