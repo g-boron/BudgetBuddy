@@ -17,7 +17,7 @@ class AddExpense(customtkinter.CTk):
     def __init__(self, user_id):
         self.id = user_id
         super().__init__()
-        self.geometry("800x800")
+        self.geometry("900x900")
         self.title("Add new expense")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
@@ -63,12 +63,12 @@ class AddExpense(customtkinter.CTk):
         self.amount_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text=f'Amount [{currency}]', justify=CENTER)
         self.amount_entry.grid(pady=10, padx=10, row=4, column=0, sticky='ew')
 
-        '''query = 'SELECT name FROM categories'
+        query = 'SELECT name FROM categories'
         results = db.select_data(query)
         categories = [r[0] for r in results]
 
         self.category = customtkinter.CTkOptionMenu(master=self.frame, values=categories)
-        self.category.grid(pady=20, padx=10, row=5, column=0, sticky="ew")'''
+        self.category.grid(pady=20, padx=10, row=5, column=0, sticky="ew")
 
         self.addbtn = customtkinter.CTkButton(master=self.frame, text='Add new expense',
                                               command=self.add_new_expense, font=('Arial', 25, 'normal'))
@@ -79,14 +79,12 @@ class AddExpense(customtkinter.CTk):
         desc = self.desc_text.get("1.0", END)
         amount = self.amount_entry.get()
         day = self.cal.selection_get().strftime('%Y-%m-%d')
-
-        #category = str(self.category.get())
+        category = str(self.category.get())
 
         if name != '' and self.isfloat(amount) and float(amount) > 0:
             budget = Budget(self.id)
-            #cat_id = budget.get_category_id(category)
-            check = budget.add_expense(name, desc, float(amount), 5, day)
-            #check = budget.add_expense(name, desc, float(amount), cat_id)
+            cat_id = budget.get_category_id(category)
+            check = budget.add_expense(name, desc, float(amount), cat_id, day)
             if check:
                 messagebox.showinfo('Success', 'You successfully added new expense!')
                 self.destroy()
