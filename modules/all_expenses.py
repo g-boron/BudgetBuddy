@@ -29,24 +29,36 @@ class AllExpenses(customtkinter.CTk):
                                             font=("Arial", 50, "normal"))
         self.label.pack(pady=50)
 
+        self.label_cat = customtkinter.CTkLabel(master=self, text='Select category', font=('Arial', 35, 'normal'))
+        self.label_cat.place(x=550, y=150)
+
+        db = database_connect.DatabaseConnector()
+        query = 'SELECT name FROM categories'
+        results = db.select_data(query)
+        categories = [r[0] for r in results]
+        categories.insert(0, 'All')
+
+        self.category_opt = customtkinter.CTkOptionMenu(self, values=categories, font=('Arial', 30, 'normal'))
+        self.category_opt.place(x=800, y=155)
+
         self.frame = customtkinter.CTkScrollableFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
         self.frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
         self.frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
-        self.refresh()
+        self.refresh('All')
 
         self.addbtn = customtkinter.CTkButton(master=self, text='Add new expense', command=self.add_new_expense,
                                               font=('Arial', 30, 'normal'))
         self.addbtn.place(relx=0.2, rely=0.9, anchor='center')
 
-        self.addbtn = customtkinter.CTkButton(master=self, text='Refresh', command=self.refresh,
+        self.refreshbtn = customtkinter.CTkButton(master=self, text='Refresh', command=lambda: self.refresh(str(self.category_opt.get())),
                                               font=('Arial', 30, 'normal'))
-        self.addbtn.place(relx=0.5, rely=0.9, anchor='center')
+        self.refreshbtn.place(relx=0.5, rely=0.9, anchor='center')
 
-        self.addbtn = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.destroy(),
+        self.exitbtn = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.destroy(),
                                               font=('Arial', 30, 'normal'))
-        self.addbtn.place(relx=0.8, rely=0.9, anchor='center')
+        self.exitbtn.place(relx=0.8, rely=0.9, anchor='center')
 
     def see_details(self, exp_id):
         exp_detail = ExpenseDetail(exp_id)
@@ -56,11 +68,21 @@ class AllExpenses(customtkinter.CTk):
         add_exp = AddExpense(self.get_user_name(self.username)[0])
         add_exp.mainloop()
     
-    def refresh(self):
+    def refresh(self, category):
+        for widget in self.frame.grid_slaves():
+            widget.grid_forget()
+
         db = database_connect.DatabaseConnector()
-        query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, " \
-                f"expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE " \
-                f"expenses.user_id={self.get_user_name(self.username)[0]}"
+        if category == 'All':
+            query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, " \
+                    f"expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE " \
+                    f"expenses.user_id={self.get_user_name(self.username)[0]}"
+        else:
+            query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, " \
+                    f"expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE " \
+                    f"expenses.user_id={self.get_user_name(self.username)[0]} AND categories.name='{category}'"
+            print(query)
+
         expenses = db.select_data(query)
         for idx, expense in enumerate(expenses):
             self.expname = customtkinter.CTkLabel(master=self.frame, text=textwrap.shorten(expense[0], width=25,
