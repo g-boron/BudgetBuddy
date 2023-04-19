@@ -68,4 +68,3 @@ class ExpenseDetail(customtkinter.CTk):
     def edit_expense(self, id_expense):
         edit_window = modules.expense_edit.EditExpense(id_expense)
         edit_window.mainloop()
-
