@@ -12,8 +12,9 @@ customtkinter.set_default_color_theme("blue")
 
 
 class ExpenseDetail(customtkinter.CTk):
-    def __init__(self, expense_id):
+    def __init__(self, expense_id, user_id):
         self.id = expense_id
+        self.id_user = user_id
         super().__init__()
         self.geometry("800x600")
         self.title("Expense detail")
@@ -58,13 +59,14 @@ class ExpenseDetail(customtkinter.CTk):
         self.amount.grid(pady=18, padx=10, row=2, column=0, sticky='sw')
         id_expense = expense[5]
         self.edit = customtkinter.CTkButton(master=self.change_frame, text="Edit expense", font=("Arial", 12, "normal"),
-                                            command=lambda id_expense=id_expense: self.edit_expense(id_expense))
+                                            command=lambda id_expense=id_expense: self.edit_expense(id_expense, user_id))
         self.edit.grid(row=4, column=0, padx=10, pady=20, sticky='sw')
 
         self.delete = customtkinter.CTkButton(master=self.change_frame, text="Delete expense",
                                               font=("Arial", 12, "normal"))
         self.delete.grid(row=4, column=2, padx=10, pady=20, sticky='sw')
 
-    def edit_expense(self, id_expense):
-        edit_window = modules.expense_edit.EditExpense(id_expense)
+    def edit_expense(self, id_expense, user_id):
+        edit_window = modules.expense_edit.EditExpense(id_expense, user_id)
+        self.destroy()
         edit_window.mainloop()

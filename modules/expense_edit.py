@@ -14,8 +14,9 @@ customtkinter.set_default_color_theme("blue")
 
 
 class EditExpense(customtkinter.CTk):
-    def __init__(self, expense_id):
+    def __init__(self, expense_id, user_id):
         self.id_exp = expense_id
+        self.id_user = user_id
         super().__init__()
         self.geometry("800x800")
         self.title("Edit your expense")
@@ -29,8 +30,9 @@ class EditExpense(customtkinter.CTk):
 
         self.label = customtkinter.CTkLabel(master=self.frame, text="Edit this expense", font=("Arial", 35, "normal"))
         self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=2)
-
+        records = self.get_previous(self.id_exp)
         self.name_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Name", justify=CENTER)
+        self.name_entry.insert(0, records[1])
         self.name_entry.grid(pady=20, padx=10, row=1, column=0, sticky="ew", columnspan=2)
 
         self.desc_text = customtkinter.CTkTextbox(master=self.frame, width=200, fg_color='#343638',
@@ -50,20 +52,20 @@ class EditExpense(customtkinter.CTk):
         self.amount_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text=f'Amount', justify=CENTER)
         self.amount_entry.grid(pady=10, padx=10, row=4, column=0, sticky='ew', columnspan=2)
 
-        self.edit = customtkinter.CTkButton(master=self.frame, text="Cancel", font=("Arial", 12, "normal"),
+        self.delete = customtkinter.CTkButton(master=self.frame, text="Cancel", font=("Arial", 12, "normal"),
                                             command=lambda: self.destroy())
-        self.edit.grid(row=5, column=0, padx=10, pady=20, sticky='sw')
+        self.delete.grid(row=5, column=0, padx=10, pady=20, sticky='sw')
 
-        self.delete = customtkinter.CTkButton(master=self.frame, text="Confirm", font=("Arial", 12, "normal"),
-                                              command=self.make_changes(id_exp=expense_id))
-        self.delete.grid(row=5, column=1, padx=10, pady=20, sticky='sw')
+        self.edit = customtkinter.CTkButton(master=self.frame, text="Confirm", font=("Arial", 12, "normal"),
+                                              command=lambda expense_id=expense_id: self.make_changes(expense_id))
+        self.edit.grid(row=5, column=1, padx=10, pady=20, sticky='sw')
 
-    '''def get_previous_amount(self, id_exp):
+    def get_previous(self, id_exp):
         exp_id = id_exp
         db = database_connect.DatabaseConnector()
-        query = f"SELECT amount FROM expenses WHERE id == {exp_id}"
-        amount = db.select_data(query, 'one')
-        return amount'''
+        query = f"SELECT * FROM expenses WHERE id = {exp_id}"
+        exp = db.select_data(query, 'one')
+        return exp
 
     def make_changes(self, id_exp):
         exp_id = id_exp
@@ -71,15 +73,14 @@ class EditExpense(customtkinter.CTk):
         new_description = self.desc_text.get("1.0", END)
         new_day = self.cal.selection_get().strftime('%Y-%m-%d')
         new_amount = self.amount_entry.get()
-        db = database_connect.DatabaseConnector()
-        query = f"SELECT amount FROM expenses WHERE id =expenses.id={exp_id}"
-        previous_amount = db.select_data(query, 'one')
+        records = self.get_previous(id_exp)
 
         print(exp_id)
-        print(previous_amount)
-        budget = Budget(exp_id)
+       # print(previous_amount)
+        print(records[6])
         if new_name != '' and self.isfloat(new_amount) and float(new_amount) > 0:
-            check = budget.edit_expense(new_name, new_description, new_amount, new_day, transaction_id=exp_id)
+            budget = Budget(records[6])
+            check = budget.edit_expense(new_name, new_description, float(new_amount), new_day, transaction_id=exp_id)
             if check:
                 messagebox.showinfo('Success', 'You successfully changed one expense!')
                 self.destroy()
