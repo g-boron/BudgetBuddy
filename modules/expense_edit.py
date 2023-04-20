@@ -28,37 +28,55 @@ class EditExpense(customtkinter.CTk):
         self.resizable(False, False)
         self.window_flag = 1
 
+        records = self.get_previous(self.id_exp)
+
+        previous_date = str(records[3])
+        print(previous_date)
+        previous_year = int(previous_date[:4])
+        previous_month = int(previous_date[5:7])
+        previous_day = int(previous_date[8:10])
+
         self.label = customtkinter.CTkLabel(master=self.frame, text="Edit this expense", font=("Arial", 35, "normal"))
         self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=2)
-        records = self.get_previous(self.id_exp)
-        self.name_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Name", justify=CENTER)
+
+        self.name_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text=f"Name", justify=CENTER)
         self.name_entry.insert(0, records[1])
         self.name_entry.grid(pady=20, padx=10, row=1, column=0, sticky="ew", columnspan=2)
 
         self.desc_text = customtkinter.CTkTextbox(master=self.frame, width=200, fg_color='#343638',
                                                   border_color='#565b5e', border_width=2, text_color='#8e9e8f')
         self.desc_text.grid(pady=10, padx=10, row=2, column=0, sticky='ew', columnspan=2)
-        self.desc_text.insert(1.0, 'Description')
+        self.desc_text.insert(1.0, records[2])
 
         # calendar
         style = ttk.Style(self)
         style.theme_use('clam')
-        self.cal = Calendar(self.frame, selectmode='day', font='Arial 12', background="#242424",
+        self.cal = Calendar(self.frame, selectmode='day', year=previous_year, month=previous_month, day=previous_day,
+                            font='Arial 12', background="#242424",
                             disabledbackground="black", bordercolor="black",
                             headersbackground="black", normalbackground="black", foreground='white',
                             normalforeground='white', headersforeground='white', selectbackground='#1f6aa5')
         self.cal.grid(column=0, row=3, pady=35, padx=15, columnspan=2)
 
         self.amount_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text=f'Amount', justify=CENTER)
+        self.amount_entry.insert(0, records[4])
         self.amount_entry.grid(pady=10, padx=10, row=4, column=0, sticky='ew', columnspan=2)
+
+        db = database_connect.DatabaseConnector()
+        query = 'SELECT name FROM categories'
+        results = db.select_data(query)
+        categories = [r[0] for r in results]
+
+        self.category = customtkinter.CTkOptionMenu(master=self.frame, values=categories)
+        self.category.grid(pady=20, padx=10, row=5, column=0, sticky="ew", columnspan = 2)
 
         self.delete = customtkinter.CTkButton(master=self.frame, text="Cancel", font=("Arial", 12, "normal"),
                                             command=lambda: self.destroy())
-        self.delete.grid(row=5, column=0, padx=10, pady=20, sticky='sw')
+        self.delete.grid(row=6, column=0, padx=10, pady=20, sticky='sw')
 
         self.edit = customtkinter.CTkButton(master=self.frame, text="Confirm", font=("Arial", 12, "normal"),
                                               command=lambda expense_id=expense_id: self.make_changes(expense_id))
-        self.edit.grid(row=5, column=1, padx=10, pady=20, sticky='sw')
+        self.edit.grid(row=6, column=1, padx=10, pady=20, sticky='sw')
 
     def get_previous(self, id_exp):
         exp_id = id_exp
@@ -73,14 +91,13 @@ class EditExpense(customtkinter.CTk):
         new_description = self.desc_text.get("1.0", END)
         new_day = self.cal.selection_get().strftime('%Y-%m-%d')
         new_amount = self.amount_entry.get()
+        new_category = str(self.category.get())
         records = self.get_previous(id_exp)
 
-        print(exp_id)
-       # print(previous_amount)
-        print(records[6])
         if new_name != '' and self.isfloat(new_amount) and float(new_amount) > 0:
             budget = Budget(records[6])
-            check = budget.edit_expense(new_name, new_description, float(new_amount), new_day, transaction_id=exp_id)
+            cat_id = budget.get_category_id(new_category)
+            check = budget.edit_expense(new_name, new_description, float(new_amount), new_day, exp_id, cat_id)
             if check:
                 messagebox.showinfo('Success', 'You successfully changed one expense!')
                 self.destroy()
