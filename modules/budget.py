@@ -27,6 +27,27 @@ class Budget:
             self.db.make_query(query)
             return True
 
+    def edit_expense(self, new_name, new_desc, new_amount, new_day, transaction_id):
+        query = f"SELECT amount FROM expenses WHERE id = '{transaction_id}'"
+        previous_amount = self.db.select_data(query, 'one')
+        current_balance = self.balance + float(previous_amount[0])
+
+        query = f"UPDATE users SET balance = {current_balance} WHERE id = '{self.user_id}'"
+        print("stare:", query)
+        self.db.make_query(query)
+
+        if new_amount > self.balance:
+            return False
+        else:
+            query = f"UPDATE expenses SET name = '{new_name}', description = '{new_desc}', add_date = '{new_day}'," \
+                    f"amount = '{new_amount}' WHERE id = '{transaction_id}'"
+            self.db.make_query(query)
+
+            final_balance = current_balance - new_amount
+            query = f"UPDATE users SET balance = {final_balance} WHERE id = '{self.user_id}'"
+            print("nowe ", query)
+            self.db.make_query(query)
+            return True
     
     def add_revenue(self, name, desc, amount, day):
         query = f"INSERT INTO revenues (name, description, amount, add_date, user_id) VALUES ('{name}', '{desc}', '{amount}', '{day}', '{self.user_id}')"

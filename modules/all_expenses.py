@@ -60,8 +60,9 @@ class AllExpenses(customtkinter.CTk):
                                               font=('Arial', 30, 'normal'))
         self.exitbtn.place(relx=0.8, rely=0.9, anchor='center')
 
-    def see_details(self, exp_id):
-        exp_detail = ExpenseDetail(exp_id)
+    def see_details(self, exp_id, user_login):
+
+        exp_detail = ExpenseDetail(exp_id, self.get_user_name(user_login)[1])
         exp_detail.mainloop()
 
     def add_new_expense(self):
@@ -99,7 +100,7 @@ class AllExpenses(customtkinter.CTk):
             exp_id = expense[5]
 
             self.detailbtn = customtkinter.CTkButton(master=self.frame, text="Detail",
-                                                     command=lambda exp_id=exp_id: self.see_details(exp_id),
+                                                     command=lambda exp_id=exp_id: self.see_details(exp_id, self.username),
                                                      font=('Arial', 24, 'normal'))
             self.detailbtn.grid(pady=20, padx=10, row=idx, column=3)
 
