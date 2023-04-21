@@ -66,6 +66,7 @@ class AllExpenses(customtkinter.CTk):
         exp_detail.mainloop()
 
     def add_new_expense(self):
+        self.destroy()
         add_exp = AddExpense(self.get_user_name(self.username)[0])
         add_exp.mainloop()
     
