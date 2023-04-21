@@ -53,6 +53,7 @@ class AllRevenues(customtkinter.CTk):
         rev_detail.mainloop()
 
     def add_new_expense(self):
+        self.destroy()
         add_rev = AddRevenue(self.get_user_name(self.username)[0])
         add_rev.mainloop()
     
