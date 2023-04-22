@@ -7,20 +7,20 @@ from tkinter import messagebox
 from modules.budget import Budget
 from tkcalendar import Calendar
 from tkinter import ttk
-from modules import all_expenses
+from modules import all_revenues
 
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
 
-class EditExpense(customtkinter.CTk):
-    def __init__(self, expense_id, user_id):
-        self.id_exp = expense_id
+class EditRevenue(customtkinter.CTk):
+    def __init__(self, revenue_id, user_id):
+        self.id_rev = revenue_id
         self.id_user = user_id
         super().__init__()
         self.geometry("800x800")
-        self.title("Edit your expense")
+        self.title("Edit your revenue")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
@@ -29,15 +29,15 @@ class EditExpense(customtkinter.CTk):
         self.resizable(False, False)
         self.window_flag = 1
 
-        records = self.get_previous(self.id_exp)
+        records = self.get_previous(self.id_rev)
 
-        previous_date = str(records[3])
+        previous_date = str(records[4])
         print(previous_date)
         previous_year = int(previous_date[:4])
         previous_month = int(previous_date[5:7])
         previous_day = int(previous_date[8:10])
 
-        self.label = customtkinter.CTkLabel(master=self.frame, text="Edit this expense", font=("Arial", 35, "normal"))
+        self.label = customtkinter.CTkLabel(master=self.frame, text="Edit this revenue", font=("Arial", 35, "normal"))
         self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=2)
 
         self.name_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text=f"Name", justify=CENTER)
@@ -60,58 +60,50 @@ class EditExpense(customtkinter.CTk):
         self.cal.grid(column=0, row=3, pady=35, padx=15, columnspan=2)
 
         self.amount_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text=f'Amount', justify=CENTER)
-        self.amount_entry.insert(0, records[4])
+        self.amount_entry.insert(0, records[3])
         self.amount_entry.grid(pady=10, padx=10, row=4, column=0, sticky='ew', columnspan=2)
 
         db = database_connect.DatabaseConnector()
         query = 'SELECT name FROM categories'
         results = db.select_data(query)
-        categories = [r[0] for r in results]
-
-        self.category = customtkinter.CTkOptionMenu(master=self.frame, values=categories)
-        self.category.grid(pady=20, padx=10, row=5, column=0, sticky="ew", columnspan=2)
 
         self.delete = customtkinter.CTkButton(master=self.frame, text="Cancel", font=("Arial", 12, "normal"),
                                               command=lambda: self.destroy())
         self.delete.grid(row=6, column=0, padx=10, pady=20, sticky='sw')
 
         self.edit = customtkinter.CTkButton(master=self.frame, text="Confirm", font=("Arial", 12, "normal"),
-                                            command=lambda expense_id=expense_id: self.make_changes(expense_id))
+                                            command=lambda revenue_id=revenue_id: self.make_changes(revenue_id))
         self.edit.grid(row=6, column=1, padx=10, pady=20, sticky='sw')
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
-
 
     def on_closing(self):
         self.destroy()
         db = database_connect.DatabaseConnector()
         query = f"SELECT username FROM users WHERE id={self.id_user}"
         username = db.select_data(query, 'one')[0]
-        expenses = all_expenses.AllExpenses(username)
-        expenses.mainloop()
+        revenues = all_revenues.AllRevenues(username)
+        revenues.mainloop()
 
-    def get_previous(self, id_exp):
-        exp_id = id_exp
+    def get_previous(self, revenue_id):
         db = database_connect.DatabaseConnector()
-        query = f"SELECT * FROM expenses WHERE id = {exp_id}"
+        query = f"SELECT id, name, description, amount, add_date, user_id FROM revenues WHERE id = '{revenue_id}'"
         exp = db.select_data(query, 'one')
         return exp
 
-    def make_changes(self, id_exp):
-        exp_id = id_exp
+    def make_changes(self, revenue_id):
+        rev_id = revenue_id
         new_name = self.name_entry.get()
         new_description = self.desc_text.get("1.0", END)
         new_day = self.cal.selection_get().strftime('%Y-%m-%d')
         new_amount = self.amount_entry.get()
-        new_category = str(self.category.get())
-        records = self.get_previous(id_exp)
+        records = self.get_previous(rev_id)
 
         if new_name != '' and self.isfloat(new_amount) and float(new_amount) > 0:
-            budget = Budget(records[6])
-            cat_id = budget.get_category_id(new_category)
-            check = budget.edit_expense(new_name, new_description, float(new_amount), new_day, exp_id, cat_id)
+            budget = Budget(records[5])
+            check = budget.edit_revenue(new_name, new_description, float(new_amount), new_day, revenue_id)
             if check:
-                messagebox.showinfo('Success', 'You successfully changed one expense!')
+                messagebox.showinfo('Success', 'You successfully changed one revenue!')
                 self.on_closing()
             else:
                 messagebox.showerror('Error', 'You do not have enough money!')

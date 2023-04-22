@@ -6,6 +6,7 @@ from PIL import ImageTk
 from modules.database import database_connect
 from modules.expense_edit import EditExpense
 from modules import all_expenses
+from tkinter import messagebox
 
 
 customtkinter.set_appearance_mode("System")
@@ -19,7 +20,7 @@ class ExpenseDetail(customtkinter.CTk):
         super().__init__()
         self.geometry("800x600")
         self.title("Expense detail")
-        self.frame = customtkinter.CTkScrollableFrame(master=self, width=700, height=500)
+        self.frame = customtkinter.CTkScrollableFrame(master=self, width=700, height=550)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
         self.frame.grid_rowconfigure(0, weight=1)
         self.frame.grid_rowconfigure(1, weight=1)
@@ -59,12 +60,11 @@ class ExpenseDetail(customtkinter.CTk):
                                             command=lambda id_expense=id_expense: self.edit_expense(id_expense, username))
         self.edit.grid(row=3, column=0, padx=10, pady=20, sticky='sw')
 
-        self.delete = customtkinter.CTkButton(master=self.frame, text="Delete expense",
-                                              font=("Arial", 25, "normal"))
+        self.delete = customtkinter.CTkButton(master=self.frame, text="Delete expense", font=("Arial", 25, "normal"),
+                                              command=lambda id_expense=expense[4]: self.delete_expense(id_expense))
         self.delete.grid(row=3, column=2, padx=10, pady=20, sticky='sw')
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
-
 
     def on_closing(self):
         self.destroy()
@@ -78,3 +78,14 @@ class ExpenseDetail(customtkinter.CTk):
         edit_window = modules.expense_edit.EditExpense(id_expense, user_id)
         self.destroy()
         edit_window.mainloop()
+
+    def delete_expense(self, id_expense):
+        msg_box = messagebox.askquestion('Delete expense', 'Are you sure you want to delete the expense?',
+                                         icon='warning')
+
+        if msg_box == 'yes':
+            db = database_connect.DatabaseConnector()
+            query = f"DELETE FROM expenses WHERE id = {id_expense};"
+            db.make_query(query)
+            self.on_closing()
+

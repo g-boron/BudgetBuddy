@@ -80,13 +80,13 @@ class AddRevenue(customtkinter.CTk):
 
     def add_new_revenue(self):
         name = self.name_entry.get()
-        desc = self.desc_text.get("1.0",END)
+        desc = self.desc_text.get("1.0", END)
         amount = self.amount_entry.get()
         day = self.cal.selection_get().strftime('%Y-%m-%d')
 
         if name != '' and self.isfloat(amount) and float(amount) > 0:
             budget = Budget(self.id)
-            budget.add_revenue(name, desc, float(amount),day)
+            budget.add_revenue(name, desc, float(amount), day)
             messagebox.showinfo('Success', 'You successfully added new revenue!')
             self.on_closing()
         else:
