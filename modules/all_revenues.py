@@ -49,7 +49,8 @@ class AllRevenues(customtkinter.CTk):
         self.addbtn.place(relx=0.8, rely=0.9, anchor='center')
 
     def see_details(self, rev_id):
-        rev_detail = RevenueDetail(rev_id)
+        self.destroy()
+        rev_detail = RevenueDetail(rev_id, self.username)
         rev_detail.mainloop()
 
     def add_new_expense(self):

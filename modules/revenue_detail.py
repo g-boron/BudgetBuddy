@@ -3,6 +3,8 @@ from tkinter import *
 import customtkinter
 from PIL import ImageTk
 from modules.database import database_connect
+from modules import all_revenues
+from tkinter import messagebox
 
 
 customtkinter.set_appearance_mode("System")
@@ -10,7 +12,8 @@ customtkinter.set_default_color_theme("blue")
 
 
 class RevenueDetail(customtkinter.CTk):
-    def __init__(self, revenue_id):
+    def __init__(self, revenue_id, user_login):
+        self.user_login = user_login
         self.id = revenue_id
         super().__init__()
         self.geometry("800x600")
@@ -44,3 +47,27 @@ class RevenueDetail(customtkinter.CTk):
         self.amount = customtkinter.CTkLabel(master=self.frame, text=str(revenue[3]) + ' ' + revenue[5],
                                              font=("Arial", 30, "normal"), bg_color='#424543')
         self.amount.grid(pady=18, padx=10, row=2, column=0, sticky='sw')
+
+        self.delete = customtkinter.CTkButton(master=self.frame, text='Delete', command=lambda rev_id=revenue[4]: self.delete_revenue(rev_id), font=('Arial', 25, 'normal'))
+        self.delete.grid(pady=18, padx=10, row=3, column=0)
+
+        self.edit = customtkinter.CTkButton(master=self.frame, text='Edit', font=('Arial', 25, 'normal'))
+        self.edit.grid(pady=18, padx=10, row=3, column=2)
+
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
+
+
+    def on_closing(self):
+        self.destroy()
+        revenues = all_revenues.AllRevenues(self.user_login)
+        revenues.mainloop()
+
+
+    def delete_revenue(self, rev_id):
+        msg_box = messagebox.askquestion('Delete revenue', 'Are you sure you want to delete the revenue?', icon='warning')
+
+        if msg_box == 'yes':
+            db = database_connect.DatabaseConnector()
+            query = f"DELETE FROM revenues WHERE id = {rev_id};"
+            db.make_query(query)
+            self.on_closing()
