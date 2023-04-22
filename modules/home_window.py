@@ -7,6 +7,8 @@ from modules.all_expenses import AllExpenses
 from modules.all_revenues import AllRevenues
 from modules.change_password import ChangePassword
 from tkcalendar import Calendar
+import os
+from modules import login
 
 
 customtkinter.set_appearance_mode("System")
@@ -58,10 +60,14 @@ class HomeWindow(customtkinter.CTk):
         self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="element5", fg_color="transparent",
                                                 font=("Arial", 26, "normal"))
         self.element3.grid(pady=18, padx=10, row=5, column=0, sticky="new")
-        self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
+        self.change = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
                                                 command=self.change_password, font=("Arial", 26, "normal"))
         
-        self.element3.grid(pady=18, padx=10, row=6, column=0, sticky="new")
+        self.change.grid(pady=18, padx=10, row=6, column=0, sticky="new")
+        self.logout = customtkinter.CTkButton(master=self.menu_frame, text="Log out", fg_color="transparent",
+                                                command=self.logout, font=("Arial", 26, "normal"))
+        
+        self.logout.grid(pady=18, padx=10, row=7, column=0, sticky="new")
 
         self.calendar_frame = customtkinter.CTkFrame(master=self, width=(screen_width / 3), height=450, fg_color='#242424')
         self.calendar_frame.grid(column=0, row=2, sticky="n", rowspan=2)
@@ -136,3 +142,15 @@ class HomeWindow(customtkinter.CTk):
     def change_password(self):
         changepass = ChangePassword(self.username)
         changepass.mainloop()
+
+    def logout(self):
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
+        file_path = os.path.join(parent_dir, "login_pass.txt")
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        self.destroy()
+        login_screen = login.Login()
+        login_screen.mainloop()
