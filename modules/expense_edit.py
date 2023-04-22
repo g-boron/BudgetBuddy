@@ -7,6 +7,7 @@ from tkinter import messagebox
 from modules.budget import Budget
 from tkcalendar import Calendar
 from tkinter import ttk
+from modules import all_expenses
 
 
 customtkinter.set_appearance_mode("System")
@@ -78,6 +79,17 @@ class EditExpense(customtkinter.CTk):
                                               command=lambda expense_id=expense_id: self.make_changes(expense_id))
         self.edit.grid(row=6, column=1, padx=10, pady=20, sticky='sw')
 
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
+
+
+    def on_closing(self):
+        self.destroy()
+        db = database_connect.DatabaseConnector()
+        query = f"SELECT username FROM users WHERE id={self.id_user}"
+        username = db.select_data(query, 'one')[0]
+        expenses = all_expenses.AllExpenses(username)
+        expenses.mainloop()
+
     def get_previous(self, id_exp):
         exp_id = id_exp
         db = database_connect.DatabaseConnector()
@@ -100,7 +112,7 @@ class EditExpense(customtkinter.CTk):
             check = budget.edit_expense(new_name, new_description, float(new_amount), new_day, exp_id, cat_id)
             if check:
                 messagebox.showinfo('Success', 'You successfully changed one expense!')
-                self.destroy()
+                self.on_closing()
             else:
                 messagebox.showerror('Error', 'You do not have enough money!')
         else:

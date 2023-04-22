@@ -61,7 +61,7 @@ class AllExpenses(customtkinter.CTk):
         self.exitbtn.place(relx=0.8, rely=0.9, anchor='center')
 
     def see_details(self, exp_id, user_login):
-
+        self.destroy()
         exp_detail = ExpenseDetail(exp_id, self.get_user_name(user_login)[1])
         exp_detail.mainloop()
 

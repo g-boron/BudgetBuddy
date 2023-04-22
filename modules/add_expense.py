@@ -7,6 +7,7 @@ from tkinter import messagebox
 from modules.budget import Budget
 from tkcalendar import Calendar
 from tkinter import ttk
+from modules import all_expenses
 
 
 customtkinter.set_appearance_mode("System")
@@ -74,6 +75,17 @@ class AddExpense(customtkinter.CTk):
                                               command=self.add_new_expense, font=('Arial', 25, 'normal'))
         self.addbtn.grid(padx=20, pady=10, row=6, column=0, sticky='ew')
 
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
+
+
+    def on_closing(self):
+        self.destroy()
+        db = database_connect.DatabaseConnector()
+        query = f"SELECT username from users WHERE id = {self.id}"
+        username = db.select_data(query, 'one')[0]
+        expenses = all_expenses.AllExpenses(username)
+        expenses.mainloop()
+
     def add_new_expense(self):
         name = self.name_entry.get()
         desc = self.desc_text.get("1.0", END)
@@ -87,7 +99,7 @@ class AddExpense(customtkinter.CTk):
             check = budget.add_expense(name, desc, float(amount), cat_id, day)
             if check:
                 messagebox.showinfo('Success', 'You successfully added new expense!')
-                self.destroy()
+                self.on_closing()
             else:
                 messagebox.showerror('Error', 'You do not have enough money!')
         else:
