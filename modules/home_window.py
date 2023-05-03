@@ -6,6 +6,7 @@ from modules.database import database_connect
 from modules.all_expenses import AllExpenses
 from modules.all_revenues import AllRevenues
 from modules.change_password import ChangePassword
+from modules.day_summary import DaySummary
 from tkcalendar import Calendar
 import os
 from modules import login
@@ -51,9 +52,6 @@ class HomeWindow(customtkinter.CTk):
         self.revenues = customtkinter.CTkButton(master=self.menu_frame, text="My revenues", fg_color="transparent",
                                                 font=("Arial", 26, "normal"), command=self.show_revenues)
         self.revenues.grid(pady=18, padx=10, row=2, column=0, sticky="new")
-        self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="element3", fg_color="transparent",
-                                                font=("Arial", 26, "normal"))
-        self.element3.grid(pady=18, padx=10, row=3, column=0, sticky="new")
         self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="element4", fg_color="transparent",
                                                 font=("Arial", 26, "normal"))
         self.element3.grid(pady=18, padx=10, row=4, column=0, sticky="new")
@@ -90,14 +88,38 @@ class HomeWindow(customtkinter.CTk):
                                                    font=("Arial", 30, "normal"))
         self.description2.grid(pady=18, padx=10, row=1, column=1)
 
-        self.today_spending_frame = customtkinter.CTkScrollableFrame(master=self, width=int(((screen_width / 3) - 20)),
-                                                                     height=270, fg_color="white")
+        db = database_connect.DatabaseConnector()
+        query = f"SELECT e.amount, c.name from expenses AS e JOIN users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id WHERE u.username='{self.username}'AND e.add_date=CURRENT_DATE"
+        self.results = db.select_data(query)
+
+        self.summary = {'Entertainment': 0, 'Shopping': 0, 'Bills': 0, 'Subscriptions': 0, 'Other': 0}
+        for r in self.results:
+            if r[1] == 'Entertainment':
+                self.summary['Entertainment'] += float(r[0])
+            elif r[1] == 'Shopping':
+                self.summary['Shopping'] += float(r[0])
+            elif r[1] == 'Bills':
+                self.summary['Bills'] += float(r[0])
+            elif r[1] == 'Subscriptions':
+                self.summary['Subscriptions'] += float(r[0])
+            else:
+                self.summary['Other'] += float(r[0])
+
+        query = f"SELECT currency FROM users WHERE username='{self.username}'"
+        self.currency = db.select_data(query, 'one')[0]
+
+
+        self.today_spending_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)),
+                                                                     height=270)
         self.today_spending_frame.grid(column=1, row=2, sticky="ns")
-        self.today_spending_frame.grid_columnconfigure(0, weight=1)
-        self.today_spending_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
-        self.description3 = customtkinter.CTkLabel(master=self, text="User's today spending",
+        self.today_spending_frame.grid_columnconfigure((0, 1), weight=1)
+        self.today_spending_frame.grid_rowconfigure((1, 2), weight=1)
+        self.total = customtkinter.CTkLabel(master=self.today_spending_frame, text=f"Daily total: {str(sum(self.summary.values()))} {self.currency}",
                                                    font=("Arial", 30, "normal"))
-        self.description3.grid(pady=18, padx=10, column=1, row=2)
+        self.total.grid(pady=18, padx=10, column=0, row=0)
+
+        self.view = customtkinter.CTkButton(master=self.today_spending_frame, text='View details', command=self.see_details, font=('Arial', 30, 'normal'))
+        self.view.grid(pady=18, padx=10, column=1, row=0)
 
         self.incoming_transactions_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)),
                                                                   height=160, fg_color="purple")
@@ -124,6 +146,10 @@ class HomeWindow(customtkinter.CTk):
         self.second_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
         self.description6 = customtkinter.CTkLabel(master=self, text="second graph", font=("Arial", 30, "normal"))
         self.description6.grid(pady=18, padx=10, row=2, column=2)
+
+    def see_details(self):
+        day_summary = DaySummary(self.username, self.summary, self.currency, len(self.results))
+        day_summary.mainloop()
 
     def get_user_name(self, user_login):
         db = database_connect.DatabaseConnector()

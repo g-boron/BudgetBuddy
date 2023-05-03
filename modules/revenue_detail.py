@@ -59,7 +59,7 @@ class RevenueDetail(customtkinter.CTk):
         self.edit.grid(pady=18, padx=10, row=3, column=2)
 
         self.delete = customtkinter.CTkButton(master=self.frame, text='Delete',
-                                              command=lambda id_revenue=revenue[4]: self.delete_revenue(id_revenue),
+                                              command=lambda id_revenue=id_revenue: self.delete_revenue(id_revenue),
                                               font=('Arial', 25, 'normal'))
         self.delete.grid(pady=18, padx=10, row=3, column=0)
 
@@ -75,7 +75,6 @@ class RevenueDetail(customtkinter.CTk):
         query = f"SELECT id FROM users WHERE username='{username}'"
         user_id = db.select_data(query, 'one')[0]
         edit_window = modules.revenue_edit.EditRevenue(id_revenue, user_id)
-        print(id_revenue)
         self.destroy()
         edit_window.mainloop()
 
@@ -86,5 +85,4 @@ class RevenueDetail(customtkinter.CTk):
             db = database_connect.DatabaseConnector()
             query = f"DELETE FROM revenues WHERE id = {id_revenue};"
             db.make_query(query)
-            self.on_closing()
             self.on_closing()
