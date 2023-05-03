@@ -158,6 +158,7 @@ class HomeWindow(customtkinter.CTk):
         return user_name[0]
 
     def show_expenses(self):
+        self.destroy()
         expenses = AllExpenses(self.username)
         expenses.mainloop()
 

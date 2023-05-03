@@ -5,6 +5,7 @@ from PIL import ImageTk
 from modules.database import database_connect
 from modules.expense_detail import ExpenseDetail
 from modules.add_expense import AddExpense
+from modules import home_window
 import textwrap
 
 customtkinter.set_appearance_mode("System")
@@ -56,9 +57,16 @@ class AllExpenses(customtkinter.CTk):
                                               font=('Arial', 30, 'normal'))
         self.refreshbtn.place(relx=0.5, rely=0.9, anchor='center')
 
-        self.exitbtn = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.destroy(),
+        self.exitbtn = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.on_closing(),
                                               font=('Arial', 30, 'normal'))
         self.exitbtn.place(relx=0.8, rely=0.9, anchor='center')
+
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
+
+    def on_closing(self):
+        self.destroy()
+        home = home_window.HomeWindow(self.username)
+        home.mainloop()
 
     def see_details(self, exp_id, user_login):
         self.destroy()
