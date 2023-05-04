@@ -17,6 +17,7 @@ class ExpenseDetail(customtkinter.CTk):
     def __init__(self, expense_id, username):
         self.id = expense_id
         self.username = username
+        print(self.username)
         super().__init__()
         self.geometry("800x600")
         self.title("Expense detail")
@@ -61,7 +62,7 @@ class ExpenseDetail(customtkinter.CTk):
         self.edit.grid(row=3, column=0, padx=10, pady=20, sticky='sw')
 
         self.delete = customtkinter.CTkButton(master=self.frame, text="Delete expense", font=("Arial", 25, "normal"),
-                                              command=lambda id_expense=expense[4]: self.delete_expense(id_expense))
+                                              command=lambda id_expense=id_expense: self.delete_expense(id_expense))
         self.delete.grid(row=3, column=2, padx=10, pady=20, sticky='sw')
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
@@ -85,6 +86,7 @@ class ExpenseDetail(customtkinter.CTk):
 
         if msg_box == 'yes':
             db = database_connect.DatabaseConnector()
+            print(id_expense)
             query = f"DELETE FROM expenses WHERE id = {id_expense};"
             db.make_query(query)
             self.on_closing()

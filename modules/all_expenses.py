@@ -70,7 +70,7 @@ class AllExpenses(customtkinter.CTk):
 
     def see_details(self, exp_id, user_login):
         self.destroy()
-        exp_detail = ExpenseDetail(exp_id, self.get_user_name(user_login)[1])
+        exp_detail = ExpenseDetail(exp_id, self.username)
         exp_detail.mainloop()
 
     def add_new_expense(self):
