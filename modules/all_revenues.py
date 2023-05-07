@@ -34,14 +34,15 @@ class AllRevenues(customtkinter.CTk):
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
         self.frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
-         #input field to type name of revenue
-        self.name_entry = customtkinter.CTkEntry(master=self, placeholder_text="name", justify=CENTER, font=('Arial', 30, 'normal'),width=200)
+# input field to type name of revenue
+        self.name_entry = customtkinter.CTkEntry(master=self, placeholder_text="name", justify=CENTER,
+                                                 font=('Arial', 30, 'normal'), width=200)
         self.name_entry.place(x=700, y=150)
 
-        #choose filter option
-        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['high to low','low to high'], font=('Arial', 30, 'normal'))
+# choose filter option
+        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['high to low', 'low to high'],
+                                                      font=('Arial', 30, 'normal'))
         self.filter_opt.place(x=1150, y=150)
-
 
         self.refresh()
 
@@ -68,25 +69,22 @@ class AllRevenues(customtkinter.CTk):
         add_rev.mainloop()
     
     def refresh(self):
-
         for widget in self.frame.grid_slaves():
             widget.grid_forget()
 
         db = database_connect.DatabaseConnector()
 
-        name=self.name_entry.get()
-        filter=self.filter_opt.get()
+        name = self.name_entry.get()
+        filter = self.filter_opt.get()
 
         if filter == 'high to low':
             price_filter = 'DESC'
-        
         else:
             price_filter = 'ASC'
 
-
-        query = f"SELECT name, description, add_date, amount, id FROM revenues WHERE user_id={self.get_user_name(self.username)[0]} "\
+        query = f"SELECT name, description, add_date, amount, id FROM revenues " \
+                f"WHERE user_id={self.get_user_name(self.username)[0]} "\
                 f"AND name LIKE '%{name}%' ORDER BY amount {price_filter}"
-
 
         revenues = db.select_data(query)
         for idx, revenue in enumerate(revenues):
@@ -96,7 +94,8 @@ class AllRevenues(customtkinter.CTk):
                                                   font=("Arial", 24, "normal"))
             self.revname.grid(pady=20, padx=10, row=idx, column=0)
             
-            self.date = customtkinter.CTkLabel(master=self.frame, text=str(revenue[2]).split(' ')[0], font=("Arial", 24, "normal"))
+            self.date = customtkinter.CTkLabel(master=self.frame, text=str(revenue[2]).split(' ')[0],
+                                               font=("Arial", 24, "normal"))
             self.date.grid(pady=20, padx=10, row=idx, column=1)
 
             self.price = customtkinter.CTkLabel(master=self.frame, text=revenue[3], font=("Arial", 24, "normal"))

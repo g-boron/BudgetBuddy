@@ -39,16 +39,15 @@ class AllExpenses(customtkinter.CTk):
         categories = [r[0] for r in results]
         categories.insert(0, 'All')
 
-
         self.category_opt = customtkinter.CTkOptionMenu(self, values=categories, font=('Arial', 30, 'normal'))
         self.category_opt.place(x=800, y=155)
-
-        #input field to type name of expense
-        self.name_entry = customtkinter.CTkEntry(master=self, placeholder_text="name", justify=CENTER, font=('Arial', 30, 'normal'))
+# input field to type name of expense
+        self.name_entry = customtkinter.CTkEntry(master=self, placeholder_text="name", justify=CENTER,
+                                                 font=('Arial', 30, 'normal'))
         self.name_entry.place(x=1000, y=150)
-
-        #choose filter option
-        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['high to low','low to high'], font=('Arial', 30, 'normal'))
+# choose filter option
+        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['high to low', 'low to high'],
+                                                      font=('Arial', 30, 'normal'))
         self.filter_opt.place(x=1150, y=150)
 
         self.frame = customtkinter.CTkScrollableFrame(master=self, width=800, height=600)
@@ -62,12 +61,13 @@ class AllExpenses(customtkinter.CTk):
                                               font=('Arial', 30, 'normal'))
         self.addbtn.place(relx=0.2, rely=0.9, anchor='center')
 
-        self.refreshbtn = customtkinter.CTkButton(master=self, text='Refresh', command=lambda: self.refresh(str(self.category_opt.get())),
-                                              font=('Arial', 30, 'normal'))
+        self.refreshbtn = customtkinter.CTkButton(master=self, text='Refresh',
+                                                  command=lambda: self.refresh(str(self.category_opt.get())),
+                                                  font=('Arial', 30, 'normal'))
         self.refreshbtn.place(relx=0.5, rely=0.9, anchor='center')
 
         self.exitbtn = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.on_closing(),
-                                              font=('Arial', 30, 'normal'))
+                                               font=('Arial', 30, 'normal'))
         self.exitbtn.place(relx=0.8, rely=0.9, anchor='center')
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
@@ -91,32 +91,24 @@ class AllExpenses(customtkinter.CTk):
         for widget in self.frame.grid_slaves():
             widget.grid_forget()
 
-
-        name=self.name_entry.get()
-        filter=self.filter_opt.get()
+        name = self.name_entry.get()
+        filter = self.filter_opt.get()
 
         if filter == 'high to low':
             price_filter = 'DESC'
-        
         else:
             price_filter = 'ASC'
-
         if category == 'All':
             category_filter = ''
-
         else:
              category_filter = f"AND categories.name = '{category}'" 
 
-
         query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, " \
-        f"expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE " \
-        f"expenses.user_id={self.get_user_name(self.username)[0]} {category_filter} AND expenses.name LIKE '%{name}%' ORDER BY expenses.amount {price_filter}"
-
-
+                f"expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE " \
+                f"expenses.user_id={self.get_user_name(self.username)[0]} {category_filter} AND expenses.name LIKE " \
+                f"'%{name}%' ORDER BY expenses.amount {price_filter}"
 
         db = database_connect.DatabaseConnector()
-    
-        print(query)
 
         expenses = db.select_data(query)
         for idx, expense in enumerate(expenses):
@@ -128,7 +120,8 @@ class AllExpenses(customtkinter.CTk):
             self.category = customtkinter.CTkLabel(master=self.frame, text=expense[4], font=("Arial", 24, "normal"))
             self.category.grid(pady=20, padx=10, row=idx, column=1)
             
-            self.date = customtkinter.CTkLabel(master=self.frame, text=str(expense[2]).split(' ')[0], font=("Arial", 24, "normal"))
+            self.date = customtkinter.CTkLabel(master=self.frame, text=str(expense[2]).split(' ')[0],
+                                               font=("Arial", 24, "normal"))
             self.date.grid(pady=20, padx=10, row=idx, column=2)
 
             self.price = customtkinter.CTkLabel(master=self.frame, text=expense[3], font=("Arial", 24, "normal"))
@@ -137,8 +130,8 @@ class AllExpenses(customtkinter.CTk):
             exp_id = expense[5]
 
             self.detailbtn = customtkinter.CTkButton(master=self.frame, text="Detail",
-                                                     command=lambda exp_id=exp_id: self.see_details(exp_id, self.username),
-                                                     font=('Arial', 24, 'normal'))
+                                                     command=lambda exp_id=exp_id: self.see_details
+                                                     (exp_id, self.username), font=('Arial', 24, 'normal'))
             self.detailbtn.grid(pady=20, padx=10, row=idx, column=4)
 
     def get_user_name(self, user_login):
