@@ -46,7 +46,7 @@ class AllExpenses(customtkinter.CTk):
                                                  font=('Arial', 30, 'normal'))
         self.name_entry.place(x=1000, y=150)
 # choose filter option
-        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['high to low', 'low to high'],
+        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['Date descending', 'Date ascending', 'Amount descending', 'Amount ascending'],
                                                       font=('Arial', 30, 'normal'))
         self.filter_opt.place(x=1150, y=150)
 
@@ -94,10 +94,15 @@ class AllExpenses(customtkinter.CTk):
         name = self.name_entry.get()
         filter = self.filter_opt.get()
 
-        if filter == 'high to low':
-            price_filter = 'DESC'
+        if filter == 'Amount descending':
+            sort_filter = 'expenses.amount DESC'
+        elif filter == 'Amount ascending':
+            sort_filter = 'expenses.amount ASC'
+        elif filter == 'Date descending':
+            sort_filter = 'expenses.add_date DESC'
         else:
-            price_filter = 'ASC'
+            sort_filter = 'expenses.add_date ASC'
+
         if category == 'All':
             category_filter = ''
         else:
@@ -106,7 +111,7 @@ class AllExpenses(customtkinter.CTk):
         query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, " \
                 f"expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE " \
                 f"expenses.user_id={self.get_user_name(self.username)[0]} {category_filter} AND expenses.name LIKE " \
-                f"'%{name}%' ORDER BY expenses.amount {price_filter}"
+                f"'%{name}%' ORDER BY {sort_filter}"
 
         db = database_connect.DatabaseConnector()
 

@@ -40,7 +40,7 @@ class AllRevenues(customtkinter.CTk):
         self.name_entry.place(x=700, y=150)
 
 # choose filter option
-        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['high to low', 'low to high'],
+        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['Date descending', 'Date ascending', 'Amount descending', 'Amount ascending'],
                                                       font=('Arial', 30, 'normal'))
         self.filter_opt.place(x=1150, y=150)
 
@@ -77,14 +77,18 @@ class AllRevenues(customtkinter.CTk):
         name = self.name_entry.get()
         filter = self.filter_opt.get()
 
-        if filter == 'high to low':
-            price_filter = 'DESC'
+        if filter == 'Amount descending':
+            sort_filter = 'amount DESC'
+        elif filter == 'Amount ascending':
+            sort_filter = 'amount ASC'
+        elif filter == 'Date descending':
+            sort_filter = 'add_date DESC'
         else:
-            price_filter = 'ASC'
+            sort_filter = 'add_date ASC'
 
         query = f"SELECT name, description, add_date, amount, id FROM revenues " \
                 f"WHERE user_id={self.get_user_name(self.username)[0]} "\
-                f"AND name LIKE '%{name}%' ORDER BY amount {price_filter}"
+                f"AND name LIKE '%{name}%' ORDER BY {sort_filter}"
 
         revenues = db.select_data(query)
         for idx, revenue in enumerate(revenues):
