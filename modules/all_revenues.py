@@ -98,13 +98,16 @@ class AllRevenues(customtkinter.CTk):
             
             self.date = customtkinter.CTkLabel(master=self.frame, text=str(revenue[2]).split(' ')[0], font=("Arial", 24, "normal"))
             self.date.grid(pady=20, padx=10, row=idx, column=1)
+
+            self.price = customtkinter.CTkLabel(master=self.frame, text=revenue[3], font=("Arial", 24, "normal"))
+            self.price.grid(pady=20, padx=10, row=idx, column=2)
             
             rev_id = revenue[4]
 
             self.detailbtn = customtkinter.CTkButton(master=self.frame, text="Detail",
                                                      command=lambda rev_id=rev_id: self.see_details(rev_id),
                                                      font=('Arial', 24, 'normal'))
-            self.detailbtn.grid(pady=20, padx=10, row=idx, column=2)
+            self.detailbtn.grid(pady=20, padx=10, row=idx, column=3)
 
     def get_user_name(self, user_login):
         db = database_connect.DatabaseConnector()

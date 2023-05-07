@@ -130,13 +130,16 @@ class AllExpenses(customtkinter.CTk):
             
             self.date = customtkinter.CTkLabel(master=self.frame, text=str(expense[2]).split(' ')[0], font=("Arial", 24, "normal"))
             self.date.grid(pady=20, padx=10, row=idx, column=2)
+
+            self.price = customtkinter.CTkLabel(master=self.frame, text=expense[3], font=("Arial", 24, "normal"))
+            self.price.grid(pady=20, padx=10, row=idx, column=3)
             
             exp_id = expense[5]
 
             self.detailbtn = customtkinter.CTkButton(master=self.frame, text="Detail",
                                                      command=lambda exp_id=exp_id: self.see_details(exp_id, self.username),
                                                      font=('Arial', 24, 'normal'))
-            self.detailbtn.grid(pady=20, padx=10, row=idx, column=3)
+            self.detailbtn.grid(pady=20, padx=10, row=idx, column=4)
 
     def get_user_name(self, user_login):
         db = database_connect.DatabaseConnector()
