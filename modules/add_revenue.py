@@ -7,6 +7,8 @@ from tkinter import messagebox
 from modules.budget import Budget
 from tkcalendar import Calendar
 from tkinter import ttk
+from modules import all_revenues
+
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -65,17 +67,28 @@ class AddRevenue(customtkinter.CTk):
                                               command=self.add_new_revenue, font=('Arial', 25, 'normal'))
         self.addbtn.grid(padx=20, pady=10, row=5, column=0, sticky='ew')
 
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
+
+
+    def on_closing(self):
+        self.destroy()
+        db = database_connect.DatabaseConnector()
+        query = f"SELECT username FROM users WHERE id={self.id}"
+        username = db.select_data(query, 'one')[0]
+        revenues = all_revenues.AllRevenues(username)
+        revenues.mainloop()
+
     def add_new_revenue(self):
         name = self.name_entry.get()
-        desc = self.desc_text.get("1.0",END)
+        desc = self.desc_text.get("1.0", END)
         amount = self.amount_entry.get()
         day = self.cal.selection_get().strftime('%Y-%m-%d')
 
         if name != '' and self.isfloat(amount) and float(amount) > 0:
             budget = Budget(self.id)
-            budget.add_revenue(name, desc, float(amount),day)
+            budget.add_revenue(name, desc, float(amount), day)
             messagebox.showinfo('Success', 'You successfully added new revenue!')
-            self.destroy()
+            self.on_closing()
         else:
             messagebox.showerror("Error","Please enter valid data.")
 

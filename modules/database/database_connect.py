@@ -78,12 +78,15 @@ class DatabaseConnector:
             cur.execute(query)
             if fetch == 'one':
                 records = cur.fetchone()
+                cur.close()
+                return records
             else:
                 records = cur.fetchall()
-            cur.close()
+                cur.close()
+                return records
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
         finally:
             if conn is not None:
                 conn.close()
-                return records
+

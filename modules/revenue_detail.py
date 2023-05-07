@@ -2,7 +2,11 @@ import tkinter
 from tkinter import *
 import customtkinter
 from PIL import ImageTk
+import modules.revenue_edit
 from modules.database import database_connect
+from modules import all_revenues
+from tkinter import messagebox
+from modules.revenue_edit import EditRevenue
 
 
 customtkinter.set_appearance_mode("System")
@@ -10,7 +14,8 @@ customtkinter.set_default_color_theme("blue")
 
 
 class RevenueDetail(customtkinter.CTk):
-    def __init__(self, revenue_id):
+    def __init__(self, revenue_id, username):
+        self.username = username
         self.id = revenue_id
         super().__init__()
         self.geometry("800x600")
@@ -27,20 +32,57 @@ class RevenueDetail(customtkinter.CTk):
         self.window_flag = 1
 
         db = database_connect.DatabaseConnector()
-        query = f"SELECT revenues.name, revenues.description, revenues.add_date, revenues.amount, revenues.id, users.currency FROM revenues JOIN users ON revenues.user_id=users.id WHERE revenues.id={self.id}"
+        query = f"SELECT revenues.id, revenues.name, revenues.description, revenues.add_date, " \
+                f"revenues.amount,users.currency FROM revenues JOIN users ON revenues.user_id=users.id WHERE " \
+                f"revenues.id={self.id}"
         revenue = db.select_data(query, 'one')
 
-        self.name = customtkinter.CTkLabel(master=self.frame, text=revenue[0], font=("Arial", 30, "normal"),
+        self.name = customtkinter.CTkLabel(master=self.frame, text=revenue[1], font=("Arial", 30, "normal"),
                                            wraplength=200)
         self.name.grid(pady=18, padx=10, row=0, column=0, sticky='nw')
 
-        self.date = customtkinter.CTkLabel(master=self.frame, text=str(revenue[2]).split(' ')[0], font=("Arial", 30, "normal"))
+        self.date = customtkinter.CTkLabel(master=self.frame, text=str(revenue[3]).split(' ')[0],
+                                           font=("Arial", 30, "normal"))
         self.date.grid(pady=18, padx=10, row=0, column=2, sticky='ne')
 
-        self.desc = customtkinter.CTkLabel(master=self.frame, text=revenue[1], font=("Arial", 30, "normal"),
+        self.desc = customtkinter.CTkLabel(master=self.frame, text=revenue[2], font=("Arial", 30, "normal"),
                                            wraplength=700)
         self.desc.grid(pady=18, padx=10, row=1, column=0, columnspan=3)
 
-        self.amount = customtkinter.CTkLabel(master=self.frame, text=str(revenue[3]) + ' ' + revenue[5],
+        self.amount = customtkinter.CTkLabel(master=self.frame, text=str(revenue[4])+' '+revenue[5],
                                              font=("Arial", 30, "normal"), bg_color='#424543')
         self.amount.grid(pady=18, padx=10, row=2, column=0, sticky='sw')
+        id_revenue = revenue[0]
+
+        self.edit = customtkinter.CTkButton(master=self.frame, text='Edit revenue', font=('Arial', 25, 'normal'),
+                                            command=lambda id_revenue=id_revenue: self.edit_revenue(id_revenue, username))
+        self.edit.grid(pady=18, padx=10, row=3, column=2)
+
+        self.delete = customtkinter.CTkButton(master=self.frame, text='Delete',
+                                              command=lambda id_revenue=id_revenue: self.delete_revenue(id_revenue),
+                                              font=('Arial', 25, 'normal'))
+        self.delete.grid(pady=18, padx=10, row=3, column=0)
+
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
+
+    def on_closing(self):
+        self.destroy()
+        revenues = all_revenues.AllRevenues(self.username)
+        revenues.mainloop()
+
+    def edit_revenue(self, id_revenue, username):
+        db = database_connect.DatabaseConnector()
+        query = f"SELECT id FROM users WHERE username='{username}'"
+        user_id = db.select_data(query, 'one')[0]
+        edit_window = modules.revenue_edit.EditRevenue(id_revenue, user_id)
+        self.destroy()
+        edit_window.mainloop()
+
+    def delete_revenue(self, id_revenue):
+        msg_box = messagebox.askquestion('Delete revenue', 'Are you sure you want to delete the revenue?', icon='warning')
+
+        if msg_box == 'yes':
+            db = database_connect.DatabaseConnector()
+            query = f"DELETE FROM revenues WHERE id = {id_revenue};"
+            db.make_query(query)
+            self.on_closing()
