@@ -44,7 +44,7 @@ class HomeWindow(customtkinter.CTk):
         self.label.grid(pady=30, padx=10, row=0, column=1, sticky="nw")
         #   -------------------------------- left panel --------------------------------
         self.menu_frame = customtkinter.CTkScrollableFrame(master=self, width=int(((screen_width / 3) - 20)),
-                                                           height=470)
+                                                           height=440)
         self.menu_frame.grid(column=0, row=1, sticky="n")
         self.menu_frame.grid_columnconfigure(0, weight=1)
         self.menu_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
@@ -183,10 +183,10 @@ class HomeWindow(customtkinter.CTk):
         mat.rcParams['xtick.color'] = COLOR
         mat.rcParams['ytick.color'] = COLOR
         
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(7, 4.5))
         bars = ax.bar(columns, values)
         ax.bar_label(bars)
-        
+
         fig.patch.set_facecolor('#242424')
         ax.set_facecolor('#242424')
 
