@@ -36,7 +36,7 @@ class DaySummary(customtkinter.CTk):
         self.total = customtkinter.CTkLabel(master=self.frame, text='Total:', font=("Arial", 25, "normal"))
         self.total.grid(pady=18, padx=10, row=1, column=0, sticky='w')
 
-        self.total_amount = customtkinter.CTkLabel(master=self.frame, text=f"{str(sum(summary.values()))} {currency}", font=("Arial", 25, "normal"))
+        self.total_amount = customtkinter.CTkLabel(master=self.frame, text=f"{str(round(sum(summary.values()), 2))} {currency}", font=("Arial", 25, "normal"))
         self.total_amount.grid(pady=18, padx=10, row=1, column=1, sticky='e')
 
         self.number_of_exp = customtkinter.CTkLabel(master=self.frame, text='Number of expenses:', font=("Arial", 25, "normal"),
