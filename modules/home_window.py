@@ -44,7 +44,7 @@ class HomeWindow(customtkinter.CTk):
         self.label.grid(pady=30, padx=10, row=0, column=1, sticky="nw")
         #   -------------------------------- left panel --------------------------------
         self.menu_frame = customtkinter.CTkScrollableFrame(master=self, width=int(((screen_width / 3) - 20)),
-                                                           height=400)
+                                                           height=470)
         self.menu_frame.grid(column=0, row=1, sticky="n")
         self.menu_frame.grid_columnconfigure(0, weight=1)
         self.menu_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
@@ -169,8 +169,7 @@ class HomeWindow(customtkinter.CTk):
                                                    font=("Arial", 30, "normal"))
         self.description4.grid(pady=18, padx=10, column=1, row=3)
         #   -------------------------------- right panel --------------------------------
-        self.first_graph_frame = customtkinter.CTkFrame(master=self, width=int(((screen_width / 3) - 20)), height=400,
-                                                        fg_color="red")
+        self.first_graph_frame = customtkinter.CTkFrame(master=self, width=int(((screen_width / 3) - 20)), height=400)
         self.first_graph_frame.grid(column=2, row=1, sticky="news")
         self.first_graph_frame.grid_columnconfigure(0, weight=1)
         self.first_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
