@@ -12,6 +12,9 @@ from modules.month_summary import MonthSummary
 from tkcalendar import Calendar
 import os
 from modules import login
+import matplotlib as mat
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 customtkinter.set_appearance_mode("System")
@@ -171,9 +174,36 @@ class HomeWindow(customtkinter.CTk):
         self.first_graph_frame.grid(column=2, row=1, sticky="news")
         self.first_graph_frame.grid_columnconfigure(0, weight=1)
         self.first_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
-        self.description5 = customtkinter.CTkLabel(master=self, text="first graph",
-                                                   font=("Arial", 30, "normal"))
-        self.description5.grid(pady=18, padx=10, column=2, row=1)
+
+        columns = list(self.summary.keys())
+        values = list(self.summary.values())
+
+        COLOR = 'white'
+        mat.rcParams['text.color'] = COLOR
+        mat.rcParams['axes.labelcolor'] = COLOR
+        mat.rcParams['xtick.color'] = COLOR
+        mat.rcParams['ytick.color'] = COLOR
+        
+        fig, ax = plt.subplots()
+        bars = ax.bar(columns, values)
+        ax.bar_label(bars)
+        
+        fig.patch.set_facecolor('#242424')
+        ax.set_facecolor('#242424')
+
+        ax.tick_params(color=COLOR, labelcolor=COLOR)
+        for spine in ax.spines.values():
+            spine.set_edgecolor(COLOR)
+
+        plt.xlabel('Categories', fontsize=15)
+        plt.ylabel(f'Amount [{self.currency}]', fontsize=15)
+        plt.title('Day summary', fontsize=20)
+
+        canvas = FigureCanvasTkAgg(fig, self.first_graph_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+        
+        plt.close(fig)
 
         self.second_graph_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)), height=450,
                                                          fg_color="orange")
