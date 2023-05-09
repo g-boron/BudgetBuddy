@@ -15,6 +15,7 @@ from modules import login
 import matplotlib as mat
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from calendar import monthrange
 
 
 customtkinter.set_appearance_mode("System")
@@ -209,8 +210,75 @@ class HomeWindow(customtkinter.CTk):
         self.second_graph_frame.grid(column=2, row=2, rowspan=2, sticky="new")
         self.second_graph_frame.grid_columnconfigure(0, weight=1)
         self.second_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
-        self.description6 = customtkinter.CTkLabel(master=self, text="second graph", font=("Arial", 30, "normal"))
-        self.description6.grid(pady=18, padx=10, row=2, column=2)
+
+        query = f"SELECT e.amount, c.name, EXTRACT(DAY FROM e.add_date) as day from expenses AS e JOIN " \
+                f"users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
+                f"WHERE u.username='{self.username}' AND EXTRACT(MONTH FROM add_date) = {current_month} " \
+                f"AND EXTRACT(YEAR FROM add_date) = {current_year}"
+
+        days_in_month = monthrange(current_year, current_month)[1]
+
+        self.month_results = db.select_data(query)
+
+        self.month_graph_data = {}
+        for i in range(1, days_in_month+1):
+            self.month_graph_data[i] = {'Entertainment': 0, 'Shopping': 0, 'Bills': 0, 'Subscriptions': 0, 'Other': 0}
+
+        for r in self.month_results:
+            for m in self.month_graph_data:
+                if int(r[2]) == m:
+                    if r[1] == 'Entertainment':
+                        self.month_graph_data[m]['Entertainment'] += float(r[0])
+                    elif r[1] == 'Shopping':
+                        self.month_graph_data[m]['Shopping'] += float(r[0])
+                    elif r[1] == 'Bills':
+                        self.month_graph_data[m]['Bills'] += float(r[0])
+                    elif r[1] == 'Subscriptions':
+                        self.month_graph_data[m]['Subscriptions'] += float(r[0])
+                    else:
+                        self.month_graph_data[m]['Other'] += float(r[0])
+        
+        #print(self.month_graph_data)
+        x = self.month_graph_data.keys()
+        entertainment_list = []
+        shopping_list = []
+        bills_list = []
+        subs_list = []
+        other_list = []
+
+        for i in self.month_graph_data:
+            for k, v in self.month_graph_data[i].items():
+                if k == 'Entertainment':
+                    entertainment_list.append(v)
+                elif k == 'Shopping':
+                    shopping_list.append(v)
+                elif k == 'Bills':
+                    bills_list.append(v)
+                elif k == 'Subscriptions':
+                    subs_list.append(v)
+                else:
+                    other_list.append(v)
+
+        fig, ax = plt.subplots(figsize=(7, 4))
+
+        p1 = ax.bar(x, entertainment_list)
+        p2 = ax.bar(x, shopping_list, bottom=entertainment_list)
+        p3 = ax.bar(x, bills_list, bottom=shopping_list)
+        p4 = ax.bar(x, subs_list, bottom=bills_list)
+        p5 = ax.bar(x, other_list, bottom=subs_list)
+
+        fig.patch.set_facecolor('#242424')
+        ax.set_facecolor('#242424')
+
+        canvas = FigureCanvasTkAgg(fig, self.second_graph_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+        ax.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Entertainment', 'Shopping', 'Bills', 'Subscriptions', 'Other'), loc='upper left')
+        
+        plt.close(fig)
+
+
 
     def see_details(self):
         day_summary = DaySummary(self.username, self.summary, self.currency, len(self.results))
