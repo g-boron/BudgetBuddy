@@ -8,7 +8,6 @@ def validate(invited_login):
     login_query = f"SELECT id FROM users WHERE username = '{provided_login}';"
     user_id = db.select_data(login_query, 'one')
     if user_id is not None:
-        print("jarek account ", user_id[0])
         return user_id[0]
     else:
         return False
@@ -20,7 +19,6 @@ def get_account_id(inviting_person):
     login_query = f"SELECT id FROM users WHERE username = '{provided_login}';"
     user_id = db.select_data(login_query, 'one')
     if user_id is not None:
-        print("my account ", user_id[0])
         return user_id[0]
     else:
         return False
@@ -28,19 +26,16 @@ def get_account_id(inviting_person):
 
 def send_invitation(inviting_person, invited_login):
     invited_person = invited_login
-    print(invited_person)
     my_account_id = inviting_person
     db = database_connect.DatabaseConnector()
     query = f"INSERT INTO invites (invite_from, invite_to, is_read) VALUES " \
             f"('{my_account_id}', '{invited_person}', '{0}')"
-    print(query)
     db.make_query(query)
 
 
 def invite_a_friend(inviting_person, invited_login):
     account_login = get_account_id(inviting_person)
     validation = validate(invited_login)
-    print("my account: ", account_login, "validation: ", validation)
     if validation:
         send_invitation(account_login, validation)
         messagebox.showinfo(title="Success!", message="Invite has been sent!")
