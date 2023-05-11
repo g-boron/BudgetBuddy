@@ -198,9 +198,9 @@ class HomeWindow(customtkinter.CTk):
         for spine in ax.spines.values():
             spine.set_edgecolor(COLOR)
 
-        plt.xlabel('Categories', fontsize=15)
-        plt.ylabel(f'Amount [{self.currency}]', fontsize=15)
-        plt.title('Day summary', fontsize=20)
+        plt.xlabel('Categories', fontsize=11)
+        plt.ylabel(f'Amount [{self.currency}]', fontsize=11)
+        plt.title('Day summary', fontsize=18)
 
         canvas = FigureCanvasTkAgg(fig, self.first_graph_frame)
         canvas.draw()
@@ -273,14 +273,30 @@ class HomeWindow(customtkinter.CTk):
         
         fig, ax = plt.subplots(figsize=(8, 4))
 
-        p1 = ax.bar(x, entertainment_list, width=0.7, bottom=sum_lists(shopping_list, bills_list, subs_list, other_list))
-        p2 = ax.bar(x, shopping_list, width=0.7, bottom=sum_lists(bills_list, subs_list, other_list))
-        p3 = ax.bar(x, bills_list, width=0.7, bottom=sum_lists(subs_list, other_list))
-        p4 = ax.bar(x, subs_list, width=0.7, bottom=other_list)
-        p5 = ax.bar(x, other_list, width=0.7)
+        p1 = ax.bar(x, entertainment_list, bottom=sum_lists(shopping_list, bills_list, subs_list, other_list))
+        p2 = ax.bar(x, shopping_list, bottom=sum_lists(bills_list, subs_list, other_list))
+        p3 = ax.bar(x, bills_list, bottom=sum_lists(subs_list, other_list))
+        p4 = ax.bar(x, subs_list, bottom=other_list)
+        p5 = ax.bar(x, other_list)
         ax.set_xticks(range(1, days_in_month+1, 2))
         fig.patch.set_facecolor('#242424')
         ax.set_facecolor('#242424')
+
+        
+        for bar in ax.patches:
+            if bar.get_height() > 0:
+                ax.text(bar.get_x() + bar.get_width() / 2,
+                        bar.get_height() / 2 + bar.get_y(),
+                        round(bar.get_height()), ha = 'center',
+                        color = 'w', weight = 'normal', size = 8)
+
+
+        plt.xlabel('Days in month', fontsize=11)
+        plt.ylabel(f'Amount [{self.currency}]', fontsize=11)
+        plt.title('Month summary', fontsize=18)
+
+        for spine in ax.spines.values():
+            spine.set_edgecolor(COLOR)
 
         canvas = FigureCanvasTkAgg(fig, self.second_graph_frame)
         canvas.draw()
