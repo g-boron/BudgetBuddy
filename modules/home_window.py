@@ -16,6 +16,7 @@ import matplotlib as mat
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from calendar import monthrange
+from operator import add
 
 
 customtkinter.set_appearance_mode("System")
@@ -259,14 +260,24 @@ class HomeWindow(customtkinter.CTk):
                 else:
                     other_list.append(v)
 
+        def sum_lists(*lists):
+            result = []
+            for i in range(len(lists[0])):
+                total = 0
+                for lst in lists:
+                    total += lst[i]
+                result.append(total)
+
+            return result
+
         fig, ax = plt.subplots(figsize=(7, 4))
 
-        p1 = ax.bar(x, entertainment_list)
-        p2 = ax.bar(x, shopping_list, bottom=entertainment_list)
-        p3 = ax.bar(x, bills_list, bottom=shopping_list)
-        p4 = ax.bar(x, subs_list, bottom=bills_list)
-        p5 = ax.bar(x, other_list, bottom=subs_list)
-
+        p1 = ax.bar(x, entertainment_list, bottom=sum_lists(shopping_list, bills_list, subs_list, other_list))
+        p2 = ax.bar(x, shopping_list, bottom=sum_lists(bills_list, subs_list, other_list))
+        p3 = ax.bar(x, bills_list, bottom=sum_lists(subs_list, other_list))
+        p4 = ax.bar(x, subs_list, bottom=other_list)
+        p5 = ax.bar(x, other_list)
+        ax.set_xticks(range(1, days_in_month+1, 2))
         fig.patch.set_facecolor('#242424')
         ax.set_facecolor('#242424')
 
@@ -274,7 +285,7 @@ class HomeWindow(customtkinter.CTk):
         canvas.draw()
         canvas.get_tk_widget().pack()
 
-        ax.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Entertainment', 'Shopping', 'Bills', 'Subscriptions', 'Other'), loc='upper left')
+        ax.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Entertainment', 'Shopping', 'Bills', 'Subscriptions', 'Other'), loc='best', frameon=False)
         
         plt.close(fig)
 
