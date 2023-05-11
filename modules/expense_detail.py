@@ -34,7 +34,7 @@ class ExpenseDetail(customtkinter.CTk):
 
         db = database_connect.DatabaseConnector()
         query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, " \
-                f"expenses.id, users.currency FROM expenses JOIN categories ON expenses.category_id=categories.id " \
+                f"expenses.id, users.currency, expenses.user_id FROM expenses JOIN categories ON expenses.category_id=categories.id " \
                 f"JOIN users ON expenses.user_id=users.id WHERE expenses.id={self.id}"
         expense = db.select_data(query, 'one')
 
@@ -62,7 +62,7 @@ class ExpenseDetail(customtkinter.CTk):
         self.edit.grid(row=3, column=0, padx=10, pady=20, sticky='sw')
 
         self.delete = customtkinter.CTkButton(master=self.frame, text="Delete expense", font=("Arial", 25, "normal"),
-                                              command=lambda id_expense=id_expense: self.delete_expense(id_expense))
+                                              command=lambda id_expense=id_expense: self.delete_expense(id_expense, expense[7], expense[3]))
         self.delete.grid(row=3, column=2, padx=10, pady=20, sticky='sw')
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
@@ -80,14 +80,17 @@ class ExpenseDetail(customtkinter.CTk):
         self.destroy()
         edit_window.mainloop()
 
-    def delete_expense(self, id_expense):
+    def delete_expense(self, id_expense, user_id, amount):
         msg_box = messagebox.askquestion('Delete expense', 'Are you sure you want to delete the expense?',
                                          icon='warning')
 
         if msg_box == 'yes':
             db = database_connect.DatabaseConnector()
-            print(id_expense)
             query = f"DELETE FROM expenses WHERE id = {id_expense};"
             db.make_query(query)
+
+            balance = db.select_data(f'SELECT balance FROM users WHERE id={user_id}', 'one')[0]
+            db.make_query(f'UPDATE users SET balance = {float(balance) + float(amount)} WHERE id={user_id}')
+
             self.on_closing()
 
