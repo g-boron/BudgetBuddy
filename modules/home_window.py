@@ -119,7 +119,7 @@ class HomeWindow(customtkinter.CTk):
 
         self.spending_summary = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)),
                                                        height=270, fg_color="#242424")
-        self.spending_summary.grid(column=1, row=2, sticky="ns")
+        self.spending_summary.grid(column=1, row=2, sticky="w")
         self.spending_summary.grid_columnconfigure((0, 1), weight=1)
         self.spending_summary.grid_rowconfigure((0, 1), weight=1)
         self.total = customtkinter.CTkLabel(master=self.spending_summary,
@@ -164,7 +164,7 @@ class HomeWindow(customtkinter.CTk):
 
         self.incoming_transactions_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)),
                                                                   height=160, fg_color="purple")
-        self.incoming_transactions_frame.grid(column=1, row=3, sticky="ns")
+        self.incoming_transactions_frame.grid(column=1, row=3, sticky="nsw")
         self.incoming_transactions_frame.grid_columnconfigure(0, weight=1)
         self.incoming_transactions_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
         self.description4 = customtkinter.CTkLabel(master=self, text="incoming transactions",
@@ -207,8 +207,8 @@ class HomeWindow(customtkinter.CTk):
         plt.close(fig)
 
         self.second_graph_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)), height=450,
-                                                         fg_color="orange")
-        self.second_graph_frame.grid(column=2, row=2, rowspan=2, sticky="new")
+                                                         fg_color="#242424")
+        self.second_graph_frame.grid(column=1, columnspan=2, row=2, rowspan=2, sticky="nse")
         self.second_graph_frame.grid_columnconfigure(0, weight=1)
         self.second_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
@@ -239,7 +239,6 @@ class HomeWindow(customtkinter.CTk):
                     else:
                         self.month_graph_data[m]['Other'] += float(r[0])
         
-        #print(self.month_graph_data)
         x = self.month_graph_data.keys()
         entertainment_list = []
         shopping_list = []
@@ -269,21 +268,21 @@ class HomeWindow(customtkinter.CTk):
                 result.append(total)
 
             return result
+        
+        fig, ax = plt.subplots(figsize=(8, 4))
 
-        fig, ax = plt.subplots(figsize=(7, 4))
-
-        p1 = ax.bar(x, entertainment_list, bottom=sum_lists(shopping_list, bills_list, subs_list, other_list))
-        p2 = ax.bar(x, shopping_list, bottom=sum_lists(bills_list, subs_list, other_list))
-        p3 = ax.bar(x, bills_list, bottom=sum_lists(subs_list, other_list))
-        p4 = ax.bar(x, subs_list, bottom=other_list)
-        p5 = ax.bar(x, other_list)
+        p1 = ax.bar(x, entertainment_list, width=0.7, bottom=sum_lists(shopping_list, bills_list, subs_list, other_list))
+        p2 = ax.bar(x, shopping_list, width=0.7, bottom=sum_lists(bills_list, subs_list, other_list))
+        p3 = ax.bar(x, bills_list, width=0.7, bottom=sum_lists(subs_list, other_list))
+        p4 = ax.bar(x, subs_list, width=0.7, bottom=other_list)
+        p5 = ax.bar(x, other_list, width=0.7)
         ax.set_xticks(range(1, days_in_month+1, 2))
         fig.patch.set_facecolor('#242424')
         ax.set_facecolor('#242424')
 
         canvas = FigureCanvasTkAgg(fig, self.second_graph_frame)
         canvas.draw()
-        canvas.get_tk_widget().pack()
+        canvas.get_tk_widget().pack(side=LEFT)
 
         ax.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Entertainment', 'Shopping', 'Bills', 'Subscriptions', 'Other'), loc='best', frameon=False)
         
