@@ -33,7 +33,7 @@ class RevenueDetail(customtkinter.CTk):
 
         db = database_connect.DatabaseConnector()
         query = f"SELECT revenues.id, revenues.name, revenues.description, revenues.add_date, " \
-                f"revenues.amount,users.currency FROM revenues JOIN users ON revenues.user_id=users.id WHERE " \
+                f"revenues.amount, users.currency, revenues.user_id FROM revenues JOIN users ON revenues.user_id=users.id WHERE " \
                 f"revenues.id={self.id}"
         revenue = db.select_data(query, 'one')
 
@@ -59,7 +59,7 @@ class RevenueDetail(customtkinter.CTk):
         self.edit.grid(pady=18, padx=10, row=3, column=2)
 
         self.delete = customtkinter.CTkButton(master=self.frame, text='Delete',
-                                              command=lambda id_revenue=id_revenue: self.delete_revenue(id_revenue),
+                                              command=lambda id_revenue=id_revenue: self.delete_revenue(id_revenue, revenue[6], revenue[4]),
                                               font=('Arial', 25, 'normal'))
         self.delete.grid(pady=18, padx=10, row=3, column=0)
 
@@ -78,11 +78,15 @@ class RevenueDetail(customtkinter.CTk):
         self.destroy()
         edit_window.mainloop()
 
-    def delete_revenue(self, id_revenue):
+    def delete_revenue(self, id_revenue, user_id, amount):
         msg_box = messagebox.askquestion('Delete revenue', 'Are you sure you want to delete the revenue?', icon='warning')
 
         if msg_box == 'yes':
             db = database_connect.DatabaseConnector()
             query = f"DELETE FROM revenues WHERE id = {id_revenue};"
             db.make_query(query)
+
+            balance = db.select_data(f'SELECT balance FROM users WHERE id={user_id}', 'one')[0]
+            db.make_query(f'UPDATE users SET balance = {float(balance) - float(amount)} WHERE id={user_id}')
+
             self.on_closing()
