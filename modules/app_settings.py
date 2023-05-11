@@ -3,10 +3,15 @@ import customtkinter
 from PIL import ImageTk
 from modules.database import database_connect
 from tkinter import messagebox
+from modules.functions.invite_to_budget import *
 
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
+
+LIGHT_COLOR = "#fbfbfb"
+DARK_COLOR = "#242424"
+SYSTEM_BLUE = "#1f6aa5"
 
 
 class ApplicationSettings(customtkinter.CTk):
@@ -15,6 +20,7 @@ class ApplicationSettings(customtkinter.CTk):
         super().__init__()
         self.geometry("600x800")
         self.title("Options")
+        self.resizable(True, True)
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
@@ -30,30 +36,56 @@ class ApplicationSettings(customtkinter.CTk):
         self.language_label.grid(column=0, row=1, columnspan=2, padx=20, pady=10)
 
         self.language_button_pl = customtkinter.CTkButton(master=self.frame, text="polish",
-                                                          font=("arial", 20, "normal"))
+                                                          font=("arial", 20, "normal"),
+                                                          command=self.change_ui_language_to_pl())
         self.language_button_pl.grid(column=0, row=2, padx=20, pady=10)
 
         self.language_button_en = customtkinter.CTkButton(master=self.frame, text="english",
-                                                          font=("arial", 20, "normal"))
+                                                          font=("arial", 20, "normal"),
+                                                          command=self.change_ui_language_to_eng())
         self.language_button_en.grid(column=1, row=2, padx=20, pady=10)
 
         self.theme_label = customtkinter.CTkLabel(master=self.frame, text="Choose a theme from the following:",
                                                   font=("arial", 25, "normal"))
         self.theme_label.grid(column=0, row=3, columnspan=2, padx=20, pady=10)
 
-        self.dark_button = customtkinter.CTkButton(master=self.frame, text="dark", font=("arial", 20, "normal"))
+        self.dark_button = customtkinter.CTkButton(master=self.frame, text="dark", font=("arial", 20, "normal"),
+                                                   fg_color=DARK_COLOR, hover_color=SYSTEM_BLUE,
+                                                   command=self.change_ui_to_dark())
         self.dark_button.grid(column=0, row=4, padx=20, pady=10)
 
-        self.light_button = customtkinter.CTkButton(master=self.frame, text="light", font=("arial", 20, "normal"))
+        self.light_button = customtkinter.CTkButton(master=self.frame, text="light", font=("arial", 20, "normal"),
+                                                    fg_color=LIGHT_COLOR, hover_color=SYSTEM_BLUE,
+                                                    command=self.change_ui_to_light())
         self.light_button.grid(column=1, row=4, padx=20, pady=10)
 
         self.invite_label = customtkinter.CTkLabel(master=self.frame, text="Invite someone to your budget:",
                                                    font=("arial", 25, "normal"))
         self.invite_label.grid(column=0, row=5, padx=20, pady=10, columnspan=2)
 
-        self.email_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="email", justify=CENTER)
-        self.email_entry.grid(column=0, row=6, padx=20, pady=10, sticky="ew")
+        self.login_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="login", justify=CENTER)
+        self.login_entry.grid(column=0, row=6, padx=20, pady=10, sticky="ew")
 
-        self.invite_button = customtkinter.CTkButton(master=self.frame, text="Invite to budget!")
+        self.invite_button = customtkinter.CTkButton(master=self.frame, text="Invite to budget!",
+                                                     command=lambda: self.invite_someone(user_id))
         self.invite_button.grid(column=1, row=6, padx=20, pady=10)
+
+    def change_ui_to_light(self):
+        pass
+
+    def change_ui_to_dark(self):
+        pass
+
+    def change_ui_language_to_eng(self):
+        pass
+
+    def change_ui_language_to_pl(self):
+        pass
+
+    def invite_someone(self, user_id):
+        inviting_person = user_id
+        invited_person = self.login_entry.get()
+        invited_login = str(invited_person)
+        invite_a_friend(inviting_person, invited_login)
+        self.destroy()
 

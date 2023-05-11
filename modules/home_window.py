@@ -19,8 +19,7 @@ from calendar import monthrange
 from modules.app_settings import ApplicationSettings
 
 
-
-customtkinter.set_appearance_mode("System")
+customtkinter.set_appearance_mode("system")
 customtkinter.set_default_color_theme("blue")
 
 
@@ -60,13 +59,13 @@ class HomeWindow(customtkinter.CTk):
         self.revenues = customtkinter.CTkButton(master=self.menu_frame, text="My revenues", fg_color="transparent",
                                                 font=("Arial", 26, "normal"), command=self.show_revenues)
         self.revenues.grid(pady=18, padx=10, row=2, column=0, sticky="new")
-        self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="element4", fg_color="transparent",
+        self.notifications = customtkinter.CTkButton(master=self.menu_frame, text="Notifications", fg_color="transparent",
                                                 font=("Arial", 26, "normal"))
-        self.element3.grid(pady=18, padx=10, row=4, column=0, sticky="new")
-        self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="App Settings", fg_color="transparent",
-                                                font=("Arial", 26, "normal"),
-                                                command=lambda: self.app_settings(self.username))
-        self.element3.grid(pady=18, padx=10, row=5, column=0, sticky="new")
+        self.notifications.grid(pady=18, padx=10, row=4, column=0, sticky="new")
+        self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings", fg_color="transparent",
+                                                    font=("Arial", 26, "normal"),
+                                                    command=lambda: self.app_settings(self.username))
+        self.app_settings_button.grid(pady=18, padx=10, row=5, column=0, sticky="new")
         self.change = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
                                               command=self.change_password, font=("Arial", 26, "normal"))
         
@@ -156,7 +155,7 @@ class HomeWindow(customtkinter.CTk):
         query = f"SELECT currency FROM users WHERE username='{self.username}'"
         self.currency = db.select_data(query, 'one')[0]
         self.month_total = customtkinter.CTkLabel(master=self.spending_summary,
-                                                  text=f"Month total: {str(round(sum(self.month_summary.values()), 2))} "
+                                                  text=f"Month total: {str(round(sum(self.month_summary.values()), 2))}"
                                                        f"{self.currency}", font=("Arial", 30, "normal"))
         self.month_total.grid(pady=18, padx=10, column=0, row=1)
 
