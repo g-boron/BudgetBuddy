@@ -16,7 +16,8 @@ import matplotlib as mat
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from calendar import monthrange
-from operator import add
+from modules.app_settings import ApplicationSettings
+
 
 
 customtkinter.set_appearance_mode("System")
@@ -62,8 +63,9 @@ class HomeWindow(customtkinter.CTk):
         self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="element4", fg_color="transparent",
                                                 font=("Arial", 26, "normal"))
         self.element3.grid(pady=18, padx=10, row=4, column=0, sticky="new")
-        self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="element5", fg_color="transparent",
-                                                font=("Arial", 26, "normal"))
+        self.element3 = customtkinter.CTkButton(master=self.menu_frame, text="App Settings", fg_color="transparent",
+                                                font=("Arial", 26, "normal"),
+                                                command=lambda: self.app_settings(self.username))
         self.element3.grid(pady=18, padx=10, row=5, column=0, sticky="new")
         self.change = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
                                               command=self.change_password, font=("Arial", 26, "normal"))
@@ -290,7 +292,6 @@ class HomeWindow(customtkinter.CTk):
         plt.close(fig)
 
 
-
     def see_details(self):
         day_summary = DaySummary(self.username, self.summary, self.currency, len(self.results))
         day_summary.mainloop()
@@ -329,3 +330,7 @@ class HomeWindow(customtkinter.CTk):
         self.destroy()
         login_screen = login.Login()
         login_screen.mainloop()
+
+    def app_settings(self, username):
+        setting_window = ApplicationSettings(username)
+        setting_window.mainloop()
