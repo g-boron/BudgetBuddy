@@ -3,6 +3,8 @@ from tkinter import *
 from tkinter import ttk
 import customtkinter
 from PIL import ImageTk
+
+import modules.database.database_connect
 from modules.database import database_connect
 from modules.all_expenses import AllExpenses
 from modules.all_revenues import AllRevenues
@@ -17,6 +19,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from calendar import monthrange
 from modules.app_settings import ApplicationSettings
+from modules.functions.notifications import *
 from modules.notifications import Notifications
 
 
@@ -60,10 +63,15 @@ class HomeWindow(customtkinter.CTk):
         self.revenues = customtkinter.CTkButton(master=self.menu_frame, text="My revenues", fg_color="transparent",
                                                 font=("Arial", 26, "normal"), command=self.show_revenues)
         self.revenues.grid(pady=18, padx=10, row=2, column=0, sticky="new")
+
         self.notifications = customtkinter.CTkButton(master=self.menu_frame, text="Notifications",
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.open_notifications(self.username))
         self.notifications.grid(pady=18, padx=10, row=4, column=0, sticky="new")
+        all_notifications = get_all_user_notifications(self.username)
+        number_of_notifications = len(all_notifications)
+        if number_of_notifications > 0:
+            self.notifications.configure(text=f"Notifications {[number_of_notifications]}", text_color="red")
         self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings",
                                                            fg_color="transparent", font=("Arial", 26, "normal"),
                                                            command=lambda: self.app_settings(self.username))
@@ -348,3 +356,5 @@ class HomeWindow(customtkinter.CTk):
     def open_notifications(self, username):
         notification_tab = Notifications(username)
         notification_tab.mainloop()
+
+
