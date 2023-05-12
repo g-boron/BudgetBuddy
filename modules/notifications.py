@@ -14,6 +14,7 @@ DARK_COLOR = "#242424"
 SYSTEM_BLUE = "#1f6aa5"
 INVITATION_TEXT = "You have a invitation to budget sharing from "
 
+
 class Notifications(customtkinter.CTk):
     def __init__(self, user_id):
         super().__init__()
@@ -72,6 +73,7 @@ class Notifications(customtkinter.CTk):
             self.declince_button.grid(pady=20, padx=10, row=row_number, column=2)
         sender_name.clear()
         sender_id.clear()
+
 
 
 

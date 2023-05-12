@@ -13,8 +13,8 @@ def get_user_id(user_id):
 
 
 def get_all_user_notifications(user_id):
-    account_id = get_user_id(user_id)# pobiera id
+    account_id = get_user_id(user_id)
     db = database_connect.DatabaseConnector()
-    query = f"SELECT id, invite_from FROM invites WHERE invite_to = '{account_id}';" #id zaproszeń dla user_id
+    query = f"SELECT id, invite_from FROM invites WHERE invite_to = '{account_id}';"
     all_notifications = db.select_data(query)
     return all_notifications
