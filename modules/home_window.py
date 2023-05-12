@@ -3,7 +3,6 @@ from tkinter import *
 from tkinter import ttk
 import customtkinter
 from PIL import ImageTk
-
 import modules.database.database_connect
 from modules.database import database_connect
 from modules.all_expenses import AllExpenses
@@ -21,6 +20,7 @@ from calendar import monthrange
 from modules.app_settings import ApplicationSettings
 from modules.functions.notifications import *
 from modules.notifications import Notifications
+from modules.functions.sharing_budgets import *
 
 
 customtkinter.set_appearance_mode("system")
@@ -53,7 +53,7 @@ class HomeWindow(customtkinter.CTk):
                                                            height=440)
         self.menu_frame.grid(column=0, row=1, sticky="n")
         self.menu_frame.grid_columnconfigure(0, weight=1)
-        self.menu_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
+        self.menu_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6, 7), weight=1)
         self.label = customtkinter.CTkLabel(master=self.menu_frame, text="Main menu",
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=18, padx=10, row=0, column=0)
@@ -68,23 +68,25 @@ class HomeWindow(customtkinter.CTk):
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.open_notifications(self.username))
         self.notifications.grid(pady=18, padx=10, row=4, column=0, sticky="new")
-        #changes = update_notifications_number(new_notifi, deleted_notifi)
-        all_notifications = get_all_user_notifications(self.username)
-        number_of_notifications = len(all_notifications)
-        if number_of_notifications > 0:
-            self.notifications.configure(text=f"Notifications {[number_of_notifications]}", text_color="red")
+
+        self.choose_budget = customtkinter.CTkButton(master=self.menu_frame, text="Choose budget",
+                                                     fg_color="transparent", font=("Arial", 26, "normal"),
+                                                     command=lambda: self.open_notifications(self.username))
+        self.choose_budget.grid(pady=18, padx=10, row=5, column=0, sticky="new")
+        self.number_of_notifications()
+
         self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings",
                                                            fg_color="transparent", font=("Arial", 26, "normal"),
                                                            command=lambda: self.app_settings(self.username))
-        self.app_settings_button.grid(pady=18, padx=10, row=5, column=0, sticky="new")
+        self.app_settings_button.grid(pady=18, padx=10, row=6, column=0, sticky="new")
         self.change = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
                                               command=self.change_password, font=("Arial", 26, "normal"))
         
-        self.change.grid(pady=18, padx=10, row=6, column=0, sticky="new")
+        self.change.grid(pady=18, padx=10, row=7, column=0, sticky="new")
         self.logout = customtkinter.CTkButton(master=self.menu_frame, text="Log out", fg_color="transparent",
                                               command=self.logout, font=("Arial", 26, "normal"))
         
-        self.logout.grid(pady=18, padx=10, row=7, column=0, sticky="new")
+        self.logout.grid(pady=18, padx=10, row=8, column=0, sticky="new")
 
         self.calendar_frame = customtkinter.CTkFrame(master=self, width=int(screen_width / 3), height=450,
                                                      fg_color='#242424')
@@ -310,7 +312,6 @@ class HomeWindow(customtkinter.CTk):
         
         plt.close(fig)
 
-
     def see_details(self):
         day_summary = DaySummary(self.username, self.summary, self.currency, len(self.results))
         day_summary.mainloop()
@@ -331,6 +332,7 @@ class HomeWindow(customtkinter.CTk):
         expenses.mainloop()
 
     def show_revenues(self):
+        self.destroy()
         revenues = AllRevenues(self.username)
         revenues.mainloop()
 
@@ -351,6 +353,7 @@ class HomeWindow(customtkinter.CTk):
         login_screen.mainloop()
 
     def app_settings(self, username):
+        self.destroy()
         setting_window = ApplicationSettings(username)
         setting_window.mainloop()
 
@@ -358,6 +361,21 @@ class HomeWindow(customtkinter.CTk):
         self.destroy()
         notification_tab = Notifications(username)
         notification_tab.mainloop()
+
+    def number_of_notifications(self):
+        all_notifications = get_all_user_notifications(self.username)
+        number_of_notifications = len(all_notifications)
+        if number_of_notifications > 0:
+            self.notifications.configure(text=f"Notifications {[number_of_notifications]}", text_color="red")
+
+    def check_if_there_are_shared_budgets(self):
+        user_id = get_user_id(self.username)
+        db = database_connect.DatabaseConnector()
+        check_query = f"SELECT id FROM shared_budgets WHERE inherited_id = {user_id};"
+        result = db.select_data(check_query, 'one')
+        if result is None:
+            self.choose_budget.grid_forget()
+
 
 
 
