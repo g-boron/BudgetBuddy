@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from calendar import monthrange
 from modules.app_settings import ApplicationSettings
+from modules.notifications import Notifications
 
 
 customtkinter.set_appearance_mode("system")
@@ -59,12 +60,13 @@ class HomeWindow(customtkinter.CTk):
         self.revenues = customtkinter.CTkButton(master=self.menu_frame, text="My revenues", fg_color="transparent",
                                                 font=("Arial", 26, "normal"), command=self.show_revenues)
         self.revenues.grid(pady=18, padx=10, row=2, column=0, sticky="new")
-        self.notifications = customtkinter.CTkButton(master=self.menu_frame, text="Notifications", fg_color="transparent",
-                                                font=("Arial", 26, "normal"))
+        self.notifications = customtkinter.CTkButton(master=self.menu_frame, text="Notifications",
+                                                     fg_color="transparent", font=("Arial", 26, "normal"),
+                                                     command=lambda: self.open_notifications(self.username))
         self.notifications.grid(pady=18, padx=10, row=4, column=0, sticky="new")
-        self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings", fg_color="transparent",
-                                                    font=("Arial", 26, "normal"),
-                                                    command=lambda: self.app_settings(self.username))
+        self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings",
+                                                           fg_color="transparent", font=("Arial", 26, "normal"),
+                                                           command=lambda: self.app_settings(self.username))
         self.app_settings_button.grid(pady=18, padx=10, row=5, column=0, sticky="new")
         self.change = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
                                               command=self.change_password, font=("Arial", 26, "normal"))
@@ -342,3 +344,7 @@ class HomeWindow(customtkinter.CTk):
     def app_settings(self, username):
         setting_window = ApplicationSettings(username)
         setting_window.mainloop()
+
+    def open_notifications(self, username):
+        notification_tab = Notifications(username)
+        notification_tab.mainloop()

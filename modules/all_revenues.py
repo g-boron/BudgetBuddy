@@ -40,7 +40,8 @@ class AllRevenues(customtkinter.CTk):
         self.name_entry.place(x=700, y=150)
 
 # choose filter option
-        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['Date descending', 'Date ascending', 'Amount descending', 'Amount ascending'],
+        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['Date descending', 'Date ascending',
+                                                                    'Amount descending', 'Amount ascending'],
                                                       font=('Arial', 30, 'normal'))
         self.filter_opt.place(x=1150, y=150)
 
