@@ -68,6 +68,7 @@ class HomeWindow(customtkinter.CTk):
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.open_notifications(self.username))
         self.notifications.grid(pady=18, padx=10, row=4, column=0, sticky="new")
+        #changes = update_notifications_number(new_notifi, deleted_notifi)
         all_notifications = get_all_user_notifications(self.username)
         number_of_notifications = len(all_notifications)
         if number_of_notifications > 0:
@@ -345,7 +346,10 @@ class HomeWindow(customtkinter.CTk):
         setting_window.mainloop()
 
     def open_notifications(self, username):
+        self.destroy()
         notification_tab = Notifications(username)
         notification_tab.mainloop()
+
+
 
 

@@ -4,7 +4,7 @@ from PIL import ImageTk
 from modules.database import database_connect
 from tkinter import messagebox
 from modules.functions.notifications import *
-import textwrap
+from modules import home_window
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -36,8 +36,24 @@ class Notifications(customtkinter.CTk):
     def accept_invitation(self):
         pass
 
-    def declince_invitation(self):
-        pass
+    def decline_invitation(self, user_id, notifi_num):
+        notification_number = notifi_num
+        all_notifications = get_all_user_notifications(user_id)
+        notifications_id = []
+        number_of_notifications = len(all_notifications)
+        for i in range(number_of_notifications):
+            notifications_id.append(all_notifications[i][0])
+        msg_box = messagebox.askquestion('Decline invitation', 'Are you sure you want to decline the invitation?',
+                                         icon='warning')
+
+        if msg_box == 'yes':
+            db = database_connect.DatabaseConnector()
+            delete_query = f"DELETE FROM invites WHERE id = {notifications_id[notification_number]};"
+            db.make_query(delete_query)
+            self.destroy()
+            home = home_window.HomeWindow(self.id)
+            home.mainloop()
+            self.destroy()
 
     def show_all_notifications(self, user_id):
         all_notifications = get_all_user_notifications(user_id)
@@ -68,8 +84,9 @@ class Notifications(customtkinter.CTk):
             self.accept_button.grid(pady=20, padx=10, row=row_number, column=1)
 
             self.declince_button = customtkinter.CTkButton(master=self.frame, text="Decline", hover_color="red",
-                                                           command=lambda: self.declince_invitation(),
-                                                           font=('Arial', 18, 'normal'),)
+                                                           command=lambda notifi_num=int(j):
+                                                           self.decline_invitation(user_id, notifi_num),
+                                                           font=('Arial', 18, 'normal'))
             self.declince_button.grid(pady=20, padx=10, row=row_number, column=2)
         sender_name.clear()
         sender_id.clear()
