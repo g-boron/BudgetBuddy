@@ -188,7 +188,10 @@ class HomeWindow(customtkinter.CTk):
         
         fig, ax = plt.subplots(figsize=(7, 4.5))
         bars = ax.bar(columns, values)
-        ax.bar_label(bars)
+
+        for c in ax.containers:
+            labels = [v if v > 0 else "" for v in c.datavalues]    
+            ax.bar_label(c, labels=labels)
 
         fig.patch.set_facecolor('#242424')
         ax.set_facecolor('#242424')
@@ -280,15 +283,6 @@ class HomeWindow(customtkinter.CTk):
         ax.set_xticks(range(1, days_in_month+1, 2))
         fig.patch.set_facecolor('#242424')
         ax.set_facecolor('#242424')
-
-        
-        for bar in ax.patches:
-            if bar.get_height() > 0:
-                ax.text(bar.get_x() + bar.get_width() / 2,
-                        bar.get_height() / 2 + bar.get_y(),
-                        round(bar.get_height()), ha = 'center',
-                        color = 'w', weight = 'normal', size = 8)
-
 
         plt.xlabel('Days in month', fontsize=11)
         plt.ylabel(f'Amount [{self.currency}]', fontsize=11)
