@@ -36,8 +36,8 @@ class Notifications(customtkinter.CTk):
     def accept_invitation(self):
         pass
 
-    def decline_invitation(self, user_id, notifi_num):
-        notification_number = notifi_num
+    def decline_invitation(self, user_id, notification_num):
+        notification_number = notification_num
         all_notifications = get_all_user_notifications(user_id)
         notifications_id = []
         number_of_notifications = len(all_notifications)
@@ -84,14 +84,9 @@ class Notifications(customtkinter.CTk):
             self.accept_button.grid(pady=20, padx=10, row=row_number, column=1)
 
             self.declince_button = customtkinter.CTkButton(master=self.frame, text="Decline", hover_color="red",
-                                                           command=lambda notifi_num=int(j):
-                                                           self.decline_invitation(user_id, notifi_num),
+                                                           command=lambda notification_num=int(j):
+                                                           self.decline_invitation(user_id, notification_num),
                                                            font=('Arial', 18, 'normal'))
             self.declince_button.grid(pady=20, padx=10, row=row_number, column=2)
         sender_name.clear()
         sender_id.clear()
-
-
-
-
-
