@@ -71,7 +71,7 @@ class HomeWindow(customtkinter.CTk):
         all_notifications = get_all_user_notifications(self.username)
         number_of_notifications = len(all_notifications)
         if number_of_notifications > 0:
-            self.notifications.configure(text=f"Notifications {[number_of_notifications]}")
+            self.notifications.configure(text=f"Notifications {[number_of_notifications]}", text_color="red")
         self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings",
                                                            fg_color="transparent", font=("Arial", 26, "normal"),
                                                            command=lambda: self.app_settings(self.username))
