@@ -66,10 +66,10 @@ class Notifications(customtkinter.CTk):
                                                          font=('Arial', 18, 'normal'),)
             self.accept_button.grid(pady=20, padx=10, row=row_number, column=1)
 
-            self.accept_button = customtkinter.CTkButton(master=self.frame, text="Decline", hover_color="red",
-                                                         command=lambda: self.declince_invitation(),
-                                                         font=('Arial', 18, 'normal'),)
-            self.accept_button.grid(pady=20, padx=10, row=row_number, column=2)
+            self.declince_button = customtkinter.CTkButton(master=self.frame, text="Decline", hover_color="red",
+                                                           command=lambda: self.declince_invitation(),
+                                                           font=('Arial', 18, 'normal'),)
+            self.declince_button.grid(pady=20, padx=10, row=row_number, column=2)
 
 
 
