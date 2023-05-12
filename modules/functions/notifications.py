@@ -12,16 +12,6 @@ def get_user_id(user_id):
         return False
 
 
-'''def get_user_name(user_id):
-    account_id = get_user_id(user_id) #id user
-    db = database_connect.DatabaseConnector()
-    name_query = f"SELECT users.id as user_id, users.name FROM users INNER JOIN invites " \
-                 f"ON users.id = invites.invite_from WHERE users.id = '{account_id}';"
-    name_query = f"SELECT name FROM users WHERE id = '{account_id}';"
-    account_name = db.select_data(name_query, 'one')
-    return account_name'''
-
-
 def get_all_user_notifications(user_id):
     account_id = get_user_id(user_id)# pobiera id
     db = database_connect.DatabaseConnector()

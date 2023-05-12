@@ -70,6 +70,8 @@ class Notifications(customtkinter.CTk):
                                                            command=lambda: self.declince_invitation(),
                                                            font=('Arial', 18, 'normal'),)
             self.declince_button.grid(pady=20, padx=10, row=row_number, column=2)
+        sender_name.clear()
+        sender_id.clear()
 
 
 
