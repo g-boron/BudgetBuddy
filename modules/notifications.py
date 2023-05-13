@@ -79,6 +79,10 @@ class Notifications(customtkinter.CTk):
             home = home_window.HomeWindow(self.id)
             home.mainloop()
 
+    def get_owners_budget(self, user_id):
+        pass
+
+
     def show_all_notifications(self, user_id):
         all_notifications = get_all_user_notifications(user_id)
         sender_id = []
@@ -115,3 +119,5 @@ class Notifications(customtkinter.CTk):
             self.declince_button.grid(pady=20, padx=10, row=row_number, column=2)
         sender_name.clear()
         sender_id.clear()
+
+

@@ -45,7 +45,7 @@ class HomeWindow(customtkinter.CTk):
         self.canvas = Canvas(width=140, height=150, bg="#242424", highlightthickness=0)
         self.canvas.create_image(90, 101, image=self.logo)
         self.canvas.grid(column=0, row=0, padx=0, pady=0, sticky="nw")
-        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome, {self.get_user_name(self.username)}",
+        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome to {self.get_user_name(self.username)}'s budget",
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=30, padx=10, row=0, column=1, sticky="nw")
         #   -------------------------------- left panel --------------------------------
@@ -70,8 +70,8 @@ class HomeWindow(customtkinter.CTk):
         self.notifications.grid(pady=18, padx=10, row=4, column=0, sticky="new")
 
         self.choose_budget = customtkinter.CTkButton(master=self.menu_frame, text="Choose budget",
-                                                     fg_color="transparent", font=("Arial", 26, "normal"),
-                                                     command=lambda: self.open_notifications(self.username))
+                                                     fg_color="transparent", font=("Arial", 26, "normal")
+                                                     )
         self.choose_budget.grid(pady=18, padx=10, row=5, column=0, sticky="new")
         self.number_of_notifications()
 
@@ -137,8 +137,8 @@ class HomeWindow(customtkinter.CTk):
         self.spending_summary.grid_columnconfigure((0, 1), weight=1)
         self.spending_summary.grid_rowconfigure((0, 1), weight=1)
         self.total = customtkinter.CTkLabel(master=self.spending_summary,
-                                            text=f"Daily total: {str(round(sum(self.summary.values()), 2))} {self.currency}",
-                                            font=("Arial", 30, "normal"))
+                                            text=f"Daily total: {str(round(sum(self.summary.values()), 2))} "
+                                                 f"{self.currency}", font=("Arial", 30, "normal"))
         self.total.grid(pady=18, padx=10, column=0, row=0)
 
         self.view = customtkinter.CTkButton(master=self.spending_summary, text='View details',
@@ -376,7 +376,8 @@ class HomeWindow(customtkinter.CTk):
         if result is None:
             self.choose_budget.grid_forget()
 
-
+    def choose_budget(self):
+        pass
 
 
 

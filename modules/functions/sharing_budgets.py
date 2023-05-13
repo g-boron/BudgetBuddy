@@ -17,5 +17,3 @@ def insert_shared_budget_to_database(users_id, owner_id):
     db = database_connect.DatabaseConnector()
     insert_query = f"INSERT INTO shared_budgets (owner_id, inheriting_id) VALUES ('{sharing_account}', '{my_id}');"
     db.make_query(insert_query)
-
-
