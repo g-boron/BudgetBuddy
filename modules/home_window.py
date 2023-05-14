@@ -21,6 +21,7 @@ from modules.app_settings import ApplicationSettings
 from modules.functions.notifications import *
 from modules.notifications import Notifications
 from modules.functions.sharing_budgets import *
+from modules.choose_budget import ChooseBudget
 
 
 customtkinter.set_appearance_mode("system")
@@ -70,8 +71,8 @@ class HomeWindow(customtkinter.CTk):
         self.notifications.grid(pady=18, padx=10, row=4, column=0, sticky="new")
 
         self.choose_budget = customtkinter.CTkButton(master=self.menu_frame, text="Choose budget",
-                                                     fg_color="transparent", font=("Arial", 26, "normal")
-                                                     )
+                                                     fg_color="transparent", font=("Arial", 26, "normal"),
+                                                     command=lambda: self.select_budget(self.username))
         self.choose_budget.grid(pady=18, padx=10, row=5, column=0, sticky="new")
         self.number_of_notifications()
 
@@ -364,9 +365,10 @@ class HomeWindow(customtkinter.CTk):
 
     def number_of_notifications(self):
         all_notifications = get_all_user_notifications(self.username)
-        number_of_notifications = len(all_notifications)
-        if number_of_notifications > 0:
-            self.notifications.configure(text=f"Notifications {[number_of_notifications]}", text_color="red")
+        if all_notifications is not None:
+            number_of_notifications = len(all_notifications)
+            if number_of_notifications > 0:
+                self.notifications.configure(text=f"Notifications {[number_of_notifications]}", text_color="red")
 
     def check_if_there_are_shared_budgets(self):
         user_id = get_user_id(self.username)
@@ -376,8 +378,10 @@ class HomeWindow(customtkinter.CTk):
         if result is None:
             self.choose_budget.grid_forget()
 
-    def choose_budget(self):
-        pass
+    def select_budget(self, username):
+        self.destroy()
+        budget_selector = ChooseBudget(username)
+        budget_selector.mainloop()
 
 
 

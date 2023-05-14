@@ -28,9 +28,8 @@ class Notifications(customtkinter.CTk):
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
         self.resizable(False, False)
-        self.label = customtkinter.CTkLabel(master=self.frame, text="Notifications panel", font=("Arial", 15, "normal"))
-        self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=2, sticky="n") # nie wyświetla się nwm czemu
         self.show_all_notifications(user_id)
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def accept_invitation(self, user_id, notification_num):
         notification_number = notification_num
@@ -79,10 +78,6 @@ class Notifications(customtkinter.CTk):
             home = home_window.HomeWindow(self.id)
             home.mainloop()
 
-    def get_owners_budget(self, user_id):
-        pass
-
-
     def show_all_notifications(self, user_id):
         all_notifications = get_all_user_notifications(user_id)
         sender_id = []
@@ -101,6 +96,9 @@ class Notifications(customtkinter.CTk):
 
         for j in range(number_of_notifications):
             row_number = j + 1
+            self.label = customtkinter.CTkLabel(master=self.frame, text="Notifications panel",
+                                                font=("Arial", 30, "normal"))
+            self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=2, sticky="n")
             self.invitation = customtkinter.CTkLabel(master=self.frame,
                                                      text=(INVITATION_TEXT + f"{sender_name[j]}"),
                                                      font=("Arial", 18, "normal"))
@@ -119,5 +117,10 @@ class Notifications(customtkinter.CTk):
             self.declince_button.grid(pady=20, padx=10, row=row_number, column=2)
         sender_name.clear()
         sender_id.clear()
+
+    def on_closing(self):
+        self.destroy()
+        home = home_window.HomeWindow(self.id)
+        home.mainloop()
 
 
