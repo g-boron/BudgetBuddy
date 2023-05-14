@@ -97,7 +97,6 @@ class ChooseBudget(customtkinter.CTk):
                                                 font=("Arial", 30, "normal"))
             self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=2, sticky="n")
             if check[0]:
-
                 user_name = self.get_user_login(check[1])
                 login = user_name[0]
                 self.own_budget = customtkinter.CTkButton(master=self.frame, text="My budget",
@@ -106,7 +105,7 @@ class ChooseBudget(customtkinter.CTk):
                 self.own_budget.grid(pady=20, padx=10, row=1, column=0, sticky="ew")
 
             else:
-                self.own_budget = customtkinter.CTkButton(master=self.frame, text="My budget",
+                self.own_budget = customtkinter.CTkButton(master=self.frame, text="Get back to my budget",
                                                           font=("Arial", 18, "normal"),
                                                           command=self.open_default_budget(user_id=self.id))
                 self.own_budget.grid(pady=20, padx=10, row=1, column=0, sticky="ew")

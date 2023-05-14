@@ -20,7 +20,7 @@ class Notifications(customtkinter.CTk):
     def __init__(self, user_id):
         super().__init__()
         self.id = user_id #login
-        self.geometry("800x600")
+        self.geometry("900x600")
         self.title("Notifications")
         self.resizable(True, True)
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
@@ -98,23 +98,27 @@ class Notifications(customtkinter.CTk):
             row_number = j + 1
             self.label = customtkinter.CTkLabel(master=self.frame, text="Notifications panel",
                                                 font=("Arial", 30, "normal"))
-            self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=2, sticky="n")
+            self.label.grid(row=0, column=0, padx=0, pady=10, columnspan=2, sticky="n")
+
+            self.check_mark = customtkinter.CTkCheckBox(master=self.frame, text="")
+            self.check_mark.grid(pady=20, padx=10, row=row_number, column=0)
+
             self.invitation = customtkinter.CTkLabel(master=self.frame,
                                                      text=(INVITATION_TEXT + f"{sender_name[j]}"),
                                                      font=("Arial", 18, "normal"))
-            self.invitation.grid(pady=20, padx=10, row=row_number, column=0)
+            self.invitation.grid(pady=20, padx=10, row=row_number, column=1)
 
             self.accept_button = customtkinter.CTkButton(master=self.frame, text="Accept", hover_color="green",
                                                          command=lambda notification_num=int(j):
                                                          self.accept_invitation(user_id, notification_num),
                                                          font=('Arial', 18, 'normal'),)
-            self.accept_button.grid(pady=20, padx=10, row=row_number, column=1)
+            self.accept_button.grid(pady=20, padx=10, row=row_number, column=2)
 
             self.declince_button = customtkinter.CTkButton(master=self.frame, text="Decline", hover_color="red",
                                                            command=lambda notification_num=int(j):
                                                            self.decline_invitation(user_id, notification_num),
                                                            font=('Arial', 18, 'normal'))
-            self.declince_button.grid(pady=20, padx=10, row=row_number, column=2)
+            self.declince_button.grid(pady=20, padx=10, row=row_number, column=3)
         sender_name.clear()
         sender_id.clear()
 
