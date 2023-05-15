@@ -18,3 +18,5 @@ def get_all_user_notifications(user_id):
     query = f"SELECT id, invite_from FROM invites WHERE invite_to = '{account_id}';"
     all_notifications = db.select_data(query)
     return all_notifications
+
+
