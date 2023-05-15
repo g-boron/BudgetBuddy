@@ -179,7 +179,7 @@ class HomeWindow(customtkinter.CTk):
         query = f"SELECT currency FROM users WHERE username='{self.username}'"
         self.currency = db.select_data(query, 'one')[0]
         self.month_total = customtkinter.CTkLabel(master=self.spending_summary,
-                                                  text=f"Month total: {str(round(sum(self.month_summary.values()), 2))}"
+                                                  text=f"Month total: {str(round(sum(self.month_summary.values()), 2))} "
                                                        f"{self.currency}", font=("Arial", 30, "normal"))
         self.month_total.grid(pady=18, padx=10, column=0, row=1)
 
