@@ -1,5 +1,6 @@
 import psycopg2
 import pandas as pd
+import math
 from modules.database import database_connect
 
 
@@ -21,6 +22,14 @@ class Predictor:
         shop = df.loc[df['category']=='Shopping', 'total'].mean()
         subs = df.loc[df['category']=='Subscriptions', 'total'].mean()
         other = df.loc[df['category']=='Other', 'total'].mean()
-        total = ent+bills+shop+subs+other
 
-        return {'Entertainment': ent, 'Bills': bills, 'Shopping': shop, 'Subscriptions': subs, 'Other': other, 'Total': total}
+        results = {'Entertainment': ent, 'Bills': bills, 'Shopping': shop, 'Subscriptions': subs, 'Other': other}
+        
+        for k, v in results.items():
+            if math.isnan(v):
+                results[k] = 0
+
+        total = sum(results.values())
+        results['Total'] = total
+
+        return results
