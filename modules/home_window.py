@@ -3,7 +3,6 @@ from tkinter import *
 from tkinter import ttk
 import customtkinter
 from PIL import ImageTk
-
 import modules.database.database_connect
 from modules.database import database_connect
 from modules.all_expenses import AllExpenses
@@ -21,6 +20,7 @@ from calendar import monthrange
 from modules.app_settings import ApplicationSettings
 from modules.functions.notifications import *
 from modules.notifications import Notifications
+from modules.budget_prediction import BudgetPrediction
 
 
 customtkinter.set_appearance_mode("system")
@@ -72,18 +72,22 @@ class HomeWindow(customtkinter.CTk):
         number_of_notifications = len(all_notifications)
         if number_of_notifications > 0:
             self.notifications.configure(text=f"Notifications {[number_of_notifications]}", text_color="red")
+        self.prediction = customtkinter.CTkButton(master=self.menu_frame, text="Budget prediction", fg_color="transparent",
+                                                font=("Arial", 26, "normal"), command=self.show_prediction)
+        self.prediction.grid(pady=18, padx=10, row=5, column=0, sticky="new")
+
         self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings",
                                                            fg_color="transparent", font=("Arial", 26, "normal"),
                                                            command=lambda: self.app_settings(self.username))
-        self.app_settings_button.grid(pady=18, padx=10, row=5, column=0, sticky="new")
+        self.app_settings_button.grid(pady=18, padx=10, row=6, column=0, sticky="new")
         self.change = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
                                               command=self.change_password, font=("Arial", 26, "normal"))
         
-        self.change.grid(pady=18, padx=10, row=6, column=0, sticky="new")
+        self.change.grid(pady=18, padx=10, row=7, column=0, sticky="new")
         self.logout = customtkinter.CTkButton(master=self.menu_frame, text="Log out", fg_color="transparent",
                                               command=self.logout, font=("Arial", 26, "normal"))
         
-        self.logout.grid(pady=18, padx=10, row=7, column=0, sticky="new")
+        self.logout.grid(pady=18, padx=10, row=8, column=0, sticky="new")
 
         self.calendar_frame = customtkinter.CTkFrame(master=self, width=int(screen_width / 3), height=450,
                                                      fg_color='#242424')
@@ -357,4 +361,8 @@ class HomeWindow(customtkinter.CTk):
         notification_tab = Notifications(username)
         notification_tab.mainloop()
 
-
+    def show_prediction(self):
+        db = database_connect.DatabaseConnector()
+        user_id = db.select_data(f"SELECT id FROM users WHERE username='{self.username}'", 'one')[0]
+        prediction = BudgetPrediction(user_id, self.currency)
+        prediction.mainloop()
