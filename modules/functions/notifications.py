@@ -20,3 +20,10 @@ def get_all_user_notifications(user_id):
     return all_notifications
 
 
+def count_unread_notifications(user_id):
+    account_id = get_user_id(user_id)
+    db = database_connect.DatabaseConnector()
+    query = f"SELECT count(id) FROM invites WHERE is_read = False AND invite_to = {account_id};"
+    result = db.select_data(query, 'one')
+    return result[0]
+

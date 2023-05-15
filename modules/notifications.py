@@ -37,8 +37,6 @@ class Notifications(customtkinter.CTk):
         notifications_id = []
         all_notifications = get_all_user_notifications(user_id)
         my_id = get_user_id(self.id) # id of a logged in user
-        print(my_id)
-        print(all_notifications)
         for i in range(len(all_notifications)):
             sharing_accounts_ids.append(all_notifications[i][1])
             notifications_id.append(all_notifications[i][0])

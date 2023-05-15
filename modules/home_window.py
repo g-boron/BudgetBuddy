@@ -70,15 +70,13 @@ class HomeWindow(customtkinter.CTk):
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.open_notifications(self.username))
         self.notifications.grid(pady=18, padx=10, row=3, column=0, sticky="new")
-
+        number_of_unread_notifications = count_unread_notifications(self.username)
         all_notifications = get_all_user_notifications(self.username)
-        number_of_notifications = len(all_notifications)
-        if number_of_notifications > 0:
-            self.notifications.configure(text=f"Notifications {[number_of_notifications]}", text_color="red")
+        if number_of_unread_notifications > 0:
+            self.notifications.configure(text=f"Notifications {[number_of_unread_notifications]}", text_color="red")
         self.prediction = customtkinter.CTkButton(master=self.menu_frame, text="Budget prediction", fg_color="transparent",
                                                 font=("Arial", 26, "normal"), command=self.show_prediction)
         self.prediction.grid(pady=18, padx=10, row=4, column=0, sticky="new")
-
 
         self.choose_budget = customtkinter.CTkButton(master=self.menu_frame, text="Choose budget",
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
@@ -397,3 +395,4 @@ class HomeWindow(customtkinter.CTk):
         self.destroy()
         budget_selector = ChooseBudget(username)
         budget_selector.mainloop()
+
