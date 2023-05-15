@@ -55,21 +55,20 @@ class ChooseBudget(customtkinter.CTk):
         name_query = f"SELECT username FROM users WHERE id='{account_id}';"
         user_name = db.select_data(name_query, 'one')
         self.destroy()
-        self.flag = True
         home = home_window.HomeWindow(user_name[0])
         home.mainloop()
 
-    def get_to_dafault_budget(self, user_id, owner_id):
+    def check_default_budget(self, user_id, owner_id):
         user = int(get_user_id(user_id))
         owner = owner_id
         db = database_connect.DatabaseConnector()
-        check_query = f"SELECT id, inheriting_id FROM shared_budgets WHERE owner_id = {owner} OR inheriting_id = {user};"
+        check_query = f"SELECT id, inheriting_id FROM shared_budgets WHERE owner_id = {owner} AND inheriting_id = {user};"
         check = db.select_data(check_query, 'one')
         if check is not None:
             return True, user
         else:
             return False
-
+# zrobić 1:1 jak w przypadku notifications
     def get_all_budgets(self, user_id):
         budget_id_list = []
         owner_id_list = []
@@ -91,7 +90,7 @@ class ChooseBudget(customtkinter.CTk):
             widget.grid_forget()
 
         for j in range(number_of_budgets):
-            check = self.get_to_dafault_budget(user_id, owner_id_list[j])
+            check = self.check_default_budget(user_id, owner_id_list[j])
             row_number = j + 2
             self.label = customtkinter.CTkLabel(master=self.frame, text="Choose budget",
                                                 font=("Arial", 30, "normal"))
