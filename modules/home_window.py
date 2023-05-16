@@ -24,6 +24,7 @@ from modules.budget_prediction import BudgetPrediction
 from modules.functions.sharing_budgets import *
 from modules.choose_budget import ChooseBudget
 from modules.payment_term import PaymentTerm
+from modules.add_spend_limit import SpendLimit
 
 
 
@@ -59,7 +60,7 @@ class HomeWindow(customtkinter.CTk):
                                                            height=440)
         self.menu_frame.grid(column=0, row=1, sticky="n")
         self.menu_frame.grid_columnconfigure(0, weight=1)
-        self.menu_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6, 7), weight=1)
+        self.menu_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6, 7, 8 ,9 ,10), weight=1)
         self.label = customtkinter.CTkLabel(master=self.menu_frame, text="Main menu",
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=18, padx=10, row=0, column=0)
@@ -90,17 +91,28 @@ class HomeWindow(customtkinter.CTk):
                                                      command=lambda: self.select_budget(self.username))
         self.choose_budget.grid(pady=18, padx=10, row=6, column=0, sticky="new")
 
+        #add limit button
+        self.add_limit = customtkinter.CTkButton(master=self.menu_frame, text="Add monthly expanses limit",
+                                                     fg_color="transparent", font=("Arial", 26, "normal"),
+                                                     command=lambda: self.spend_limit(self.username))
+        self.add_limit.grid(pady=18, padx=10, row=7, column=0, sticky="new")
+
+
         self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings",
                                                            fg_color="transparent", font=("Arial", 26, "normal"),
                                                            command=lambda: self.app_settings(self.username))
-        self.app_settings_button.grid(pady=18, padx=10, row=7, column=0, sticky="new")
+        self.app_settings_button.grid(pady=18, padx=10, row=8, column=0, sticky="new")
         self.change = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
                                               command=self.change_password, font=("Arial", 26, "normal"))
         
-        self.change.grid(pady=18, padx=10, row=8, column=0, sticky="new")
+        self.change.grid(pady=18, padx=10, row=9, column=0, sticky="new")
         self.logout = customtkinter.CTkButton(master=self.menu_frame, text="Log out", fg_color="transparent",
                                               command=self.logout, font=("Arial", 26, "normal"))
-        self.logout.grid(pady=18, padx=10, row=9, column=0, sticky="new")
+        self.logout.grid(pady=18, padx=10, row=10, column=0, sticky="new")
+
+
+
+
 
         self.calendar_frame = customtkinter.CTkFrame(master=self, width=int(screen_width / 3), height=450,
                                                      fg_color='#242424')
@@ -418,3 +430,7 @@ class HomeWindow(customtkinter.CTk):
         name_query = f"SELECT currency FROM users WHERE username='{user_login}';"
         user_name = db.select_data(name_query, 'one')
         return str(user_name[0])
+    
+    def spend_limit(self, username):
+        setting_window = SpendLimit(username)
+        setting_window.mainloop()
