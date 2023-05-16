@@ -26,6 +26,7 @@ from modules.choose_budget import ChooseBudget
 from modules.payment_term import PaymentTerm
 
 
+
 customtkinter.set_appearance_mode("system")
 customtkinter.set_default_color_theme("blue")
 
@@ -43,15 +44,17 @@ class HomeWindow(customtkinter.CTk):
         self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
         self.iconphoto(False, self.iconpath)
         self.resizable(True, True)
+
         #   -------------------------------- top panel --------------------------------
         self.logo = PhotoImage(file="./images/logo_transparent_small.png")
         self.canvas = Canvas(width=140, height=150, bg="#242424", highlightthickness=0)
         self.canvas.create_image(90, 101, image=self.logo)
         self.canvas.grid(column=0, row=0, padx=0, pady=0, sticky="nw")
-        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome to {self.get_user_name(self.username)}'s budget",
+        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome {self.get_user_name(self.username)}, your budget: {self.get_user_balance(self.username)} {self.get_user_currency(self.username)}",
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=30, padx=10, row=0, column=1, sticky="nw")
         #   -------------------------------- left panel --------------------------------
+
         self.menu_frame = customtkinter.CTkScrollableFrame(master=self, width=int(((screen_width / 3) - 20)),
                                                            height=440)
         self.menu_frame.grid(column=0, row=1, sticky="n")
@@ -139,6 +142,7 @@ class HomeWindow(customtkinter.CTk):
             else:
                 self.summary['Other'] += float(r[0])
 
+        
         query = f"SELECT currency FROM users WHERE username='{self.username}'"
         self.currency = db.select_data(query, 'one')[0]
 
@@ -402,3 +406,15 @@ class HomeWindow(customtkinter.CTk):
         budget_selector = ChooseBudget(username)
         budget_selector.mainloop()
 
+
+    def get_user_balance(self, user_login):
+        db = database_connect.DatabaseConnector()
+        name_query = f"SELECT balance FROM users WHERE username='{user_login}';"
+        user_name = db.select_data(name_query, 'one')
+        return str(user_name[0])
+    
+    def get_user_currency(self, user_login):
+        db = database_connect.DatabaseConnector()
+        name_query = f"SELECT currency FROM users WHERE username='{user_login}';"
+        user_name = db.select_data(name_query, 'one')
+        return str(user_name[0])
