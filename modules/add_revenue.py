@@ -27,7 +27,6 @@ class AddRevenue(customtkinter.CTk):
         self.frame.grid_columnconfigure(0, weight=1)
 
         self.resizable(False, False)
-        self.window_flag = 1
 
         self.label = customtkinter.CTkLabel(master=self.frame, text="Add new revenue", font=("Arial", 35, "normal"))
         self.label.grid(row=0, column=0, padx=20, pady=10)
@@ -69,7 +68,6 @@ class AddRevenue(customtkinter.CTk):
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
-
     def on_closing(self):
         self.destroy()
         db = database_connect.DatabaseConnector()
@@ -90,7 +88,7 @@ class AddRevenue(customtkinter.CTk):
             messagebox.showinfo('Success', 'You successfully added new revenue!')
             self.on_closing()
         else:
-            messagebox.showerror("Error","Please enter valid data.")
+            messagebox.showerror("Error", "Please enter valid data.")
 
     def isfloat(self, num):
         try:

@@ -125,6 +125,7 @@ class Notifications(customtkinter.CTk):
 # read notifications are greyed out
             if all_notifications[j][2]:
                 self.invitation.configure(text_color="grey")
+                self.check_mark.select()
         sender_name.clear()
         sender_id.clear()
 

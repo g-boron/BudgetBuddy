@@ -23,6 +23,7 @@ from modules.notifications import Notifications
 from modules.budget_prediction import BudgetPrediction
 from modules.functions.sharing_budgets import *
 from modules.choose_budget import ChooseBudget
+from modules.payment_term import PaymentTerm
 
 
 customtkinter.set_appearance_mode("system")
@@ -66,33 +67,37 @@ class HomeWindow(customtkinter.CTk):
                                                 font=("Arial", 26, "normal"), command=self.show_revenues)
         self.revenues.grid(pady=18, padx=10, row=2, column=0, sticky="new")
 
+        self.payment_term = customtkinter.CTkButton(master=self.menu_frame, text="Payment term", fg_color="transparent",
+                                                    font=("Arial", 26, "normal"),
+                                                    command=lambda: self.show_payment_terms())
+        self.payment_term.grid(pady=18, padx=10, row=3, column=0, sticky="new")
+
         self.notifications = customtkinter.CTkButton(master=self.menu_frame, text="Notifications",
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.open_notifications(self.username))
-        self.notifications.grid(pady=18, padx=10, row=3, column=0, sticky="new")
+        self.notifications.grid(pady=18, padx=10, row=4, column=0, sticky="new")
         self.display_number_of_notifications()
         self.prediction = customtkinter.CTkButton(master=self.menu_frame, text="Budget prediction",
                                                   fg_color="transparent", font=("Arial", 26, "normal"),
                                                   command=self.show_prediction)
-        self.prediction.grid(pady=18, padx=10, row=4, column=0, sticky="new")
+        self.prediction.grid(pady=18, padx=10, row=5, column=0, sticky="new")
 
         self.choose_budget = customtkinter.CTkButton(master=self.menu_frame, text="Choose budget",
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.select_budget(self.username))
-        self.choose_budget.grid(pady=18, padx=10, row=5, column=0, sticky="new")
+        self.choose_budget.grid(pady=18, padx=10, row=6, column=0, sticky="new")
 
         self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings",
                                                            fg_color="transparent", font=("Arial", 26, "normal"),
                                                            command=lambda: self.app_settings(self.username))
-        self.app_settings_button.grid(pady=18, padx=10, row=6, column=0, sticky="new")
+        self.app_settings_button.grid(pady=18, padx=10, row=7, column=0, sticky="new")
         self.change = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
                                               command=self.change_password, font=("Arial", 26, "normal"))
         
-        self.change.grid(pady=18, padx=10, row=7, column=0, sticky="new")
+        self.change.grid(pady=18, padx=10, row=8, column=0, sticky="new")
         self.logout = customtkinter.CTkButton(master=self.menu_frame, text="Log out", fg_color="transparent",
                                               command=self.logout, font=("Arial", 26, "normal"))
-        
-        self.logout.grid(pady=18, padx=10, row=8, column=0, sticky="new")
+        self.logout.grid(pady=18, padx=10, row=9, column=0, sticky="new")
 
         self.calendar_frame = customtkinter.CTkFrame(master=self, width=int(screen_width / 3), height=450,
                                                      fg_color='#242424')
@@ -373,6 +378,11 @@ class HomeWindow(customtkinter.CTk):
         user_id = db.select_data(f"SELECT id FROM users WHERE username='{self.username}'", 'one')[0]
         prediction = BudgetPrediction(user_id, self.currency)
         prediction.mainloop()
+
+    def show_payment_terms(self):
+        self.destroy()
+        payment_terms_tab = PaymentTerm(self.username)
+        payment_terms_tab.mainloop()
 
     def display_number_of_notifications(self):
         number_of_unread_notifications = count_unread_notifications(self.username)
