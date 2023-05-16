@@ -70,19 +70,16 @@ class HomeWindow(customtkinter.CTk):
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.open_notifications(self.username))
         self.notifications.grid(pady=18, padx=10, row=3, column=0, sticky="new")
-        number_of_unread_notifications = count_unread_notifications(self.username)
-        all_notifications = get_all_user_notifications(self.username)
-        if number_of_unread_notifications > 0:
-            self.notifications.configure(text=f"Notifications {[number_of_unread_notifications]}", text_color="red")
-        self.prediction = customtkinter.CTkButton(master=self.menu_frame, text="Budget prediction", fg_color="transparent",
-                                                font=("Arial", 26, "normal"), command=self.show_prediction)
+        self.display_number_of_notifications()
+        self.prediction = customtkinter.CTkButton(master=self.menu_frame, text="Budget prediction",
+                                                  fg_color="transparent", font=("Arial", 26, "normal"),
+                                                  command=self.show_prediction)
         self.prediction.grid(pady=18, padx=10, row=4, column=0, sticky="new")
 
         self.choose_budget = customtkinter.CTkButton(master=self.menu_frame, text="Choose budget",
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.select_budget(self.username))
         self.choose_budget.grid(pady=18, padx=10, row=5, column=0, sticky="new")
-        self.number_of_notifications()
 
         self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings",
                                                            fg_color="transparent", font=("Arial", 26, "normal"),
@@ -182,7 +179,7 @@ class HomeWindow(customtkinter.CTk):
         self.month_total.grid(pady=18, padx=10, column=0, row=1)
 
         self.month_view = customtkinter.CTkButton(master=self.spending_summary, text='View details',
-                                            command=self.see_month_details, font=('Arial', 30, 'normal'))
+                                                  command=self.see_month_details, font=('Arial', 30, 'normal'))
         self.month_view.grid(pady=18, padx=10, column=1, row=1)
 
         self.incoming_transactions_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)),
@@ -376,12 +373,11 @@ class HomeWindow(customtkinter.CTk):
         user_id = db.select_data(f"SELECT id FROM users WHERE username='{self.username}'", 'one')[0]
         prediction = BudgetPrediction(user_id, self.currency)
         prediction.mainloop()
-    def number_of_notifications(self):
-        all_notifications = get_all_user_notifications(self.username)
-        if all_notifications is not None:
-            number_of_notifications = len(all_notifications)
-            if number_of_notifications > 0:
-                self.notifications.configure(text=f"Notifications {[number_of_notifications]}", text_color="red")
+
+    def display_number_of_notifications(self):
+        number_of_unread_notifications = count_unread_notifications(self.username)
+        if number_of_unread_notifications > 0:
+            self.notifications.configure(text=f"Notifications [{number_of_unread_notifications}]", text_color="red")
 
     def check_if_there_are_shared_budgets(self):
         user_id = get_user_id(self.username)

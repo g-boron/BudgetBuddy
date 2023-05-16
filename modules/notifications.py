@@ -17,9 +17,9 @@ INVITATION_TEXT = "You have a invitation to budget sharing from "
 
 
 class Notifications(customtkinter.CTk):
-    def __init__(self, user_id):
+    def __init__(self, user_login):
         super().__init__()
-        self.id = user_id #login
+        self.login = user_login #login
         self.geometry("900x600")
         self.title("Notifications")
         self.resizable(True, True)
@@ -28,7 +28,7 @@ class Notifications(customtkinter.CTk):
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
         self.resizable(False, False)
-        self.show_all_notifications(user_id)
+        self.show_all_notifications(user_login)
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def accept_invitation(self, user_id, notification_num):
@@ -36,7 +36,7 @@ class Notifications(customtkinter.CTk):
         sharing_accounts_ids = []
         notifications_id = []
         all_notifications = get_all_user_notifications(user_id)
-        my_id = get_user_id(self.id) # id of a logged in user
+        my_id = get_user_id(self.login) # id of a logged in user
         for i in range(len(all_notifications)):
             sharing_accounts_ids.append(all_notifications[i][1])
             notifications_id.append(all_notifications[i][0])
@@ -55,7 +55,7 @@ class Notifications(customtkinter.CTk):
                 delete_query = f"DELETE FROM invites WHERE id = {notifications_id[notification_number]};"
                 db.make_query(delete_query)
                 self.destroy()
-                home = home_window.HomeWindow(self.id)
+                home = home_window.HomeWindow(self.login)
                 home.mainloop()
 
     def decline_invitation(self, user_id, notification_num):
@@ -73,18 +73,20 @@ class Notifications(customtkinter.CTk):
             delete_query = f"DELETE FROM invites WHERE id = {notifications_id[notification_number]};"
             db.make_query(delete_query)
             self.destroy()
-            home = home_window.HomeWindow(self.id)
+            home = home_window.HomeWindow(self.login)
             home.mainloop()
 
     def show_all_notifications(self, user_id):
         all_notifications = get_all_user_notifications(user_id)
         sender_id = []
         sender_name = []
+        notification_id = []
         number_of_notifications = len(all_notifications)
         db = database_connect.DatabaseConnector()
 
         for i in range(number_of_notifications):
             sender_id.append(all_notifications[i][1])
+            notification_id.append(all_notifications[i][0])
             name_query = f"SELECT name FROM users WHERE id = '{sender_id[i]}';"
             account_name = db.select_data(name_query, 'one')
             sender_name.append(account_name[0])
@@ -98,7 +100,9 @@ class Notifications(customtkinter.CTk):
                                                 font=("Arial", 30, "normal"))
             self.label.grid(row=0, column=0, padx=0, pady=10, columnspan=2, sticky="n")
 
-            self.check_mark = customtkinter.CTkCheckBox(master=self.frame, text="")
+            self.check_mark = customtkinter.CTkCheckBox(master=self.frame, text="",
+                                                        command=lambda notification=int(notification_id[j]):
+                                                        mark_notification_as_read(notification))
             self.check_mark.grid(pady=20, padx=10, row=row_number, column=0)
 
             self.invitation = customtkinter.CTkLabel(master=self.frame,
@@ -109,7 +113,7 @@ class Notifications(customtkinter.CTk):
             self.accept_button = customtkinter.CTkButton(master=self.frame, text="Accept", hover_color="green",
                                                          command=lambda notification_num=int(j):
                                                          self.accept_invitation(user_id, notification_num),
-                                                         font=('Arial', 18, 'normal'),)
+                                                         font=('Arial', 18, 'normal'))
             self.accept_button.grid(pady=20, padx=10, row=row_number, column=2)
 
             self.declince_button = customtkinter.CTkButton(master=self.frame, text="Decline", hover_color="red",
@@ -117,12 +121,18 @@ class Notifications(customtkinter.CTk):
                                                            self.decline_invitation(user_id, notification_num),
                                                            font=('Arial', 18, 'normal'))
             self.declince_button.grid(pady=20, padx=10, row=row_number, column=3)
+
+# read notifications are greyed out
+            if all_notifications[j][2]:
+                self.invitation.configure(text_color="grey")
         sender_name.clear()
         sender_id.clear()
 
     def on_closing(self):
         self.destroy()
-        home = home_window.HomeWindow(self.id)
+        home = home_window.HomeWindow(self.login)
         home.mainloop()
+
+
 
 
