@@ -93,7 +93,7 @@ class HomeWindow(customtkinter.CTk):
         self.choose_budget.grid(pady=18, padx=10, row=6, column=0, sticky="new")
 
 
-         #add daily/mopnthly summary button
+         #add daily/monthly summary button
         self.generate_reports = customtkinter.CTkButton(master=self.menu_frame, text="Generate daily/monthly summary",
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.generate_report(self.username))
@@ -443,7 +443,7 @@ class HomeWindow(customtkinter.CTk):
         setting_window = SpendLimit(username)
         setting_window.mainloop()
 
-    def generate_report(self,user_login):
+    def generate_report(self,username):
         generate_reports = GenerateReport(self.username, self.summary, self.currency, len(self.results))
         generate_reports.mainloop()
         
