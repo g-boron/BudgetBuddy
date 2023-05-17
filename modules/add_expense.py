@@ -93,6 +93,25 @@ class AddExpense(customtkinter.CTk):
         day = self.cal.selection_get().strftime('%Y-%m-%d')
         category = str(self.category.get())
 
+        db = database_connect.DatabaseConnector()
+        query = f'SELECT spend_limit FROM users WHERE id = {self.id}'
+        spend_limit = db.select_data(query, 'one')[0]
+        if spend_limit is None:
+            spend_limit = 100000000000000
+        
+        query2 = f"SELECT SUM(amount) FROM expenses WHERE user_id = {self.id} AND EXTRACT(MONTH FROM add_date) = EXTRACT(MONTH FROM TIMESTAMP '{day}')"
+        current_month_revenues = db.select_data(query2, 'one')[0]
+        if current_month_revenues is None:
+            current_month_revenues = 0
+
+
+        if float(amount)+float(current_month_revenues) <= float(spend_limit):
+            pass
+        else:
+            messagebox.showerror('Error', f"You exceeded your spend limit this month!, your spend limit is {spend_limit}, and you already spent {current_month_revenues}")
+            return   
+
+
         if name != '' and self.isfloat(amount) and float(amount) > 0:
             budget = Budget(self.id)
             cat_id = budget.get_category_id(category)
@@ -104,6 +123,39 @@ class AddExpense(customtkinter.CTk):
                 messagebox.showerror('Error', 'You do not have enough money!')
         else:
             messagebox.showerror('Error', 'Please enter valid data.')
+
+
+        name = self.name_entry.get()
+        desc = self.desc_text.get("1.0", END)
+        amount = self.amount_entry.get()
+        day = self.cal.selection_get().strftime('%Y-%m-%d')
+
+        db = database_connect.DatabaseConnector()
+        query = f'SELECT spend_limit FROM users WHERE id = {self.id}'
+        spend_limit = db.select_data(query, 'one')[0]
+        if spend_limit is None:
+            spend_limit = 100000000000000
+        
+        query2 = f"SELECT SUM(amount) FROM expenses WHERE user_id = {self.id} AND EXTRACT(MONTH FROM add_date) = EXTRACT(MONTH FROM TIMESTAMP '{day}')"
+        current_month_revenues = db.select_data(query2, 'one')[0]
+        if current_month_revenues is None:
+            current_month_revenues = 0
+        
+
+        float(amount)+float(current_month_revenues) <= float(spend_limit)
+
+        if name != '' and self.isfloat(amount):
+            if float(amount)+float(current_month_revenues) <= float(spend_limit):
+                budget = Budget(self.id)
+                budget.add_revenue(name, desc, float(amount), day)
+                messagebox.showinfo('Success', 'You successfully added new revenue!')
+                self.on_closing()
+            else:
+                messagebox.showerror("Error", f"You exceeded your spend limit tihs month!, your spend limit is {spend_limit}, and you already spent {current_month_revenues}")
+               
+        else:
+            messagebox.showerror("Error", "Please enter valid data.")
+
 
     def isfloat(self, num):
         try:
