@@ -27,7 +27,6 @@ from modules.payment_term import PaymentTerm
 from modules.add_spend_limit import SpendLimit
 
 
-
 customtkinter.set_appearance_mode("system")
 customtkinter.set_default_color_theme("blue")
 
