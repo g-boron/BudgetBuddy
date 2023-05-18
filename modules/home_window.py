@@ -51,7 +51,9 @@ class HomeWindow(customtkinter.CTk):
         self.canvas = Canvas(width=140, height=150, bg="#242424", highlightthickness=0)
         self.canvas.create_image(90, 101, image=self.logo)
         self.canvas.grid(column=0, row=0, padx=0, pady=0, sticky="nw")
-        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome {self.get_user_name(self.username)}, your budget: {self.get_user_balance(self.username)} {self.get_user_currency(self.username)}",
+        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome {self.get_user_name(self.username)}, "
+                                                              f"your budget: {self.get_user_balance(self.username)} "
+                                                              f"{self.get_user_currency(self.username)}",
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=30, padx=10, row=0, column=1, sticky="nw")
         #   -------------------------------- left panel --------------------------------
@@ -91,12 +93,10 @@ class HomeWindow(customtkinter.CTk):
                                                      command=lambda: self.select_budget(self.username))
         self.choose_budget.grid(pady=18, padx=10, row=6, column=0, sticky="new")
 
-
         self.add_limit = customtkinter.CTkButton(master=self.menu_frame, text="Add monthly expanses limit",
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.spend_limit(self.username))
         self.add_limit.grid(pady=18, padx=10, row=8, column=0, sticky="new")
-
 
         self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings",
                                                            fg_color="transparent", font=("Arial", 26, "normal"),
@@ -109,10 +109,6 @@ class HomeWindow(customtkinter.CTk):
         self.logout = customtkinter.CTkButton(master=self.menu_frame, text="Log out", fg_color="transparent",
                                               command=self.logout, font=("Arial", 26, "normal"))
         self.logout.grid(pady=18, padx=10, row=10, column=0, sticky="new")
-
-
-
-
 
         self.calendar_frame = customtkinter.CTkFrame(master=self, width=int(screen_width / 3), height=450,
                                                      fg_color='#242424')
@@ -217,7 +213,8 @@ class HomeWindow(customtkinter.CTk):
         self.second_graph_frame.grid_columnconfigure(0, weight=1)
         self.second_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
-        x, days_in_month, entertainment_list, shopping_list, bills_list, subs_list, other_list = generate_month_graph_data(self.username)
+        x, days_in_month, entertainment_list, shopping_list, bills_list, subs_list, \
+            other_list = generate_month_graph_data(self.username)
         
         fig, ax = plt.subplots(figsize=(8, 4))
 
@@ -241,7 +238,8 @@ class HomeWindow(customtkinter.CTk):
         canvas.draw()
         canvas.get_tk_widget().pack(side=LEFT)
 
-        ax.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Entertainment', 'Shopping', 'Bills', 'Subscriptions', 'Other'), loc='best', frameon=False)
+        ax.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Entertainment', 'Shopping', 'Bills', 'Subscriptions', 'Other'),
+                  loc='best', frameon=False)
         
         plt.close(fig)
 
@@ -270,8 +268,8 @@ class HomeWindow(customtkinter.CTk):
         revenues.mainloop()
 
     def change_password(self):
-        changepass = ChangePassword(self.username)
-        changepass.mainloop()
+        change_password = ChangePassword(self.username)
+        change_password.mainloop()
 
     def logout(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -323,7 +321,6 @@ class HomeWindow(customtkinter.CTk):
         self.destroy()
         budget_selector = ChooseBudget(username)
         budget_selector.mainloop()
-
 
     def get_user_balance(self, user_login):
         db = database_connect.DatabaseConnector()
