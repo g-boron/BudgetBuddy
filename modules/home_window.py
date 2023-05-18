@@ -245,7 +245,7 @@ class HomeWindow(customtkinter.CTk):
         plt.close(fig)
 
     def see_details(self):
-        day_summary = DaySummary(self.username, self.summary, self.currency, len(self.results))
+        day_summary = DaySummary(self.username, len(self.results))
         day_summary.mainloop()
 
     def see_month_details(self):
