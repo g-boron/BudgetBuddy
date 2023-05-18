@@ -10,7 +10,7 @@ def get_user_currency(username):
     return db.select_data(query, 'one')[0]
 
 
-def get_daily_summary(username, day = 'now'):
+def get_daily_summary(username, day='now'):
     db = DatabaseConnector()
 
     if day == 'now':
@@ -38,7 +38,7 @@ def get_daily_summary(username, day = 'now'):
     return summary, results
 
 
-def get_month_summary(username, month = 'now'):
+def get_month_summary(username, month='now'):
     db = DatabaseConnector()
 
     if month == 'now':
@@ -78,10 +78,10 @@ def generate_month_graph_data(username):
 
     current_month = datetime.datetime.now().month  
     current_year = datetime.datetime.now().year
-    query = f"SELECT e.amount, c.name, EXTRACT(DAY FROM e.add_date) as day from expenses AS e JOIN " \
-                f"users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
-                f"WHERE u.username='{username}' AND EXTRACT(MONTH FROM add_date) = {current_month} " \
-                f"AND EXTRACT(YEAR FROM add_date) = {current_year}"
+    query = f"SELECT e.amount, c.name, EXTRACT(DAY FROM e.add_date) as day from expenses AS e " \
+            f"JOIN users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
+            f"WHERE u.username='{username}' AND EXTRACT(MONTH FROM add_date) = {current_month} " \
+            f"AND EXTRACT(YEAR FROM add_date) = {current_year}"
 
     days_in_month = monthrange(current_year, current_month)[1]
 
