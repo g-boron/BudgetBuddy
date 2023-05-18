@@ -10,10 +10,15 @@ def get_user_currency(username):
     return db.select_data(query, 'one')[0]
 
 
-def get_daily_summary(username):
+def get_daily_summary(username, day = 'now'):
     db = DatabaseConnector()
-    query = f"SELECT e.amount, c.name from expenses AS e JOIN users AS u ON e.user_id=u.id JOIN categories AS " \
-            f"c ON e.category_id=c.id WHERE u.username='{username}'AND e.add_date=CURRENT_DATE"
+
+    if day == 'now':
+        query = f"SELECT e.amount, c.name from expenses AS e JOIN users AS u ON e.user_id=u.id JOIN categories AS " \
+                f"c ON e.category_id=c.id WHERE u.username='{username}'AND e.add_date=CURRENT_DATE"
+    else:
+        query = f"SELECT e.amount, c.name from expenses AS e JOIN users AS u ON e.user_id=u.id JOIN categories AS " \
+                f"c ON e.category_id=c.id WHERE u.username='{username}'AND e.add_date=TO_DATE('{day}', 'DD-MM-YYYY')"
     
     results = db.select_data(query)
 
@@ -33,15 +38,16 @@ def get_daily_summary(username):
     return summary, results
 
 
-def get_month_summary(username):
+def get_month_summary(username, month = 'now'):
     db = DatabaseConnector()
 
-    current_month = datetime.datetime.now().month
-    current_year = datetime.datetime.now().year
-    query = f"SELECT e.amount, c.name, EXTRACT(MONTH FROM add_date) from expenses AS e JOIN " \
-            f"users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
-            f"WHERE u.username='{username}' AND EXTRACT(MONTH FROM add_date) = {current_month} " \
-            f"AND EXTRACT(YEAR FROM add_date) = {current_year}"
+    if month == 'now':
+        current_month = datetime.datetime.now().month
+        current_year = datetime.datetime.now().year
+        query = f"SELECT e.amount, c.name, EXTRACT(MONTH FROM add_date) from expenses AS e JOIN " \
+                f"users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
+                f"WHERE u.username='{username}' AND EXTRACT(MONTH FROM add_date) = {current_month} " \
+                f"AND EXTRACT(YEAR FROM add_date) = {current_year}"
 
     month_results = db.select_data(query)
     month_summary = {'Entertainment': 0, 'Shopping': 0, 'Bills': 0, 'Subscriptions': 0, 'Other': 0}
