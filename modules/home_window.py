@@ -92,13 +92,6 @@ class HomeWindow(customtkinter.CTk):
         self.choose_budget.grid(pady=18, padx=10, row=6, column=0, sticky="new")
 
 
-         #add daily/mopnthly summary button
-        self.generate_reports = customtkinter.CTkButton(master=self.menu_frame, text="Generate daily/monthly summary",
-                                                     fg_color="transparent", font=("Arial", 26, "normal"),
-                                                     command=lambda: self.generate_report(self.username))
-        self.generate_reports.grid(pady=18, padx=10, row=7, column=0, sticky="new")
-
-
         self.add_limit = customtkinter.CTkButton(master=self.menu_frame, text="Add monthly expanses limit",
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.spend_limit(self.username))
@@ -257,7 +250,7 @@ class HomeWindow(customtkinter.CTk):
         day_summary.mainloop()
 
     def see_month_details(self):
-        month_summary = MonthSummary(self.username, self.month_summary, self.currency, len(self.month_results))
+        month_summary = MonthSummary(self.username, len(self.month_results))
         month_summary.mainloop()
 
     def get_user_name(self, user_login):
@@ -347,8 +340,4 @@ class HomeWindow(customtkinter.CTk):
     def spend_limit(self, username):
         setting_window = SpendLimit(username)
         setting_window.mainloop()
-
-    def generate_report(self,user_login):
-        generate_reports = GenerateReport(self.username, self.summary, self.currency, len(self.results))
-        generate_reports.mainloop()
         

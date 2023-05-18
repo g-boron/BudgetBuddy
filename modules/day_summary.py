@@ -35,7 +35,6 @@ class DaySummary(customtkinter.CTk):
         self.btn = customtkinter.CTkButton(master=self, text='Choose', font=('Arial', 25, 'normal'), command=self.change)
         self.btn.place(relx=0.5, rely=0.1)
 
-
         self.refresh('now')
     
     def refresh(self, day):

@@ -48,6 +48,12 @@ def get_month_summary(username, month = 'now'):
                 f"users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
                 f"WHERE u.username='{username}' AND EXTRACT(MONTH FROM add_date) = {current_month} " \
                 f"AND EXTRACT(YEAR FROM add_date) = {current_year}"
+    else:
+
+        query = f"SELECT e.amount, c.name, EXTRACT(MONTH FROM add_date) from expenses AS e JOIN " \
+                f"users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
+                f"WHERE u.username='{username}' AND EXTRACT(MONTH FROM add_date) = {int(month.split('-')[0])} " \
+                f"AND EXTRACT(YEAR FROM add_date) = {int(month.split('-')[1])}"
 
     month_results = db.select_data(query)
     month_summary = {'Entertainment': 0, 'Shopping': 0, 'Bills': 0, 'Subscriptions': 0, 'Other': 0}

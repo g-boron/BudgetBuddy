@@ -5,16 +5,16 @@ from PIL import ImageTk
 from modules.database import database_connect
 from tkinter import messagebox
 from datetime import datetime
+from .functions.summaries import get_month_summary, get_user_currency
+
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
 
 class MonthSummary(customtkinter.CTk):
-    def __init__(self, username, summary, currency, number):
+    def __init__(self, username, number):
         self.username = username
-        self.summary = summary
-        self.currency = currency
         self.number = number
         super().__init__()
         self.geometry("800x675")
@@ -27,11 +27,32 @@ class MonthSummary(customtkinter.CTk):
         self.window_flag = 1
 
         self.title = customtkinter.CTkLabel(master=self, text='Month summary', font=('Arial', 35, 'normal'))
-        self.title.place(relx=0.4, rely=0.05)
+        self.title.place(relx=0.4, rely=0.025)
 
-        self.date = customtkinter.CTkLabel(master=self.frame, text=datetime.today().strftime('%m-%Y'),
-                                           font=("Arial", 30, "normal"))
-        self.date.grid(pady=18, padx=250, row=0, column=0, columnspan=2, sticky='nsew')
+        self.choose = customtkinter.CTkEntry(master=self, placeholder_text='Month', font=('Arial', 25,'normal'))
+        self.choose.place(relx=0.3, rely=0.1)
+
+        self.btn = customtkinter.CTkButton(master=self, text='Choose', font=('Arial', 25, 'normal'), command=self.change)
+        self.btn.place(relx=0.5, rely=0.1)
+
+        self.refresh('now')
+
+
+    def refresh(self, month):
+        for widget in self.frame.grid_slaves():
+            widget.grid_forget()
+
+        if month == 'now':
+            summary, self.results = get_month_summary(self.username)
+        else:
+            summary, self.results = get_month_summary(self.username, month)
+
+        currency = get_user_currency(self.username)
+
+        if month == 'now':
+            self.date = customtkinter.CTkLabel(master=self.frame, text=datetime.today().strftime('%m-%Y'), font=("Arial", 30, "normal"))
+        else:
+            self.date = customtkinter.CTkLabel(master=self.frame, text=month, font=("Arial", 30, "normal"))
 
         self.total = customtkinter.CTkLabel(master=self.frame, text='Total:', font=("Arial", 25, "normal"))
         self.total.grid(pady=18, padx=10, row=1, column=0, sticky='w')
@@ -45,7 +66,7 @@ class MonthSummary(customtkinter.CTk):
                                                     wraplength=700)
         self.number_of_exp.grid(pady=18, padx=10, row=2, column=0, sticky='w')
 
-        self.number = customtkinter.CTkLabel(master=self.frame, text=self.number, font=("Arial", 25, "normal"))
+        self.number = customtkinter.CTkLabel(master=self.frame, text=len(self.results), font=("Arial", 25, "normal"))
         self.number.grid(pady=18, padx=10, row=2, column=1, sticky='e')
 
         self.entertainment = customtkinter.CTkLabel(master=self.frame, text="Entertainment",
@@ -86,3 +107,6 @@ class MonthSummary(customtkinter.CTk):
         self.total_other = customtkinter.CTkLabel(master=self.frame, text=f"{str(summary['Other'])} {currency}",
                                                   font=("Arial", 25, "normal"))
         self.total_other.grid(row=7, column=1, padx=10, pady=20, sticky='e')
+
+    def change(self):
+        self.refresh(self.choose.get())
