@@ -16,7 +16,6 @@ from modules import login
 import matplotlib as mat
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from calendar import monthrange
 from modules.app_settings import ApplicationSettings
 from modules.functions.notifications import *
 from modules.notifications import Notifications
@@ -25,6 +24,7 @@ from modules.functions.sharing_budgets import *
 from modules.choose_budget import ChooseBudget
 from modules.payment_term import PaymentTerm
 from modules.add_spend_limit import SpendLimit
+from .functions.summaries import get_user_currency, get_daily_summary, get_month_summary, generate_month_graph_data, sum_lists
 
 
 customtkinter.set_appearance_mode("system")
@@ -134,28 +134,9 @@ class HomeWindow(customtkinter.CTk):
         self.description2 = customtkinter.CTkLabel(master=self, text="User balance circle graph",
                                                    font=("Arial", 30, "normal"))
         self.description2.grid(pady=18, padx=10, row=1, column=1)
-
-        db = database_connect.DatabaseConnector()
-        query = f"SELECT e.amount, c.name from expenses AS e JOIN users AS u ON e.user_id=u.id JOIN categories AS " \
-                f"c ON e.category_id=c.id WHERE u.username='{self.username}'AND e.add_date=CURRENT_DATE"
-        self.results = db.select_data(query)
-
-        self.summary = {'Entertainment': 0, 'Shopping': 0, 'Bills': 0, 'Subscriptions': 0, 'Other': 0}
-        for r in self.results:
-            if r[1] == 'Entertainment':
-                self.summary['Entertainment'] += float(r[0])
-            elif r[1] == 'Shopping':
-                self.summary['Shopping'] += float(r[0])
-            elif r[1] == 'Bills':
-                self.summary['Bills'] += float(r[0])
-            elif r[1] == 'Subscriptions':
-                self.summary['Subscriptions'] += float(r[0])
-            else:
-                self.summary['Other'] += float(r[0])
-
         
-        query = f"SELECT currency FROM users WHERE username='{self.username}'"
-        self.currency = db.select_data(query, 'one')[0]
+        self.summary, self.results = get_daily_summary(self.username)
+        self.currency = get_user_currency(self.username)
 
         self.spending_summary = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)),
                                                        height=270, fg_color="#242424")
@@ -171,28 +152,8 @@ class HomeWindow(customtkinter.CTk):
                                             command=self.see_details, font=('Arial', 30, 'normal'))
         self.view.grid(pady=18, padx=10, column=1, row=0)
 
-        current_month = datetime.datetime.now().month
-        current_year = datetime.datetime.now().year
-        query = f"SELECT e.amount, c.name, EXTRACT(MONTH FROM add_date) from expenses AS e JOIN " \
-                f"users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
-                f"WHERE u.username='{self.username}' AND EXTRACT(MONTH FROM add_date) = {current_month} " \
-                f"AND EXTRACT(YEAR FROM add_date) = {current_year}"
-        self.month_results = db.select_data(query)
-        self.month_summary = {'Entertainment': 0, 'Shopping': 0, 'Bills': 0, 'Subscriptions': 0, 'Other': 0}
-        for r in self.month_results:
-            if r[1] == 'Entertainment':
-                self.month_summary['Entertainment'] += float(r[0])
-            elif r[1] == 'Shopping':
-                self.month_summary['Shopping'] += float(r[0])
-            elif r[1] == 'Bills':
-                self.month_summary['Bills'] += float(r[0])
-            elif r[1] == 'Subscriptions':
-                self.month_summary['Subscriptions'] += float(r[0])
-            else:
-                self.month_summary['Other'] += float(r[0])
+        self.month_summary, self.month_results = get_month_summary(self.username)
 
-        query = f"SELECT currency FROM users WHERE username='{self.username}'"
-        self.currency = db.select_data(query, 'one')[0]
         self.month_total = customtkinter.CTkLabel(master=self.spending_summary,
                                                   text=f"Month total: {str(round(sum(self.month_summary.values()), 2))} "
                                                        f"{self.currency}", font=("Arial", 30, "normal"))
@@ -255,62 +216,7 @@ class HomeWindow(customtkinter.CTk):
         self.second_graph_frame.grid_columnconfigure(0, weight=1)
         self.second_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
-        query = f"SELECT e.amount, c.name, EXTRACT(DAY FROM e.add_date) as day from expenses AS e JOIN " \
-                f"users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
-                f"WHERE u.username='{self.username}' AND EXTRACT(MONTH FROM add_date) = {current_month} " \
-                f"AND EXTRACT(YEAR FROM add_date) = {current_year}"
-
-        days_in_month = monthrange(current_year, current_month)[1]
-
-        self.month_results = db.select_data(query)
-
-        self.month_graph_data = {}
-        for i in range(1, days_in_month+1):
-            self.month_graph_data[i] = {'Entertainment': 0, 'Shopping': 0, 'Bills': 0, 'Subscriptions': 0, 'Other': 0}
-
-        for r in self.month_results:
-            for m in self.month_graph_data:
-                if int(r[2]) == m:
-                    if r[1] == 'Entertainment':
-                        self.month_graph_data[m]['Entertainment'] += float(r[0])
-                    elif r[1] == 'Shopping':
-                        self.month_graph_data[m]['Shopping'] += float(r[0])
-                    elif r[1] == 'Bills':
-                        self.month_graph_data[m]['Bills'] += float(r[0])
-                    elif r[1] == 'Subscriptions':
-                        self.month_graph_data[m]['Subscriptions'] += float(r[0])
-                    else:
-                        self.month_graph_data[m]['Other'] += float(r[0])
-        
-        x = self.month_graph_data.keys()
-        entertainment_list = []
-        shopping_list = []
-        bills_list = []
-        subs_list = []
-        other_list = []
-
-        for i in self.month_graph_data:
-            for k, v in self.month_graph_data[i].items():
-                if k == 'Entertainment':
-                    entertainment_list.append(v)
-                elif k == 'Shopping':
-                    shopping_list.append(v)
-                elif k == 'Bills':
-                    bills_list.append(v)
-                elif k == 'Subscriptions':
-                    subs_list.append(v)
-                else:
-                    other_list.append(v)
-
-        def sum_lists(*lists):
-            result = []
-            for i in range(len(lists[0])):
-                total = 0
-                for lst in lists:
-                    total += lst[i]
-                result.append(total)
-
-            return result
+        x, days_in_month, entertainment_list, shopping_list, bills_list, subs_list, other_list = generate_month_graph_data(self.username)
         
         fig, ax = plt.subplots(figsize=(8, 4))
 
