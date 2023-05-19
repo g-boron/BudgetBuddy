@@ -2,7 +2,6 @@ from modules.database import database_connect
 from modules.functions.get_user_id import *
 from modules.functions.get_user_name import *
 
-
 def validate_sharing_budget(users_id, owner_id):
     my_id = users_id
     sharing_account = owner_id
@@ -28,7 +27,7 @@ def check_default_budget(user_id):
     check = db.select_data(check_query, 'one')
     user_default = check[0]
     if check is not None:
-        return True # true/false a potem inna funkcja
+        return True
     else:
         return False
 
@@ -54,3 +53,4 @@ def get_default_budget(user_id):
         return user_default
     else:
         return False
+

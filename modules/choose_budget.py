@@ -10,6 +10,7 @@ from modules.functions.get_user_login import *
 from modules.functions.get_user_id import *
 from modules.functions.get_user_name import *
 
+
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
@@ -57,7 +58,7 @@ class ChooseBudget(customtkinter.CTk):
         query = f"SELECT id, owner_id FROM shared_budgets WHERE inheriting_id = {inheriting} OR owner_id = {inheriting};"
         all_budgets = db.select_data(query)
         number_of_budgets = len(all_budgets)
-
+        home_window.is_not_default_budget = 1
         for i in range(number_of_budgets):
             budget_id_list.append((all_budgets[i][0]))
             owner_id_list.append(all_budgets[i][1])
@@ -76,6 +77,7 @@ class ChooseBudget(customtkinter.CTk):
             label.grid(row=0, column=0, padx=20, pady=10, columnspan=2, sticky="n")
             if not check:
                 login = self.id
+                home_window.is_not_default_budget = 1
                 own_budget = customtkinter.CTkButton(master=self.frame, text="My budget", font=("Arial", 18, "normal"),
                                                      command=lambda: self.open_default_budget(user_id=login))
                 own_budget.grid(pady=20, padx=10, row=1, column=0, sticky="ew")
@@ -85,6 +87,7 @@ class ChooseBudget(customtkinter.CTk):
                                                  command=lambda owner_id=owner_id_list[j]: self.get_to_budget(owner_id))
                 budget.grid(pady=20, padx=10, row=row_number, column=0, sticky="ew")
             elif check:
+                home_window.is_not_default_budget = 0
                 check_def_budget = check_default_budget(user_id)
                 if check_def_budget:
                     users_default_budget = get_default_budget(self.id)
@@ -101,8 +104,6 @@ class ChooseBudget(customtkinter.CTk):
                                                          font=("Arial", 18, "normal"),
                                                          command=lambda: self.open_default_budget(user_id=login))
                     own_budget.grid(pady=20, padx=10, row=1, column=0, sticky="ew")
-
-
 
         budget_id_list.clear()
         owner_id_list.clear()

@@ -22,10 +22,12 @@ from modules.notifications import Notifications
 from modules.budget_prediction import BudgetPrediction
 from modules.functions.sharing_budgets import *
 from modules.choose_budget import ChooseBudget
+from modules.functions.sharing_budgets import *
 from modules.payment_term import PaymentTerm
 from modules.add_spend_limit import SpendLimit
 from modules.generate_report import GenerateReport
-from .functions.summaries import get_user_currency, get_daily_summary, get_month_summary, generate_month_graph_data, sum_lists
+from .functions.summaries import get_user_currency, get_daily_summary, get_month_summary, generate_month_graph_data, \
+    sum_lists
 
 
 customtkinter.set_appearance_mode("system")
@@ -45,6 +47,8 @@ class HomeWindow(customtkinter.CTk):
         self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
         self.iconphoto(False, self.iconpath)
         self.resizable(True, True)
+        self.is_not_default_budget = 0
+        print(self.is_not_default_budget)
 
         #   -------------------------------- top panel --------------------------------
         self.logo = PhotoImage(file="./images/logo_transparent_small.png")
@@ -57,7 +61,6 @@ class HomeWindow(customtkinter.CTk):
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=30, padx=10, row=0, column=1, sticky="nw")
         #   -------------------------------- left panel --------------------------------
-
         self.menu_frame = customtkinter.CTkScrollableFrame(master=self, width=int(((screen_width / 3) - 20)),
                                                            height=440)
         self.menu_frame.grid(column=0, row=1, sticky="n")
@@ -66,9 +69,11 @@ class HomeWindow(customtkinter.CTk):
         self.label = customtkinter.CTkLabel(master=self.menu_frame, text="Main menu",
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=18, padx=10, row=0, column=0)
+
         self.expenses = customtkinter.CTkButton(master=self.menu_frame, text="My expenses", fg_color="transparent",
                                                 font=("Arial", 26, "normal"), command=self.show_expenses)
         self.expenses.grid(pady=18, padx=10, row=1, column=0, sticky="new")
+
         self.revenues = customtkinter.CTkButton(master=self.menu_frame, text="My revenues", fg_color="transparent",
                                                 font=("Arial", 26, "normal"), command=self.show_revenues)
         self.revenues.grid(pady=18, padx=10, row=2, column=0, sticky="new")
@@ -92,6 +97,11 @@ class HomeWindow(customtkinter.CTk):
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.select_budget(self.username))
         self.choose_budget.grid(pady=18, padx=10, row=6, column=0, sticky="new")
+        if self.is_not_default_budget == 1:
+            self.show_default_budget()
+
+        else:
+            self.show_choose_budget()
 
         self.add_limit = customtkinter.CTkButton(master=self.menu_frame, text="Add monthly expanses limit",
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
@@ -105,10 +115,10 @@ class HomeWindow(customtkinter.CTk):
         self.change = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
                                               command=self.change_password, font=("Arial", 26, "normal"))
         
-        self.change.grid(pady=18, padx=10, row=9, column=0, sticky="new")
+        self.change.grid(pady=18, padx=10, row=10, column=0, sticky="new")
         self.logout = customtkinter.CTkButton(master=self.menu_frame, text="Log out", fg_color="transparent",
                                               command=self.logout, font=("Arial", 26, "normal"))
-        self.logout.grid(pady=18, padx=10, row=10, column=0, sticky="new")
+        self.logout.grid(pady=18, padx=10, row=11, column=0, sticky="new")
 
         self.calendar_frame = customtkinter.CTkFrame(master=self, width=int(screen_width / 3), height=450,
                                                      fg_color='#242424')
@@ -308,6 +318,14 @@ class HomeWindow(customtkinter.CTk):
         number_of_unread_notifications = count_unread_notifications(self.username)
         if number_of_unread_notifications > 0:
             self.notifications.configure(text=f"Notifications [{number_of_unread_notifications}]", text_color="red")
+
+    def show_choose_budget(self):
+        print(self.is_not_default_budget)
+        self.choose_budget.configure(text="Choose budget")
+
+    def show_default_budget(self):
+        print(self.is_not_default_budget)
+        self.choose_budget.configure(text="Default budget")
 
     def check_if_there_are_shared_budgets(self):
         user_id = get_user_id(self.username)
