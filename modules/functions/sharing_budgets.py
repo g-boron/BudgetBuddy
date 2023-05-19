@@ -28,7 +28,7 @@ def check_default_budget(user_id):
     check = db.select_data(check_query, 'one')
     user_default = check[0]
     if check is not None:
-        return user_default
+        return True # true/false a potem inna funkcja
     else:
         return False
 
@@ -43,3 +43,14 @@ def check_if_user_is_an_owner(user_id):
     else:
         return False
 
+
+def get_default_budget(user_id):
+    user = int(get_user_id(user_id))
+    db = database_connect.DatabaseConnector()
+    check_query = f"SELECT inheriting_id FROM shared_budgets WHERE owner_id = {user};"
+    check = db.select_data(check_query, 'one')
+    user_default = check[0]
+    if check is not None:
+        return user_default
+    else:
+        return False
