@@ -138,4 +138,9 @@ def sum_lists(*lists):
 
     return result
 
+
+def get_spend_limit(username):
+    db = DatabaseConnector()
+    query = f"SELECT spend_limit FROM users WHERE username = '{username}'"
     
+    return db.select_data(query, 'one')[0]

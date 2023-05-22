@@ -25,9 +25,8 @@ from modules.choose_budget import ChooseBudget
 from modules.functions.sharing_budgets import *
 from modules.payment_term import PaymentTerm
 from modules.add_spend_limit import SpendLimit
-from modules.generate_report import GenerateReport
 from .functions.summaries import get_user_currency, get_daily_summary, get_month_summary, generate_month_graph_data, \
-    sum_lists
+    sum_lists, get_spend_limit
 
 
 customtkinter.set_appearance_mode("system")
@@ -134,16 +133,32 @@ class HomeWindow(customtkinter.CTk):
         cal.grid(column=0, row=0, pady=35, padx=15)
         #   -------------------------------- center panel --------------------------------
         self.user_balance_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)), height=400,
-                                                         fg_color="green")
+                                                         fg_color="#242424")
         self.user_balance_frame.grid(column=1, row=1, sticky="ns")
         self.user_balance_frame.grid_columnconfigure(0, weight=1)
         self.user_balance_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
-        self.description2 = customtkinter.CTkLabel(master=self, text="User balance circle graph",
-                                                   font=("Arial", 30, "normal"))
-        self.description2.grid(pady=18, padx=10, row=1, column=1)
+        
+        self.currency = get_user_currency(self.username)
+        self.month_summary, self.month_results = get_month_summary(self.username)
+        limit = float(get_spend_limit(self.username))
+        total_expenses = round(sum(self.month_summary.values()), 2)
+        limit_left = limit - total_expenses
+        print(total_expenses)
+        print(limit_left)
+
+        values = [total_expenses, limit_left]
+        labels = ['Total expenses', 'Limit left']
+        fig, ax = plt.subplots(figsize=(5, 4))
+        fig.patch.set_facecolor('#242424')
+        ax.set_facecolor('#242424')
+        ax.pie(values, labels=labels)
+        canvas = FigureCanvasTkAgg(fig, self.user_balance_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+        
+        plt.close(fig)
         
         self.summary, self.results = get_daily_summary(self.username)
-        self.currency = get_user_currency(self.username)
 
         self.spending_summary = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)),
                                                        height=270, fg_color="#242424")
@@ -158,8 +173,6 @@ class HomeWindow(customtkinter.CTk):
         self.view = customtkinter.CTkButton(master=self.spending_summary, text='View details',
                                             command=self.see_details, font=('Arial', 30, 'normal'))
         self.view.grid(pady=18, padx=10, column=1, row=0)
-
-        self.month_summary, self.month_results = get_month_summary(self.username)
 
         self.month_total = customtkinter.CTkLabel(master=self.spending_summary,
                                                   text=f"Month total: {str(round(sum(self.month_summary.values()), 2))} "
