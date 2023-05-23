@@ -1,5 +1,6 @@
 import datetime
 from tkinter import *
+import textwrap
 from tkinter import ttk
 import customtkinter
 from PIL import ImageTk
@@ -79,7 +80,7 @@ class HomeWindow(customtkinter.CTk):
 
         self.payment_term = customtkinter.CTkButton(master=self.menu_frame, text="Payment term", fg_color="transparent",
                                                     font=("Arial", 26, "normal"),
-                                                    command=lambda: self.show_payment_terms())
+                                                    command=lambda: self.show_payment_payments())
         self.payment_term.grid(pady=18, padx=10, row=3, column=0, sticky="new")
 
         self.notifications = customtkinter.CTkButton(master=self.menu_frame, text="Notifications",
@@ -183,16 +184,19 @@ class HomeWindow(customtkinter.CTk):
                                                   command=self.see_month_details, font=('Arial', 30, 'normal'))
         self.month_view.grid(pady=18, padx=10, column=1, row=1)
 
-        self.incoming_transactions_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)),
-                                                                  height=160, fg_color="purple")
+        #incoming payments scrollable menu
+        self.incoming_transactions_frame = customtkinter.CTkScrollableFrame(master=self, width=int((screen_width / 3)), height=160)
         self.incoming_transactions_frame.grid(column=1, row=3, sticky="nsw")
-        self.incoming_transactions_frame.grid_columnconfigure(0, weight=1)
-        self.incoming_transactions_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
-        self.description4 = customtkinter.CTkLabel(master=self, text="incoming transactions",
-                                                   font=("Arial", 30, "normal"))
-        self.description4.grid(pady=18, padx=10, column=1, row=3)
+        self.incoming_transactions_frame.grid_columnconfigure((0,1,2,3), weight=1)
+        self.incoming_transactions_frame.grid_rowconfigure((0,1, 2 ), weight=1)
+        
+        self.show_incoming_payments(self.username)
+
+        
+
+
         #   -------------------------------- right panel --------------------------------
-        self.first_graph_frame = customtkinter.CTkFrame(master=self, width=int(((screen_width / 3) - 20)), height=400)
+        self.first_graph_frame = customtkinter.CTkFrame(master=self, width=int(((screen_width / 3) - 20)), height=400,)
         self.first_graph_frame.grid(column=2, row=1, sticky="news")
         self.first_graph_frame.grid_columnconfigure(0, weight=1)
         self.first_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
@@ -322,10 +326,10 @@ class HomeWindow(customtkinter.CTk):
         prediction = BudgetPrediction(user_id, self.currency)
         prediction.mainloop()
 
-    def show_payment_terms(self):
+    def show_payment_payments(self):
         self.destroy()
-        payment_terms_tab = PaymentTerm(self.username)
-        payment_terms_tab.mainloop()
+        payment_payments_tab = PaymentTerm(self.username)
+        payment_payments_tab.mainloop()
 
     def display_number_of_notifications(self):
         number_of_unread_notifications = count_unread_notifications(self.username)
@@ -369,3 +373,23 @@ class HomeWindow(customtkinter.CTk):
         setting_window = SpendLimit(username)
         setting_window.mainloop()
         
+    def show_incoming_payments(self,username):
+        
+        db = database_connect.DatabaseConnector()
+        query = f"SELECT name, date, amount, id FROM payment_term " \
+                f"WHERE user_id={get_user_id(username)} "
+                
+        payments = db.select_data(query)
+
+        for idx, payments in enumerate(payments):
+            payment_term_name = customtkinter.CTkLabel(master=self.incoming_transactions_frame, text=textwrap.shorten(payments[0], width=25,
+                                                                                                placeholder='...'),
+                                                       font=("Arial", 18, "normal"))
+            payment_term_name.grid(pady=20, padx=10, row=idx, column=0)
+
+            date = customtkinter.CTkLabel(master=self.incoming_transactions_frame, text=str(payments[1]).split(' ')[0],
+                                          font=("Arial", 18, "normal"))
+            date.grid(pady=20, padx=10, row=idx, column=1)
+
+            amount = customtkinter.CTkLabel(master=self.incoming_transactions_frame, text=payments[2], font=("Arial", 18, "normal"))
+            amount.grid(pady=20, padx=10, row=idx, column=2)
