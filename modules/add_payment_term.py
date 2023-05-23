@@ -1,4 +1,3 @@
-import tkinter
 from tkinter import *
 import customtkinter
 from PIL import ImageTk
@@ -10,17 +9,16 @@ from modules import payment_term
 from modules.functions.get_user_name import *
 from modules.functions.get_user_id import *
 
-
-customtkinter.set_appearance_mode("system")
+customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
 
 
 class AddPaymentData(customtkinter.CTk):
-    def __int__(self, user_login):
+    def __init__(self, user_id):
+        self.login = user_id
         super().__init__()
-        self.login = user_login
-        self.geometry("800x800")
-        self.title("Add new payment term")
+        self.geometry("600x700")
+        self.title("Add new expense")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
@@ -29,7 +27,11 @@ class AddPaymentData(customtkinter.CTk):
 
         self.resizable(False, False)
 
-        self.label = customtkinter.CTkLabel(master=self.frame, text="Add new payment term", font=("Arial", 35, "normal"))
+        self.resizable(True, True)
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
+
+        self.label = customtkinter.CTkLabel(master=self.frame, text="Add new payment term",
+                                            font=("Arial", 35, "normal"))
         self.label.grid(row=0, column=0, padx=20, pady=10)
 
         self.name_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="Name", justify=CENTER)
@@ -55,21 +57,16 @@ class AddPaymentData(customtkinter.CTk):
                                                   command=self.add_new_payment_term, font=('Arial', 25, 'normal'))
         self.add_button.grid(padx=20, pady=10, row=4, column=0, sticky='ew')
 
-        self.protocol('WM_DELETE_WINDOW', self.on_closing)
-
-    def on_closing(self):
-        self.destroy()
-        payment_terms = payment_term.PaymentTerm(self.login)
-        payment_terms.mainloop()
-
     def add_new_payment_term(self):
-        name = self.name_entry.get()
+        name = str(self.name_entry.get())
         amount = self.amount_entry.get()
         day = self.cal.selection_get().strftime('%Y-%m-%d')
 
         if name != '' and self.isfloat(amount) and float(amount) > 0:
             db = database_connect.DatabaseConnector()
-            query = f"INSERT INTO payment_term VALUES({name}, {day}, {amount});"
+            query = f"INSERT INTO payment_term (name, date, amount, user_id) " \
+                    f"VALUES('{name}', '{day}', '{amount}', '{get_user_id(self.login)}');"
+            db.make_query(query)
             messagebox.showinfo('Success', 'You successfully added new payment term!')
             self.on_closing()
         else:
@@ -81,3 +78,9 @@ class AddPaymentData(customtkinter.CTk):
             return True
         except ValueError:
             return False
+
+
+    def on_closing(self):
+        self.destroy()
+        payment_terms = payment_term.PaymentTerm(self.login)
+        payment_terms.mainloop()

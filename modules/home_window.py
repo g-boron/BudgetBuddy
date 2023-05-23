@@ -16,17 +16,17 @@ from modules import login
 import matplotlib as mat
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from calendar import monthrange
 from modules.app_settings import ApplicationSettings
 from modules.functions.notifications import *
 from modules.notifications import Notifications
 from modules.budget_prediction import BudgetPrediction
 from modules.functions.sharing_budgets import *
 from modules.choose_budget import ChooseBudget
+from modules.functions.sharing_budgets import *
 from modules.payment_term import PaymentTerm
 from modules.add_spend_limit import SpendLimit
-from modules.generate_report import GenerateReport
-
+from .functions.summaries import get_user_currency, get_daily_summary, get_month_summary, generate_month_graph_data, \
+    sum_lists, get_spend_limit
 
 
 customtkinter.set_appearance_mode("system")
@@ -46,17 +46,20 @@ class HomeWindow(customtkinter.CTk):
         self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
         self.iconphoto(False, self.iconpath)
         self.resizable(True, True)
+        self.is_not_default_budget = 0
+        print(self.is_not_default_budget)
 
         #   -------------------------------- top panel --------------------------------
         self.logo = PhotoImage(file="./images/logo_transparent_small.png")
         self.canvas = Canvas(width=140, height=150, bg="#242424", highlightthickness=0)
         self.canvas.create_image(90, 101, image=self.logo)
         self.canvas.grid(column=0, row=0, padx=0, pady=0, sticky="nw")
-        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome {self.get_user_name(self.username)}, your budget: {self.get_user_balance(self.username)} {self.get_user_currency(self.username)}",
+        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome {self.get_user_name(self.username)}, "
+                                                              f"your budget: {self.get_user_balance(self.username)} "
+                                                              f"{self.get_user_currency(self.username)}",
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=30, padx=10, row=0, column=1, sticky="nw")
         #   -------------------------------- left panel --------------------------------
-
         self.menu_frame = customtkinter.CTkScrollableFrame(master=self, width=int(((screen_width / 3) - 20)),
                                                            height=440)
         self.menu_frame.grid(column=0, row=1, sticky="n")
@@ -65,9 +68,11 @@ class HomeWindow(customtkinter.CTk):
         self.label = customtkinter.CTkLabel(master=self.menu_frame, text="Main menu",
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=18, padx=10, row=0, column=0)
+
         self.expenses = customtkinter.CTkButton(master=self.menu_frame, text="My expenses", fg_color="transparent",
                                                 font=("Arial", 26, "normal"), command=self.show_expenses)
         self.expenses.grid(pady=18, padx=10, row=1, column=0, sticky="new")
+
         self.revenues = customtkinter.CTkButton(master=self.menu_frame, text="My revenues", fg_color="transparent",
                                                 font=("Arial", 26, "normal"), command=self.show_revenues)
         self.revenues.grid(pady=18, padx=10, row=2, column=0, sticky="new")
@@ -91,20 +96,16 @@ class HomeWindow(customtkinter.CTk):
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.select_budget(self.username))
         self.choose_budget.grid(pady=18, padx=10, row=6, column=0, sticky="new")
+        if self.is_not_default_budget == 1:
+            self.show_default_budget()
 
-
-         #add daily/monthly summary button
-        self.generate_reports = customtkinter.CTkButton(master=self.menu_frame, text="Generate daily/monthly summary",
-                                                     fg_color="transparent", font=("Arial", 26, "normal"),
-                                                     command=lambda: self.generate_report(self.username))
-        self.generate_reports.grid(pady=18, padx=10, row=7, column=0, sticky="new")
-
+        else:
+            self.show_choose_budget()
 
         self.add_limit = customtkinter.CTkButton(master=self.menu_frame, text="Add monthly expanses limit",
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.spend_limit(self.username))
         self.add_limit.grid(pady=18, padx=10, row=8, column=0, sticky="new")
-
 
         self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings",
                                                            fg_color="transparent", font=("Arial", 26, "normal"),
@@ -113,14 +114,10 @@ class HomeWindow(customtkinter.CTk):
         self.change = customtkinter.CTkButton(master=self.menu_frame, text="Change Password", fg_color="transparent",
                                               command=self.change_password, font=("Arial", 26, "normal"))
         
-        self.change.grid(pady=18, padx=10, row=9, column=0, sticky="new")
+        self.change.grid(pady=18, padx=10, row=10, column=0, sticky="new")
         self.logout = customtkinter.CTkButton(master=self.menu_frame, text="Log out", fg_color="transparent",
                                               command=self.logout, font=("Arial", 26, "normal"))
-        self.logout.grid(pady=18, padx=10, row=10, column=0, sticky="new")
-
-
-
-
+        self.logout.grid(pady=18, padx=10, row=11, column=0, sticky="new")
 
         self.calendar_frame = customtkinter.CTkFrame(master=self, width=int(screen_width / 3), height=450,
                                                      fg_color='#242424')
@@ -136,35 +133,32 @@ class HomeWindow(customtkinter.CTk):
         cal.grid(column=0, row=0, pady=35, padx=15)
         #   -------------------------------- center panel --------------------------------
         self.user_balance_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)), height=400,
-                                                         fg_color="green")
+                                                         fg_color="#242424")
         self.user_balance_frame.grid(column=1, row=1, sticky="ns")
         self.user_balance_frame.grid_columnconfigure(0, weight=1)
         self.user_balance_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
-        self.description2 = customtkinter.CTkLabel(master=self, text="User balance circle graph",
-                                                   font=("Arial", 30, "normal"))
-        self.description2.grid(pady=18, padx=10, row=1, column=1)
-
-        db = database_connect.DatabaseConnector()
-        query = f"SELECT e.amount, c.name from expenses AS e JOIN users AS u ON e.user_id=u.id JOIN categories AS " \
-                f"c ON e.category_id=c.id WHERE u.username='{self.username}'AND e.add_date=CURRENT_DATE"
-        self.results = db.select_data(query)
-
-        self.summary = {'Entertainment': 0, 'Shopping': 0, 'Bills': 0, 'Subscriptions': 0, 'Other': 0}
-        for r in self.results:
-            if r[1] == 'Entertainment':
-                self.summary['Entertainment'] += float(r[0])
-            elif r[1] == 'Shopping':
-                self.summary['Shopping'] += float(r[0])
-            elif r[1] == 'Bills':
-                self.summary['Bills'] += float(r[0])
-            elif r[1] == 'Subscriptions':
-                self.summary['Subscriptions'] += float(r[0])
-            else:
-                self.summary['Other'] += float(r[0])
-
         
-        query = f"SELECT currency FROM users WHERE username='{self.username}'"
-        self.currency = db.select_data(query, 'one')[0]
+        self.currency = get_user_currency(self.username)
+        self.month_summary, self.month_results = get_month_summary(self.username)
+        limit = float(get_spend_limit(self.username))
+        total_expenses = round(sum(self.month_summary.values()), 2)
+        limit_left = limit - total_expenses
+        print(total_expenses)
+        print(limit_left)
+
+        values = [total_expenses, limit_left]
+        labels = ['Total expenses', 'Limit left']
+        fig, ax = plt.subplots(figsize=(5, 4))
+        fig.patch.set_facecolor('#242424')
+        ax.set_facecolor('#242424')
+        ax.pie(values, labels=labels)
+        canvas = FigureCanvasTkAgg(fig, self.user_balance_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+        
+        plt.close(fig)
+        
+        self.summary, self.results = get_daily_summary(self.username)
 
         self.spending_summary = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)),
                                                        height=270, fg_color="#242424")
@@ -180,28 +174,6 @@ class HomeWindow(customtkinter.CTk):
                                             command=self.see_details, font=('Arial', 30, 'normal'))
         self.view.grid(pady=18, padx=10, column=1, row=0)
 
-        current_month = datetime.datetime.now().month
-        current_year = datetime.datetime.now().year
-        query = f"SELECT e.amount, c.name, EXTRACT(MONTH FROM add_date) from expenses AS e JOIN " \
-                f"users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
-                f"WHERE u.username='{self.username}' AND EXTRACT(MONTH FROM add_date) = {current_month} " \
-                f"AND EXTRACT(YEAR FROM add_date) = {current_year}"
-        self.month_results = db.select_data(query)
-        self.month_summary = {'Entertainment': 0, 'Shopping': 0, 'Bills': 0, 'Subscriptions': 0, 'Other': 0}
-        for r in self.month_results:
-            if r[1] == 'Entertainment':
-                self.month_summary['Entertainment'] += float(r[0])
-            elif r[1] == 'Shopping':
-                self.month_summary['Shopping'] += float(r[0])
-            elif r[1] == 'Bills':
-                self.month_summary['Bills'] += float(r[0])
-            elif r[1] == 'Subscriptions':
-                self.month_summary['Subscriptions'] += float(r[0])
-            else:
-                self.month_summary['Other'] += float(r[0])
-
-        query = f"SELECT currency FROM users WHERE username='{self.username}'"
-        self.currency = db.select_data(query, 'one')[0]
         self.month_total = customtkinter.CTkLabel(master=self.spending_summary,
                                                   text=f"Month total: {str(round(sum(self.month_summary.values()), 2))} "
                                                        f"{self.currency}", font=("Arial", 30, "normal"))
@@ -264,62 +236,8 @@ class HomeWindow(customtkinter.CTk):
         self.second_graph_frame.grid_columnconfigure(0, weight=1)
         self.second_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
-        query = f"SELECT e.amount, c.name, EXTRACT(DAY FROM e.add_date) as day from expenses AS e JOIN " \
-                f"users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
-                f"WHERE u.username='{self.username}' AND EXTRACT(MONTH FROM add_date) = {current_month} " \
-                f"AND EXTRACT(YEAR FROM add_date) = {current_year}"
-
-        days_in_month = monthrange(current_year, current_month)[1]
-
-        self.month_results = db.select_data(query)
-
-        self.month_graph_data = {}
-        for i in range(1, days_in_month+1):
-            self.month_graph_data[i] = {'Entertainment': 0, 'Shopping': 0, 'Bills': 0, 'Subscriptions': 0, 'Other': 0}
-
-        for r in self.month_results:
-            for m in self.month_graph_data:
-                if int(r[2]) == m:
-                    if r[1] == 'Entertainment':
-                        self.month_graph_data[m]['Entertainment'] += float(r[0])
-                    elif r[1] == 'Shopping':
-                        self.month_graph_data[m]['Shopping'] += float(r[0])
-                    elif r[1] == 'Bills':
-                        self.month_graph_data[m]['Bills'] += float(r[0])
-                    elif r[1] == 'Subscriptions':
-                        self.month_graph_data[m]['Subscriptions'] += float(r[0])
-                    else:
-                        self.month_graph_data[m]['Other'] += float(r[0])
-        
-        x = self.month_graph_data.keys()
-        entertainment_list = []
-        shopping_list = []
-        bills_list = []
-        subs_list = []
-        other_list = []
-
-        for i in self.month_graph_data:
-            for k, v in self.month_graph_data[i].items():
-                if k == 'Entertainment':
-                    entertainment_list.append(v)
-                elif k == 'Shopping':
-                    shopping_list.append(v)
-                elif k == 'Bills':
-                    bills_list.append(v)
-                elif k == 'Subscriptions':
-                    subs_list.append(v)
-                else:
-                    other_list.append(v)
-
-        def sum_lists(*lists):
-            result = []
-            for i in range(len(lists[0])):
-                total = 0
-                for lst in lists:
-                    total += lst[i]
-                result.append(total)
-
-            return result
+        x, days_in_month, entertainment_list, shopping_list, bills_list, subs_list, \
+            other_list = generate_month_graph_data(self.username)
         
         fig, ax = plt.subplots(figsize=(8, 4))
 
@@ -343,16 +261,17 @@ class HomeWindow(customtkinter.CTk):
         canvas.draw()
         canvas.get_tk_widget().pack(side=LEFT)
 
-        ax.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Entertainment', 'Shopping', 'Bills', 'Subscriptions', 'Other'), loc='best', frameon=False)
+        ax.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Entertainment', 'Shopping', 'Bills', 'Subscriptions', 'Other'),
+                  loc='best', frameon=False)
         
         plt.close(fig)
 
     def see_details(self):
-        day_summary = DaySummary(self.username, self.summary, self.currency, len(self.results))
+        day_summary = DaySummary(self.username, len(self.results))
         day_summary.mainloop()
 
     def see_month_details(self):
-        month_summary = MonthSummary(self.username, self.month_summary, self.currency, len(self.month_results))
+        month_summary = MonthSummary(self.username, len(self.month_results))
         month_summary.mainloop()
 
     def get_user_name(self, user_login):
@@ -372,8 +291,8 @@ class HomeWindow(customtkinter.CTk):
         revenues.mainloop()
 
     def change_password(self):
-        changepass = ChangePassword(self.username)
-        changepass.mainloop()
+        change_password = ChangePassword(self.username)
+        change_password.mainloop()
 
     def logout(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -413,6 +332,14 @@ class HomeWindow(customtkinter.CTk):
         if number_of_unread_notifications > 0:
             self.notifications.configure(text=f"Notifications [{number_of_unread_notifications}]", text_color="red")
 
+    def show_choose_budget(self):
+        print(self.is_not_default_budget)
+        self.choose_budget.configure(text="Choose budget")
+
+    def show_default_budget(self):
+        print(self.is_not_default_budget)
+        self.choose_budget.configure(text="Default budget")
+
     def check_if_there_are_shared_budgets(self):
         user_id = get_user_id(self.username)
         db = database_connect.DatabaseConnector()
@@ -425,7 +352,6 @@ class HomeWindow(customtkinter.CTk):
         self.destroy()
         budget_selector = ChooseBudget(username)
         budget_selector.mainloop()
-
 
     def get_user_balance(self, user_login):
         db = database_connect.DatabaseConnector()
@@ -442,8 +368,4 @@ class HomeWindow(customtkinter.CTk):
     def spend_limit(self, username):
         setting_window = SpendLimit(username)
         setting_window.mainloop()
-
-    def generate_report(self,username):
-        generate_reports = GenerateReport(self.username, self.summary, self.currency, len(self.results))
-        generate_reports.mainloop()
         

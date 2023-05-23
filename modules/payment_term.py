@@ -1,11 +1,15 @@
 from tkinter import *
 import customtkinter
 from PIL import ImageTk
+
+import modules.home_window
 from modules.database import database_connect
 from modules.add_payment_term import AddPaymentData
 from modules.functions.get_user_name import *
 import textwrap
 from modules.functions.get_user_id import get_user_id
+import modules.home_window
+
 
 customtkinter.set_appearance_mode("system")
 customtkinter.set_default_color_theme("blue")
@@ -21,6 +25,7 @@ class PaymentTerm(customtkinter.CTk):
         self.state('zoomed')
         self.title("Payment term")
         self.resizable(True, True)
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
         self.label = customtkinter.CTkLabel(master=self, text=f"{get_user_name(self.login)[1]}'s payment terms",
                                             font=("Arial", 50, "normal"))
@@ -51,12 +56,14 @@ class PaymentTerm(customtkinter.CTk):
                                                       font=('Arial', 30, 'normal'))
         self.refresh_button.place(relx=0.5, rely=0.9, anchor='center')
 
-        self.exit_button = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.destroy(),
+        self.exit_button = customtkinter.CTkButton(master=self, text='Exit', command=self.on_closing,
                                                    font=('Arial', 30, 'normal'))
         self.exit_button.place(relx=0.8, rely=0.9, anchor='center')
 
     def add_new_payment_term(self):
         self.destroy()
+        print("id funkcja: ", get_user_id(self.login))
+        print("login: ", self.login)
         add_payment_term = AddPaymentData(self.login)
         add_payment_term.mainloop()
 
@@ -84,16 +91,20 @@ class PaymentTerm(customtkinter.CTk):
         terms = db.select_data(query)
 
         for idx, terms in enumerate(terms):
-            self.payment_term_name = customtkinter.CTkLabel(master=self.frame,
-                                                            text=textwrap.shorten(terms[0], width=25,
-                                                                                  placeholder='...'),
-                                                            font=("Arial", 24, "normal"))
-            self.payment_term_name.grid(pady=20, padx=10, row=idx, column=0)
+            payment_term_name = customtkinter.CTkLabel(master=self.frame, text=textwrap.shorten(terms[0], width=25,
+                                                                                                placeholder='...'),
+                                                       font=("Arial", 24, "normal"))
+            payment_term_name.grid(pady=20, padx=10, row=idx, column=0)
 
-            self.date = customtkinter.CTkLabel(master=self.frame, text=str(terms[1]).split(' ')[0],
-                                               font=("Arial", 24, "normal"))
-            self.date.grid(pady=20, padx=10, row=idx, column=1)
+            date = customtkinter.CTkLabel(master=self.frame, text=str(terms[1]).split(' ')[0],
+                                          font=("Arial", 24, "normal"))
+            date.grid(pady=20, padx=10, row=idx, column=1)
 
-            self.amount = customtkinter.CTkLabel(master=self.frame, text=terms[2], font=("Arial", 24, "normal"))
-            self.amount.grid(pady=20, padx=10, row=idx, column=2)
+            amount = customtkinter.CTkLabel(master=self.frame, text=terms[2], font=("Arial", 24, "normal"))
+            amount.grid(pady=20, padx=10, row=idx, column=2)
+
+    def on_closing(self):
+        self.destroy()
+        payment_terms = modules.home_window.HomeWindow(self.login)
+        payment_terms.mainloop()
 

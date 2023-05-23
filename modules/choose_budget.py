@@ -6,6 +6,10 @@ from tkinter import messagebox
 from modules.functions.notifications import *
 from modules import home_window
 from modules.functions.sharing_budgets import *
+from modules.functions.get_user_login import *
+from modules.functions.get_user_id import *
+from modules.functions.get_user_name import *
+
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -31,23 +35,10 @@ class ChooseBudget(customtkinter.CTk):
         self.get_all_budgets(self.id)
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
-    def get_user_login(self, user_id):
-        db = database_connect.DatabaseConnector()
-        login_query = f"SELECT username FROM users WHERE id = {user_id};"
-        result = db.select_data(login_query, 'one')
-        return result
-
     def open_default_budget(self, user_id):
         self.destroy()
         home = home_window.HomeWindow(user_id)
         home.mainloop()
-
-    '''def open_back_default_budget(self, user_id):
-        id_user = user_id
-        print(id_user)
-        self.destroy()
-        home = home_window.HomeWindow(id_user)
-        home.mainloop()'''
 
     def get_to_budget(self, owner_id):
         account_id = owner_id
@@ -58,27 +49,16 @@ class ChooseBudget(customtkinter.CTk):
         home = home_window.HomeWindow(user_name[0])
         home.mainloop()
 
-    def check_default_budget(self, user_id, owner_id):
-        user = int(get_user_id(user_id))
-        owner = owner_id
-        db = database_connect.DatabaseConnector()
-        check_query = f"SELECT id, inheriting_id FROM shared_budgets WHERE owner_id = {owner} AND inheriting_id = {user};"
-        check = db.select_data(check_query, 'one')
-        if check is not None:
-            return True, user
-        else:
-            return False
-# zrobić 1:1 jak w przypadku notifications
     def get_all_budgets(self, user_id):
         budget_id_list = []
         owner_id_list = []
         owner_name = []
         inheriting = get_user_id(user_id)
         db = database_connect.DatabaseConnector()
-        query = f"SELECT id, owner_id FROM shared_budgets WHERE inheriting_id = {inheriting};"
+        query = f"SELECT id, owner_id FROM shared_budgets WHERE inheriting_id = {inheriting} OR owner_id = {inheriting};"
         all_budgets = db.select_data(query)
         number_of_budgets = len(all_budgets)
-
+        home_window.is_not_default_budget = 1
         for i in range(number_of_budgets):
             budget_id_list.append((all_budgets[i][0]))
             owner_id_list.append(all_budgets[i][1])
@@ -90,30 +70,40 @@ class ChooseBudget(customtkinter.CTk):
             widget.grid_forget()
 
         for j in range(number_of_budgets):
-            check = self.check_default_budget(user_id, owner_id_list[j])
+            check = check_if_user_is_an_owner(user_id)
+            print("check: ", check)
             row_number = j + 2
-            self.label = customtkinter.CTkLabel(master=self.frame, text="Choose budget",
-                                                font=("Arial", 30, "normal"))
-            self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=2, sticky="n")
-            if check[0]:
-                user_name = self.get_user_login(check[1])
-                login = user_name[0]
-                self.own_budget = customtkinter.CTkButton(master=self.frame, text="My budget",
-                                                          font=("Arial", 18, "normal"),
-                                                          command=lambda: self.open_default_budget(user_id=login))
-                self.own_budget.grid(pady=20, padx=10, row=1, column=0, sticky="ew")
+            label = customtkinter.CTkLabel(master=self.frame, text="Choose budget", font=("Arial", 30, "normal"))
+            label.grid(row=0, column=0, padx=20, pady=10, columnspan=2, sticky="n")
+            if not check:
+                login = self.id
+                home_window.is_not_default_budget = 1
+                own_budget = customtkinter.CTkButton(master=self.frame, text="My budget", font=("Arial", 18, "normal"),
+                                                     command=lambda: self.open_default_budget(user_id=login))
+                own_budget.grid(pady=20, padx=10, row=1, column=0, sticky="ew")
 
-            else:
-                self.own_budget = customtkinter.CTkButton(master=self.frame, text="Get back to my budget",
-                                                          font=("Arial", 18, "normal"),
-                                                          command=self.open_default_budget(user_id=self.id))
-                self.own_budget.grid(pady=20, padx=10, row=1, column=0, sticky="ew")
-
-            self.budget = customtkinter.CTkButton(master=self.frame, text=(TEXT + f"{owner_name[j]}"),
-                                                  font=("Arial", 18, "normal"),
-                                                  command=lambda owner_id=owner_id_list[j]:
-                                                  self.get_to_budget(owner_id))
-            self.budget.grid(pady=20, padx=10, row=row_number, column=0, sticky="ew")
+                budget = customtkinter.CTkButton(master=self.frame, text=(TEXT + f"{owner_name[j]}"),
+                                                 font=("Arial", 18, "normal"),
+                                                 command=lambda owner_id=owner_id_list[j]: self.get_to_budget(owner_id))
+                budget.grid(pady=20, padx=10, row=row_number, column=0, sticky="ew")
+            elif check:
+                home_window.is_not_default_budget = 0
+                check_def_budget = check_default_budget(user_id)
+                if check_def_budget:
+                    users_default_budget = get_default_budget(self.id)
+                    own_budget = customtkinter.CTkButton(master=self.frame, text="My budget",
+                                                         font=("Arial", 18, "normal"),
+                                                         command=lambda: self.open_default_budget(user_id=login))
+                    own_budget.grid(pady=20, padx=10, row=1, column=0, sticky="ew")
+                    inherit_budget = customtkinter.CTkButton(master=self.frame, text="Get back to my budget",
+                                                             font=("Arial", 18, "normal"),
+                                                             command=self.get_to_budget(users_default_budget))
+                    inherit_budget.grid(pady=20, padx=10, row=1, column=0, sticky="ew")
+                else:
+                    own_budget = customtkinter.CTkButton(master=self.frame, text="My budget",
+                                                         font=("Arial", 18, "normal"),
+                                                         command=lambda: self.open_default_budget(user_id=login))
+                    own_budget.grid(pady=20, padx=10, row=1, column=0, sticky="ew")
 
         budget_id_list.clear()
         owner_id_list.clear()

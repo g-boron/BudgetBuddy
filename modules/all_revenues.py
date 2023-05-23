@@ -5,6 +5,7 @@ from PIL import ImageTk
 from modules.database import database_connect
 from modules.revenue_detail import RevenueDetail
 from modules.add_revenue import AddRevenue
+from modules import home_window
 import textwrap
 
 customtkinter.set_appearance_mode("System")
@@ -47,17 +48,25 @@ class AllRevenues(customtkinter.CTk):
 
         self.refresh()
 
-        self.addbtn = customtkinter.CTkButton(master=self, text='Add new revenue', command=self.add_new_expense,
+        self.add_btn = customtkinter.CTkButton(master=self, text='Add new revenue', command=self.add_new_expense,
                                               font=('Arial', 30, 'normal'))
-        self.addbtn.place(relx=0.2, rely=0.9, anchor='center')
+        self.add_btn.place(relx=0.2, rely=0.9, anchor='center')
 
-        self.addbtn = customtkinter.CTkButton(master=self, text='Refresh', command=self.refresh,
+        self.refresh_btn = customtkinter.CTkButton(master=self, text='Refresh', command=self.refresh,
                                               font=('Arial', 30, 'normal'))
-        self.addbtn.place(relx=0.5, rely=0.9, anchor='center')
+        self.refresh_btn.place(relx=0.5, rely=0.9, anchor='center')
 
-        self.addbtn = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.destroy(),
+        self.exit_btn = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.on_closing(),
                                               font=('Arial', 30, 'normal'))
-        self.addbtn.place(relx=0.8, rely=0.9, anchor='center')
+        self.exit_btn.place(relx=0.8, rely=0.9, anchor='center')
+
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
+
+
+    def on_closing(self):
+        self.destroy()
+        home = home_window.HomeWindow(self.username)
+        home.mainloop()
 
     def see_details(self, rev_id):
         self.destroy()
