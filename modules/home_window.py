@@ -29,14 +29,13 @@ from modules.add_spend_limit import SpendLimit
 from .functions.summaries import get_user_currency, get_daily_summary, get_month_summary, generate_month_graph_data, \
     sum_lists, get_spend_limit
 
-
-customtkinter.set_appearance_mode("system")
-customtkinter.set_default_color_theme("blue")
+from modules.functions.change_theme import set_theme
 
 
 class HomeWindow(customtkinter.CTk):
     def __init__(self, user_login):
         self.username = user_login
+        set_theme(self,user_login)
         super().__init__()
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()

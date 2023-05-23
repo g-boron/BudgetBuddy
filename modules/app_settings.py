@@ -51,12 +51,12 @@ class ApplicationSettings(customtkinter.CTk):
 
         self.dark_button = customtkinter.CTkButton(master=self.frame, text="dark", font=("arial", 20, "normal"),
                                                    fg_color=DARK_COLOR, hover_color=SYSTEM_BLUE,
-                                                   command=self.change_ui_to_dark())
+                                                   command=lambda:self.change_ui_theme("dark"))
         self.dark_button.grid(column=0, row=4, padx=20, pady=10)
 
         self.light_button = customtkinter.CTkButton(master=self.frame, text="light", font=("arial", 20, "normal"),
                                                     fg_color=LIGHT_COLOR, hover_color=SYSTEM_BLUE,
-                                                    command=self.change_ui_to_light())
+                                                    command=lambda:self.change_ui_theme("light"))
         self.light_button.grid(column=1, row=4, padx=20, pady=10)
 
         self.invite_label = customtkinter.CTkLabel(master=self.frame, text="Invite someone to your budget:",
@@ -70,11 +70,18 @@ class ApplicationSettings(customtkinter.CTk):
                                                      command=lambda: self.invite_someone(user_id))
         self.invite_button.grid(column=1, row=6, padx=20, pady=10)
 
-    def change_ui_to_light(self):
-        pass
+    def change_ui_theme(self, theme):
+        db = database_connect.DatabaseConnector()
 
-    def change_ui_to_dark(self):
-        pass
+        if theme == "light":
+            query = f"UPDATE users SET theme = 'light' WHERE username = '{self.id}'"
+        elif theme == "dark":
+            query = f"UPDATE users SET theme = 'dark' WHERE username = '{self.id}'"
+
+        db.make_query(query)
+            
+    
+
 
     def change_ui_language_to_eng(self):
         pass
