@@ -30,6 +30,7 @@ from .functions.summaries import get_user_currency, get_daily_summary, get_month
     sum_lists, get_spend_limit
 
 from modules.functions.change_theme import set_theme
+from modules.functions.send_email import SendEmail
 
 
 class HomeWindow(customtkinter.CTk):
@@ -334,6 +335,12 @@ class HomeWindow(customtkinter.CTk):
         number_of_unread_notifications = count_unread_notifications(self.username)
         if number_of_unread_notifications > 0:
             self.notifications.configure(text=f"Notifications [{number_of_unread_notifications}]", text_color="red")
+
+            message = f"Hi, {self.username}.\nWe need to inform you that you have unread new notifications. Open the app to check what's up!\n\nSincerely,\nBudgetBuddy team"
+            db = database_connect.DatabaseConnector()
+            query = f"SELECT email FROM users WHERE username = '{self.username}'"
+            email = db.select_data(query, 'one')
+            SendEmail.send_confirmation_mail_eng(self,email,self.username,  message)
 
     def show_choose_budget(self):
         print(self.is_not_default_budget)
