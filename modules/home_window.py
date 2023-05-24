@@ -141,9 +141,6 @@ class HomeWindow(customtkinter.CTk):
         
         self.currency = get_user_currency(self.username)
         self.month_summary, self.month_results = get_month_summary(self.username)
-        limit = float(get_spend_limit(self.username))
-        total_expenses = round(sum(self.month_summary.values()), 2)
-        limit_left = limit - total_expenses
 
         COLOR = 'white'
         mat.rcParams['text.color'] = COLOR
@@ -151,19 +148,32 @@ class HomeWindow(customtkinter.CTk):
         mat.rcParams['xtick.color'] = COLOR
         mat.rcParams['ytick.color'] = COLOR
 
-        values = [total_expenses, limit_left]
-        labels = ['Total expenses', 'Limit left']
-        fig, ax = plt.subplots(figsize=(5, 4.25))
-        fig.patch.set_facecolor('#242424')
-        ax.set_facecolor('#242424')
-        ax.pie(values, labels=labels, autopct='%1.1f%%', explode=(0, 0.1), textprops={'fontsize': 12})
-        plt.title('Remaining spend limit', fontsize=18)
-        canvas = FigureCanvasTkAgg(fig, self.user_balance_frame)
-        canvas.draw()
-        canvas.get_tk_widget().pack()
-        
-        plt.close(fig)
-        
+        try:
+            limit = float(get_spend_limit(self.username))
+        except TypeError:
+            limit = None
+
+        if limit is not None:    
+            total_expenses = round(sum(self.month_summary.values()), 2)
+            limit_left = limit - total_expenses
+
+            values = [total_expenses, limit_left]
+            labels = ['Total expenses', 'Limit left']
+            fig, ax = plt.subplots(figsize=(5, 4.25))
+            fig.patch.set_facecolor('#242424')
+            ax.set_facecolor('#242424')
+            ax.pie(values, labels=labels, autopct='%1.1f%%', explode=(0, 0.1), textprops={'fontsize': 12})
+            plt.title('Remaining spend limit', fontsize=18)
+            canvas = FigureCanvasTkAgg(fig, self.user_balance_frame)
+            canvas.draw()
+            canvas.get_tk_widget().pack()
+            
+            plt.close(fig)
+        else:
+            self.error = customtkinter.CTkLabel(master=self.user_balance_frame, text="Set your spending limit to see a pie chart.", font=("Arial", 25, "normal"))
+            self.error.grid(pady=18, padx=10, column=0, row=3)
+
+
         self.summary, self.results = get_daily_summary(self.username)
 
         self.spending_summary = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)),
@@ -369,6 +379,7 @@ class HomeWindow(customtkinter.CTk):
         return str(user_name[0])
     
     def spend_limit(self, username):
+        self.destroy()
         setting_window = SpendLimit(username)
         setting_window.mainloop()
         

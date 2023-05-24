@@ -4,6 +4,7 @@ from PIL import ImageTk
 from modules.database import database_connect
 from tkinter import messagebox
 from modules.functions.invite_to_budget import *
+from modules import home_window
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -42,7 +43,7 @@ class SpendLimit(customtkinter.CTk):
                                                      command=lambda: self.set_limit(username))
         self.invite_button.grid(column=1, row=2, padx=20, pady=10)
 
-    
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
 
     def set_limit(self, username):
@@ -53,8 +54,14 @@ class SpendLimit(customtkinter.CTk):
                 query = f"UPDATE users SET spend_limit = {limit} WHERE username = '{self.username}';"
                 db.make_query(query)
                 messagebox.showinfo("Success", "Monthly spend limit has been set!")
-                self.destroy()
+                self.on_closing()
             else:
                 messagebox.showerror("Error", "Value must be greater than 0!")
         except ValueError:
             messagebox.showerror("Error", "Value must be a number!")
+
+    
+    def on_closing(self):
+        self.destroy()
+        home = home_window.HomeWindow(self.username)
+        home.mainloop()
