@@ -145,12 +145,19 @@ class HomeWindow(customtkinter.CTk):
         total_expenses = round(sum(self.month_summary.values()), 2)
         limit_left = limit - total_expenses
 
+        COLOR = 'white'
+        mat.rcParams['text.color'] = COLOR
+        mat.rcParams['axes.labelcolor'] = COLOR
+        mat.rcParams['xtick.color'] = COLOR
+        mat.rcParams['ytick.color'] = COLOR
+
         values = [total_expenses, limit_left]
         labels = ['Total expenses', 'Limit left']
-        fig, ax = plt.subplots(figsize=(5, 4))
+        fig, ax = plt.subplots(figsize=(5, 4.25))
         fig.patch.set_facecolor('#242424')
         ax.set_facecolor('#242424')
-        ax.pie(values, labels=labels)
+        ax.pie(values, labels=labels, autopct='%1.1f%%', explode=(0, 0.1), textprops={'fontsize': 12})
+        plt.title('Remaining spend limit', fontsize=18)
         canvas = FigureCanvasTkAgg(fig, self.user_balance_frame)
         canvas.draw()
         canvas.get_tk_widget().pack()
@@ -198,12 +205,6 @@ class HomeWindow(customtkinter.CTk):
         columns = list(self.summary.keys())
         values = list(self.summary.values())
 
-        COLOR = 'white'
-        mat.rcParams['text.color'] = COLOR
-        mat.rcParams['axes.labelcolor'] = COLOR
-        mat.rcParams['xtick.color'] = COLOR
-        mat.rcParams['ytick.color'] = COLOR
-        
         fig, ax = plt.subplots(figsize=(6.5, 4.5))
         bars = ax.bar(columns, values)
 
