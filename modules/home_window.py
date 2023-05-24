@@ -28,9 +28,9 @@ from modules.payment_term import PaymentTerm
 from modules.add_spend_limit import SpendLimit
 from .functions.summaries import get_user_currency, get_daily_summary, get_month_summary, generate_month_graph_data, \
     sum_lists, get_spend_limit
-
 from modules.functions.change_theme import set_theme
 from modules.functions.send_email import *
+from modules.functions.get_user_name import *
 
 
 class HomeWindow(customtkinter.CTk):
@@ -47,15 +47,14 @@ class HomeWindow(customtkinter.CTk):
         self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
         self.iconphoto(False, self.iconpath)
         self.resizable(True, True)
-        self.is_not_default_budget = 0
-        print(self.is_not_default_budget)
+        file_flag = self.check_flag()
 
         #   -------------------------------- top panel --------------------------------
         self.logo = PhotoImage(file="./images/logo_transparent_small.png")
         self.canvas = Canvas(width=140, height=150, bg="#242424", highlightthickness=0)
         self.canvas.create_image(90, 101, image=self.logo)
         self.canvas.grid(column=0, row=0, padx=0, pady=0, sticky="nw")
-        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome {self.get_user_name(self.username)}, "
+        self.label = customtkinter.CTkLabel(master=self, text=f"Welcome {get_user_name(self.username)[1]}, "
                                                               f"your budget: {self.get_user_balance(self.username)} "
                                                               f"{self.get_user_currency(self.username)}",
                                             font=("Arial", 30, "normal"))
@@ -93,13 +92,12 @@ class HomeWindow(customtkinter.CTk):
                                                   command=self.show_prediction)
         self.prediction.grid(pady=18, padx=10, row=5, column=0, sticky="new")
 
-        self.choose_budget = customtkinter.CTkButton(master=self.menu_frame, text="Choose budget",
+        self.choose_budget = customtkinter.CTkButton(master=self.menu_frame, text="Budget button",
                                                      fg_color="transparent", font=("Arial", 26, "normal"),
                                                      command=lambda: self.select_budget(self.username))
         self.choose_budget.grid(pady=18, padx=10, row=6, column=0, sticky="new")
-        if self.is_not_default_budget == 1:
+        if file_flag:
             self.show_default_budget()
-
         else:
             self.show_choose_budget()
 
@@ -272,11 +270,6 @@ class HomeWindow(customtkinter.CTk):
         month_summary = MonthSummary(self.username, len(self.month_results))
         month_summary.mainloop()
 
-    def get_user_name(self, user_login):
-        db = database_connect.DatabaseConnector()
-        name_query = f"SELECT name FROM users WHERE username='{user_login}';"
-        user_name = db.select_data(name_query, 'one')
-        return user_name[0]
 
     def show_expenses(self):
         self.destroy()
@@ -335,11 +328,9 @@ class HomeWindow(customtkinter.CTk):
             send_notification_email(self.username, email)
 
     def show_choose_budget(self):
-        print(self.is_not_default_budget)
-        self.choose_budget.configure(text="Choose budget")
+        self.choose_budget.configure(text="Change budget")
 
     def show_default_budget(self):
-        print(self.is_not_default_budget)
         self.choose_budget.configure(text="Default budget")
 
     def check_if_there_are_shared_budgets(self):
@@ -391,3 +382,8 @@ class HomeWindow(customtkinter.CTk):
 
             amount = customtkinter.CTkLabel(master=self.incoming_transactions_frame, text=payments[2], font=("Arial", 18, "normal"))
             amount.grid(pady=20, padx=10, row=idx, column=2)
+
+    def check_flag(self):
+        with open('budget_flag.txt', 'r') as file:
+            content = file.read()
+        return content
