@@ -26,6 +26,9 @@ def main():
         login_screen = Login()
         login_screen.mainloop()
 
+    with open('budget_flag.txt', 'w') as f:
+        f.write('')
+
 
 if __name__ == '__main__':
     main()
