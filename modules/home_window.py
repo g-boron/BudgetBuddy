@@ -144,8 +144,6 @@ class HomeWindow(customtkinter.CTk):
         limit = float(get_spend_limit(self.username))
         total_expenses = round(sum(self.month_summary.values()), 2)
         limit_left = limit - total_expenses
-#        print(total_expenses)
-#        print(limit_left)
 
         values = [total_expenses, limit_left]
         labels = ['Total expenses', 'Limit left']
@@ -206,7 +204,7 @@ class HomeWindow(customtkinter.CTk):
         mat.rcParams['xtick.color'] = COLOR
         mat.rcParams['ytick.color'] = COLOR
         
-        fig, ax = plt.subplots(figsize=(7, 4.5))
+        fig, ax = plt.subplots(figsize=(6.5, 4.5))
         bars = ax.bar(columns, values)
 
         for c in ax.containers:
@@ -239,7 +237,7 @@ class HomeWindow(customtkinter.CTk):
         x, days_in_month, entertainment_list, shopping_list, bills_list, subs_list, \
             other_list = generate_month_graph_data(self.username)
         
-        fig, ax = plt.subplots(figsize=(8, 4))
+        fig, ax = plt.subplots(figsize=(7.5, 4))
 
         p1 = ax.bar(x, entertainment_list, bottom=sum_lists(shopping_list, bills_list, subs_list, other_list))
         p2 = ax.bar(x, shopping_list, bottom=sum_lists(bills_list, subs_list, other_list))
