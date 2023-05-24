@@ -30,13 +30,13 @@ from .functions.summaries import get_user_currency, get_daily_summary, get_month
     sum_lists, get_spend_limit
 
 from modules.functions.change_theme import set_theme
-from modules.functions.send_email import SendEmail
+from modules.functions.send_email import *
 
 
 class HomeWindow(customtkinter.CTk):
     def __init__(self, user_login):
         self.username = user_login
-        set_theme(self,user_login)
+        set_theme(user_login)
         super().__init__()
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
@@ -144,8 +144,8 @@ class HomeWindow(customtkinter.CTk):
         limit = float(get_spend_limit(self.username))
         total_expenses = round(sum(self.month_summary.values()), 2)
         limit_left = limit - total_expenses
-        print(total_expenses)
-        print(limit_left)
+#        print(total_expenses)
+#        print(limit_left)
 
         values = [total_expenses, limit_left]
         labels = ['Total expenses', 'Limit left']
@@ -191,10 +191,6 @@ class HomeWindow(customtkinter.CTk):
         self.incoming_transactions_frame.grid_rowconfigure((0,1, 2 ), weight=1)
         
         self.show_incoming_payments(self.username)
-
-        
-
-
         #   -------------------------------- right panel --------------------------------
         self.first_graph_frame = customtkinter.CTkFrame(master=self, width=int(((screen_width / 3) - 20)), height=400,)
         self.first_graph_frame.grid(column=2, row=1, sticky="news")
@@ -335,12 +331,10 @@ class HomeWindow(customtkinter.CTk):
         number_of_unread_notifications = count_unread_notifications(self.username)
         if number_of_unread_notifications > 0:
             self.notifications.configure(text=f"Notifications [{number_of_unread_notifications}]", text_color="red")
-
-            message = f"Hi, {self.username}.\nWe need to inform you that you have unread new notifications. Open the app to check what's up!\n\nSincerely,\nBudgetBuddy team"
             db = database_connect.DatabaseConnector()
             query = f"SELECT email FROM users WHERE username = '{self.username}'"
             email = db.select_data(query, 'one')
-            SendEmail.send_confirmation_mail_eng(self,email,self.username,  message)
+            send_notification_email(self.username, email)
 
     def show_choose_budget(self):
         print(self.is_not_default_budget)
@@ -379,7 +373,7 @@ class HomeWindow(customtkinter.CTk):
         setting_window = SpendLimit(username)
         setting_window.mainloop()
         
-    def show_incoming_payments(self,username):
+    def show_incoming_payments(self, username):
         
         db = database_connect.DatabaseConnector()
         query = f"SELECT name, date, amount, id FROM payment_term " \

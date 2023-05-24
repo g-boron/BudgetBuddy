@@ -4,7 +4,7 @@ import customtkinter
 from PIL import ImageTk
 from modules.database import database_connect
 import modules.login
-from modules.confirmation_mail import Email
+from modules.functions.send_email import *
 import re
 import modules.welcome_window
 
@@ -70,7 +70,7 @@ class Register(customtkinter.CTk):
                 return False
 
             if len(provided_login) < 3:
-                messagebox.showerror("Invalid Login","Login should be at least 3 characters long")
+                messagebox.showerror("Invalid Login", "Login should be at least 3 characters long")
                 return False
 
             if len(provided_password) < 8 or not any(char.isupper() for char in provided_password) or \
@@ -84,7 +84,6 @@ class Register(customtkinter.CTk):
             if provided_password != provided_password2:
                 messagebox.showerror("Passwords don't match", "Please make sure the passwords match.")
                 return False
-            
 
             db = database_connect.DatabaseConnector()
 
@@ -110,8 +109,7 @@ class Register(customtkinter.CTk):
                     f"crypt('{provided_password}', gen_salt('bf')), '{provided_email}');"
             db.make_query(query)
 
-            email_sender = Email()
-            email_sender.send_confirmation_mail_eng(provided_email, provided_login)
+            send_confirmation_mail_eng(provided_email, provided_login)
             self.get_me_to_welcome_page()
 
     def get_me_to_login(self):

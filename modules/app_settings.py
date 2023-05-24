@@ -4,6 +4,7 @@ from PIL import ImageTk
 from modules.database import database_connect
 from tkinter import messagebox
 from modules.functions.invite_to_budget import *
+from modules import home_window
 
 
 customtkinter.set_appearance_mode("System")
@@ -30,6 +31,7 @@ class ApplicationSettings(customtkinter.CTk):
         self.resizable(False, False)
         self.label = customtkinter.CTkLabel(master=self.frame, text="Settings", font=("Arial", 35, "normal"))
         self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=3, sticky="new")
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
         self.language_label = customtkinter.CTkLabel(master=self.frame, text="Choose a language from the following:",
                                                      font=("arial", 25, "normal"))
@@ -80,7 +82,10 @@ class ApplicationSettings(customtkinter.CTk):
 
         db.make_query(query)
             
-    
+    def on_closing(self):
+        self.destroy()
+        home = home_window.HomeWindow(self.id)
+        home.mainloop()
 
 
     def change_ui_language_to_eng(self):
