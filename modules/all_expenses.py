@@ -7,6 +7,7 @@ from modules.expense_detail import ExpenseDetail
 from modules.add_expense import AddExpense
 from modules import home_window
 import textwrap
+import csv
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -59,16 +60,20 @@ class AllExpenses(customtkinter.CTk):
 
         self.addbtn = customtkinter.CTkButton(master=self, text='Add new expense', command=self.add_new_expense,
                                               font=('Arial', 30, 'normal'))
-        self.addbtn.place(relx=0.2, rely=0.9, anchor='center')
+        self.addbtn.place(relx=0.1, rely=0.9, anchor='center')
 
         self.refreshbtn = customtkinter.CTkButton(master=self, text='Refresh',
                                                   command=lambda: self.refresh(str(self.category_opt.get())),
                                                   font=('Arial', 30, 'normal'))
-        self.refreshbtn.place(relx=0.5, rely=0.9, anchor='center')
+        self.refreshbtn.place(relx=0.375, rely=0.9, anchor='center')
+
+        self.downloadbtn = customtkinter.CTkButton(master=self, text='Download', command=lambda: self.download_data(str(self.category_opt.get())),
+                                               font=('Arial', 30, 'normal'))
+        self.downloadbtn.place(relx=0.625, rely=0.9, anchor='center')
 
         self.exitbtn = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.on_closing(),
                                                font=('Arial', 30, 'normal'))
-        self.exitbtn.place(relx=0.8, rely=0.9, anchor='center')
+        self.exitbtn.place(relx=0.9, rely=0.9, anchor='center')
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
@@ -91,27 +96,7 @@ class AllExpenses(customtkinter.CTk):
         for widget in self.frame.grid_slaves():
             widget.grid_forget()
 
-        name = self.name_entry.get()
-        filter = self.filter_opt.get()
-
-        if filter == 'Amount descending':
-            sort_filter = 'expenses.amount DESC'
-        elif filter == 'Amount ascending':
-            sort_filter = 'expenses.amount ASC'
-        elif filter == 'Date descending':
-            sort_filter = 'expenses.add_date DESC'
-        else:
-            sort_filter = 'expenses.add_date ASC'
-
-        if category == 'All':
-            category_filter = ''
-        else:
-             category_filter = f"AND categories.name = '{category}'" 
-
-        query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, " \
-                f"expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE " \
-                f"expenses.user_id={self.get_user_name(self.username)[0]} {category_filter} AND expenses.name LIKE " \
-                f"'%{name}%' ORDER BY {sort_filter}"
+        query = self.filter_data(category)
 
         db = database_connect.DatabaseConnector()
 
@@ -139,8 +124,49 @@ class AllExpenses(customtkinter.CTk):
                                                      (exp_id, self.username), font=('Arial', 24, 'normal'))
             self.detailbtn.grid(pady=20, padx=10, row=idx, column=4)
 
+    def filter_data(self, category):
+        name = self.name_entry.get()
+        filter = self.filter_opt.get()
+
+        if filter == 'Amount descending':
+            sort_filter = 'expenses.amount DESC'
+        elif filter == 'Amount ascending':
+            sort_filter = 'expenses.amount ASC'
+        elif filter == 'Date descending':
+            sort_filter = 'expenses.add_date DESC'
+        else:
+            sort_filter = 'expenses.add_date ASC'
+
+        if category == 'All':
+            category_filter = ''
+        else:
+             category_filter = f"AND categories.name = '{category}'"
+
+        query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, " \
+                f"expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE " \
+                f"expenses.user_id={self.get_user_name(self.username)[0]} {category_filter} AND expenses.name LIKE " \
+                f"'%{name}%' ORDER BY {sort_filter}"
+
+        return query
+
     def get_user_name(self, user_login):
         db = database_connect.DatabaseConnector()
         name_query = f"SELECT id, name FROM users WHERE username='{user_login}';"
         user_name = db.select_data(name_query, 'one')
         return user_name
+
+    def download_data(self, category):
+        db = database_connect.DatabaseConnector()
+        query = self.filter_data(category)
+        expenses = list(db.select_data(query))
+        for idx, exp in enumerate(expenses):
+            expenses[idx] = list(exp[:-1])
+            for i, e in enumerate(exp):
+                if isinstance(e, str):
+                    expenses[idx][i] = e.replace('\n', '\\n')
+        header = ['Name', 'Description', 'Add_date', 'Amount', 'Category']
+
+        with open('expenses.csv', 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(header)
+            writer.writerows(expenses)

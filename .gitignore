@@ -161,3 +161,4 @@ cython_debug/
 database.ini
 email_credentials.py
 login_pass.txt
+expenses.csv
