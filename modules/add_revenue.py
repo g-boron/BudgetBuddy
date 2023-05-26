@@ -22,7 +22,9 @@ class AddRevenue(customtkinter.CTk):
         self.title("Add new expense")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
 
@@ -59,12 +61,13 @@ class AddRevenue(customtkinter.CTk):
         query = f'SELECT currency FROM users WHERE id = {self.id}'
         currency = db.select_data(query, 'one')[0]
 
-        self.amount_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text=f'Amount [{currency}]', justify=CENTER)
+        self.amount_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text=f'Amount [{currency}]',
+                                                   justify=CENTER)
         self.amount_entry.grid(pady=10, padx=10, row=4, column=0, sticky='ew')
 
-        self.addbtn = customtkinter.CTkButton(master=self.frame, text='Add new revenue',
-                                              command=self.add_new_revenue, font=('Arial', 25, 'normal'))
-        self.addbtn.grid(padx=20, pady=10, row=5, column=0, sticky='ew')
+        self.add_button = customtkinter.CTkButton(master=self.frame, text='Add new revenue',
+                                                  command=self.add_new_revenue, font=('Arial', 25, 'normal'))
+        self.add_button.grid(padx=20, pady=10, row=5, column=0, sticky='ew')
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
@@ -90,7 +93,6 @@ class AddRevenue(customtkinter.CTk):
                  
         else:
             messagebox.showerror("Error", "Please enter valid data.")
-
 
     def isfloat(self, num):
         try:

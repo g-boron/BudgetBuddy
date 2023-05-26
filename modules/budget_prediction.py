@@ -27,6 +27,7 @@ class BudgetPrediction(customtkinter.CTk):
         self.frame.grid_rowconfigure(3, weight=1)
         self.frame.grid_rowconfigure(4, weight=1)
         self.resizable(False, False)
+
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
         self.window_flag = 1
 
@@ -36,7 +37,8 @@ class BudgetPrediction(customtkinter.CTk):
         self.title = customtkinter.CTkLabel(master=self, text='Budget prediction', font=('Arial', 35, 'normal'))
         self.title.place(relx=0.4, rely=0.05)
 
-        self.date = customtkinter.CTkLabel(master=self.frame, text=(datetime.today() + relativedelta(months=1)).strftime('%m-%Y'),
+        self.date = customtkinter.CTkLabel(master=self.frame, text=(datetime.today() +
+                                                                    relativedelta(months=1)).strftime('%m-%Y'),
                                            font=("Arial", 30, "normal"))
         self.date.grid(pady=18, padx=250, row=0, column=0, columnspan=2, sticky='nsew')
 
@@ -59,7 +61,8 @@ class BudgetPrediction(customtkinter.CTk):
         self.shopping = customtkinter.CTkLabel(master=self.frame, text="Shopping", font=("Arial", 25, "normal"))
         self.shopping.grid(row=3, column=0, padx=10, pady=20, sticky='w')
 
-        self.total_shopping = customtkinter.CTkLabel(master=self.frame, text=f"{round(data['Shopping'], 2)} {self.currency}",
+        self.total_shopping = customtkinter.CTkLabel(master=self.frame, text=f"{round(data['Shopping'], 2)} "
+                                                                             f"{self.currency}",
                                                      font=("Arial", 25, "normal"))
         self.total_shopping.grid(row=3, column=1, padx=10, pady=20, sticky='e')
 

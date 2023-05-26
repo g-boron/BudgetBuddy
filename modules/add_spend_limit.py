@@ -23,30 +23,30 @@ class SpendLimit(customtkinter.CTk):
         self.resizable(True, True)
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=400)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.grid_rowconfigure((0, 1, 2), weight=1)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
 
         self.resizable(False, False)
-        self.label = customtkinter.CTkLabel(master=self.frame, text="Change monthly spend limit", font=("Arial", 35, "normal"))
+        self.label = customtkinter.CTkLabel(master=self.frame, text="Change monthly spend limit",
+                                            font=("Arial", 35, "normal"))
         self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=3, sticky="new")
 
         self.info_label = customtkinter.CTkLabel(master=self.frame, text="Enter value to set monthly spend limit:",
-                                                     font=("arial", 25, "normal"))
+                                                 font=("arial", 25, "normal"))
         self.info_label.grid(column=0, row=1, columnspan=2, padx=20, pady=10)
 
-        
         self.limit_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="", justify=CENTER)
         self.limit_entry.grid(column=0, row=2, padx=20, pady=10, sticky="ew")
 
-        self.invite_button = customtkinter.CTkButton(master=self.frame, text="Set limit!",
-                                                     command=lambda: self.set_limit(username))
+        self.invite_button = customtkinter.CTkButton(master=self.frame, text="Set limit!", command=self.set_limit)
         self.invite_button.grid(column=1, row=2, padx=20, pady=10)
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
-
-    def set_limit(self, username):
+    def set_limit(self):
         try:
             limit = float(self.limit_entry.get())
             if limit > 0:
@@ -60,7 +60,6 @@ class SpendLimit(customtkinter.CTk):
         except ValueError:
             messagebox.showerror("Error", "Value must be a number!")
 
-    
     def on_closing(self):
         self.destroy()
         home = home_window.HomeWindow(self.username)

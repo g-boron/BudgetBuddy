@@ -1,6 +1,6 @@
 from modules.database import database_connect
-from modules.functions.get_user_id import *
-from modules.functions.get_user_name import *
+from modules.functions.get_users_info import *
+from modules.functions.get_users_info import *
 
 
 def validate_sharing_budget(users_id, owner_id):

@@ -6,9 +6,7 @@ from tkinter import messagebox
 from modules.functions.notifications import *
 from modules import home_window
 from modules.functions.sharing_budgets import *
-from modules.functions.get_user_login import *
-from modules.functions.get_user_id import *
-from modules.functions.get_user_name import *
+from modules.functions.get_users_info import *
 
 
 customtkinter.set_appearance_mode("System")
@@ -28,6 +26,9 @@ class ChooseBudget(customtkinter.CTk):
         self.title("Choose the budget you want to use.")
         self.resizable(True, True)
         self.frame = customtkinter.CTkFrame(master=self, width=400, height=600)
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
@@ -67,7 +68,8 @@ class ChooseBudget(customtkinter.CTk):
         owner_name = []
         inheriting = get_user_id(user_id)
         db = database_connect.DatabaseConnector()
-        query = f"SELECT id, owner_id FROM shared_budgets WHERE inheriting_id = {inheriting} OR owner_id = {inheriting};"
+        query = f"SELECT id, owner_id FROM shared_budgets WHERE inheriting_id = {inheriting} " \
+                f"OR owner_id = {inheriting};"
         all_budgets = db.select_data(query)
         number_of_budgets = len(all_budgets)
         home_window.is_not_default_budget = 1

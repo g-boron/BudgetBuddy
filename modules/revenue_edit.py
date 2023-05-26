@@ -23,7 +23,9 @@ class EditRevenue(customtkinter.CTk):
         self.title("Edit your revenue")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
         self.resizable(False, False)
@@ -116,5 +118,3 @@ class EditRevenue(customtkinter.CTk):
             return True
         except ValueError:
             return False
-
-

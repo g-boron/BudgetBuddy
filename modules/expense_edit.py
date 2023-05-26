@@ -21,6 +21,9 @@ class EditExpense(customtkinter.CTk):
         super().__init__()
         self.geometry("800x800")
         self.title("Edit your expense")
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
@@ -80,7 +83,6 @@ class EditExpense(customtkinter.CTk):
         self.edit.grid(row=6, column=1, padx=10, pady=20, sticky='sw')
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
-
 
     def on_closing(self):
         self.destroy()

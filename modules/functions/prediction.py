@@ -12,7 +12,10 @@ class Predictor:
         self.cur = self.conn.cursor()
 
     def predict_budget(self):
-        self.cur.execute(f"SELECT categories.name, EXTRACT(MONTH FROM expenses.add_date) AS month, EXTRACT(YEAR FROM expenses.add_date) AS year, SUM(expenses.amount) AS total_amount FROM expenses JOIN categories ON expenses.category_id = categories.id WHERE expenses.user_id={self.user_id} GROUP BY categories.name, month, year ORDER BY month")
+        self.cur.execute(f"SELECT categories.name, EXTRACT(MONTH FROM expenses.add_date) AS month, EXTRACT"
+                         f"(YEAR FROM expenses.add_date) AS year, SUM(expenses.amount) AS total_amount "
+                         f"FROM expenses JOIN categories ON expenses.category_id = categories.id "
+                         f"WHERE expenses.user_id={self.user_id} GROUP BY categories.name, month, year ORDER BY month")
         data = self.cur.fetchall()
         
         df = pd.DataFrame(data, columns=['category', 'month', 'year', 'total'])

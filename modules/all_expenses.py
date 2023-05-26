@@ -22,10 +22,9 @@ class AllExpenses(customtkinter.CTk):
         self.geometry("%dx%d" % (width, height))
         self.state('zoomed')
         self.title("See all your expenses")
-        '''
         self.wm_iconbitmap()
         self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
-        self.iconphoto(False, self.iconpath)'''
+        self.iconphoto(False, self.iconpath)
         self.resizable(True, True)
         self.label = customtkinter.CTkLabel(master=self, text=f"{self.get_user_name(self.username)[1]}'s expenses",
                                             font=("Arial", 50, "normal"))
@@ -42,12 +41,13 @@ class AllExpenses(customtkinter.CTk):
 
         self.category_opt = customtkinter.CTkOptionMenu(self, values=categories, font=('Arial', 30, 'normal'))
         self.category_opt.place(x=800, y=155)
-# input field to type name of expense
-        self.name_entry = customtkinter.CTkEntry(master=self, placeholder_text="name", justify=CENTER,
-                                                 font=('Arial', 30, 'normal'))
-        self.name_entry.place(x=1000, y=150)
-# choose filter option
-        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['Date descending', 'Date ascending', 'Amount descending', 'Amount ascending'],
+
+        self.expense_name_entry = customtkinter.CTkEntry(master=self, placeholder_text="name", justify=CENTER,
+                                                         font=('Arial', 30, 'normal'))
+        self.expense_name_entry.place(x=1000, y=150)
+
+        self.filter_opt = customtkinter.CTkOptionMenu(self, values=['Date descending', 'Date ascending',
+                                                                    'Amount descending', 'Amount ascending'],
                                                       font=('Arial', 30, 'normal'))
         self.filter_opt.place(x=1150, y=150)
 
@@ -58,22 +58,23 @@ class AllExpenses(customtkinter.CTk):
 
         self.refresh('All')
 
-        self.addbtn = customtkinter.CTkButton(master=self, text='Add new expense', command=self.add_new_expense,
-                                              font=('Arial', 30, 'normal'))
-        self.addbtn.place(relx=0.1, rely=0.9, anchor='center')
-
-        self.refreshbtn = customtkinter.CTkButton(master=self, text='Refresh',
-                                                  command=lambda: self.refresh(str(self.category_opt.get())),
+        self.add_button = customtkinter.CTkButton(master=self, text='Add new expense', command=self.add_new_expense,
                                                   font=('Arial', 30, 'normal'))
-        self.refreshbtn.place(relx=0.375, rely=0.9, anchor='center')
+        self.add_button.place(relx=0.1, rely=0.9, anchor='center')
 
-        self.downloadbtn = customtkinter.CTkButton(master=self, text='Download', command=lambda: self.download_data(str(self.category_opt.get())),
-                                               font=('Arial', 30, 'normal'))
-        self.downloadbtn.place(relx=0.625, rely=0.9, anchor='center')
+        self.refresh_button = customtkinter.CTkButton(master=self, text='Refresh',
+                                                      command=lambda: self.refresh(str(self.category_opt.get())),
+                                                      font=('Arial', 30, 'normal'))
+        self.refresh_button.place(relx=0.375, rely=0.9, anchor='center')
 
-        self.exitbtn = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.on_closing(),
-                                               font=('Arial', 30, 'normal'))
-        self.exitbtn.place(relx=0.9, rely=0.9, anchor='center')
+        self.download_button = customtkinter.CTkButton(master=self, text='Download',
+                                                       command=lambda: self.download_data(str(self.category_opt.get())),
+                                                       font=('Arial', 30, 'normal'))
+        self.download_button.place(relx=0.625, rely=0.9, anchor='center')
+
+        self.exit_button = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.on_closing(),
+                                                   font=('Arial', 30, 'normal'))
+        self.exit_button.place(relx=0.9, rely=0.9, anchor='center')
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
@@ -82,7 +83,7 @@ class AllExpenses(customtkinter.CTk):
         home = home_window.HomeWindow(self.username)
         home.mainloop()
 
-    def see_details(self, exp_id, user_login):
+    def see_details(self, exp_id):
         self.destroy()
         exp_detail = ExpenseDetail(exp_id, self.username)
         exp_detail.mainloop()
@@ -102,31 +103,31 @@ class AllExpenses(customtkinter.CTk):
 
         expenses = db.select_data(query)
         for idx, expense in enumerate(expenses):
-            self.expname = customtkinter.CTkLabel(master=self.frame, text=textwrap.shorten(expense[0], width=25,
+            expanse_name = customtkinter.CTkLabel(master=self.frame, text=textwrap.shorten(expense[0], width=25,
                                                                                            placeholder='...'),
                                                   font=("Arial", 24, "normal"))
-            self.expname.grid(pady=20, padx=10, row=idx, column=0)
+            expanse_name.grid(pady=20, padx=10, row=idx, column=0)
             
-            self.category = customtkinter.CTkLabel(master=self.frame, text=expense[4], font=("Arial", 24, "normal"))
-            self.category.grid(pady=20, padx=10, row=idx, column=1)
+            category_label = customtkinter.CTkLabel(master=self.frame, text=expense[4], font=("Arial", 24, "normal"))
+            category_label.grid(pady=20, padx=10, row=idx, column=1)
             
-            self.date = customtkinter.CTkLabel(master=self.frame, text=str(expense[2]).split(' ')[0],
-                                               font=("Arial", 24, "normal"))
-            self.date.grid(pady=20, padx=10, row=idx, column=2)
+            date = customtkinter.CTkLabel(master=self.frame, text=str(expense[2]).split(' ')[0],
+                                          font=("Arial", 24, "normal"))
+            date.grid(pady=20, padx=10, row=idx, column=2)
 
-            self.price = customtkinter.CTkLabel(master=self.frame, text=expense[3], font=("Arial", 24, "normal"))
-            self.price.grid(pady=20, padx=10, row=idx, column=3)
+            price = customtkinter.CTkLabel(master=self.frame, text=expense[3], font=("Arial", 24, "normal"))
+            price.grid(pady=20, padx=10, row=idx, column=3)
             
             exp_id = expense[5]
 
-            self.detailbtn = customtkinter.CTkButton(master=self.frame, text="Detail",
-                                                     command=lambda exp_id=exp_id: self.see_details
-                                                     (exp_id, self.username), font=('Arial', 24, 'normal'))
-            self.detailbtn.grid(pady=20, padx=10, row=idx, column=4)
+            detail_button = customtkinter.CTkButton(master=self.frame, text="Detail",
+                                                    command=lambda exp_id=exp_id: self.see_details
+                                                    (exp_id), font=('Arial', 24, 'normal'))
+            detail_button.grid(pady=20, padx=10, row=idx, column=4)
 
     def filter_data(self, category):
-        name = self.name_entry.get()
-        filter = self.filter_opt.get()
+        name = self.expense_name_entry.get()
+        choosed_filter = self.filter_opt.get()
 
         if filter == 'Amount descending':
             sort_filter = 'expenses.amount DESC'

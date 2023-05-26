@@ -1,13 +1,12 @@
 from tkinter import *
 import customtkinter
 from PIL import ImageTk
-
 import modules.home_window
 from modules.database import database_connect
 from modules.add_payment_term import AddPaymentData
-from modules.functions.get_user_name import *
+from modules.functions.get_users_info import *
 import textwrap
-from modules.functions.get_user_id import get_user_id
+from modules.functions.get_users_info import *
 import modules.home_window
 
 
@@ -33,6 +32,9 @@ class PaymentTerm(customtkinter.CTk):
 
         self.frame = customtkinter.CTkScrollableFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
         self.frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
@@ -62,19 +64,15 @@ class PaymentTerm(customtkinter.CTk):
 
     def add_new_payment_term(self):
         self.destroy()
-        print("id funkcja: ", get_user_id(self.login))
-        print("login: ", self.login)
         add_payment_term = AddPaymentData(self.login)
         add_payment_term.mainloop()
 
     def refresh(self):
         for widget in self.frame.grid_slaves():
             widget.grid_forget()
-
         db = database_connect.DatabaseConnector()
-
         name = self.name_entry.get()
-        filter = self.filter_opt.get()
+        choosed_filter = self.filter_opt.get()
 
         if filter == 'Amount descending':
             sort_filter = 'amount DESC'
@@ -87,9 +85,7 @@ class PaymentTerm(customtkinter.CTk):
         query = f"SELECT name, date, amount, id FROM payment_term " \
                 f"WHERE user_id={get_user_id(self.login)} " \
                 f"AND name LIKE '%{name}%' ORDER BY {sort_filter}"
-
         terms = db.select_data(query)
-
         for idx, terms in enumerate(terms):
             payment_term_name = customtkinter.CTkLabel(master=self.frame, text=textwrap.shorten(terms[0], width=25,
                                                                                                 placeholder='...'),
@@ -107,4 +103,3 @@ class PaymentTerm(customtkinter.CTk):
         self.destroy()
         payment_terms = modules.home_window.HomeWindow(self.login)
         payment_terms.mainloop()
-

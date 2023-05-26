@@ -6,8 +6,7 @@ from tkinter import messagebox
 from tkcalendar import Calendar
 from tkinter import ttk
 from modules import payment_term
-from modules.functions.get_user_name import *
-from modules.functions.get_user_id import *
+from modules.functions.get_users_info import *
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -21,7 +20,9 @@ class AddPaymentData(customtkinter.CTk):
         self.title("Add new expense")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
 
@@ -78,7 +79,6 @@ class AddPaymentData(customtkinter.CTk):
             return True
         except ValueError:
             return False
-
 
     def on_closing(self):
         self.destroy()

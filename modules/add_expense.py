@@ -22,7 +22,9 @@ class AddExpense(customtkinter.CTk):
         self.title("Add new expense")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
 
@@ -61,7 +63,8 @@ class AddExpense(customtkinter.CTk):
         query = f'SELECT currency FROM users WHERE id = {self.id}'
         currency = db.select_data(query, 'one')[0]
 
-        self.amount_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text=f'Amount [{currency}]', justify=CENTER)
+        self.amount_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text=f'Amount [{currency}]',
+                                                   justify=CENTER)
         self.amount_entry.grid(pady=10, padx=10, row=4, column=0, sticky='ew')
 
         query = 'SELECT name FROM categories'
@@ -71,12 +74,11 @@ class AddExpense(customtkinter.CTk):
         self.category = customtkinter.CTkOptionMenu(master=self.frame, values=categories)
         self.category.grid(pady=20, padx=10, row=5, column=0, sticky="ew")
 
-        self.addbtn = customtkinter.CTkButton(master=self.frame, text='Add new expense',
-                                              command=self.add_new_expense, font=('Arial', 25, 'normal'))
-        self.addbtn.grid(padx=20, pady=10, row=6, column=0, sticky='ew')
+        self.add_button = customtkinter.CTkButton(master=self.frame, text='Add new expense',
+                                                  command=self.add_new_expense, font=('Arial', 25, 'normal'))
+        self.add_button.grid(padx=20, pady=10, row=6, column=0, sticky='ew')
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
-
 
     def on_closing(self):
         self.destroy()
@@ -99,18 +101,18 @@ class AddExpense(customtkinter.CTk):
         if spend_limit is None:
             spend_limit = 100000000000000
         
-        query2 = f"SELECT SUM(amount) FROM expenses WHERE user_id = {self.id} AND EXTRACT(MONTH FROM add_date) = EXTRACT(MONTH FROM TIMESTAMP '{day}')"
+        query2 = f"SELECT SUM(amount) FROM expenses WHERE user_id = {self.id} AND EXTRACT(MONTH FROM add_date) = " \
+                 f"EXTRACT(MONTH FROM TIMESTAMP '{day}')"
         current_month_revenues = db.select_data(query2, 'one')[0]
         if current_month_revenues is None:
             current_month_revenues = 0
 
-
         if float(amount)+float(current_month_revenues) <= float(spend_limit):
             pass
         else:
-            messagebox.showerror('Error', f"You exceeded your spend limit this month!, your spend limit is {spend_limit}, and you already spent {current_month_revenues}")
-            return   
-
+            messagebox.showerror('Error', f"You exceeded your spend limit this month!, your spend limit is "
+                                          f"{spend_limit}, and you already spent {current_month_revenues}")
+            return
 
         if name != '' and self.isfloat(amount) and float(amount) > 0:
             budget = Budget(self.id)
@@ -124,7 +126,6 @@ class AddExpense(customtkinter.CTk):
         else:
             messagebox.showerror('Error', 'Please enter valid data.')
 
-
         name = self.name_entry.get()
         desc = self.desc_text.get("1.0", END)
         amount = self.amount_entry.get()
@@ -136,26 +137,24 @@ class AddExpense(customtkinter.CTk):
         if spend_limit is None:
             spend_limit = 100000000000000
         
-        query2 = f"SELECT SUM(amount) FROM expenses WHERE user_id = {self.id} AND EXTRACT(MONTH FROM add_date) = EXTRACT(MONTH FROM TIMESTAMP '{day}')"
+        query2 = f"SELECT SUM(amount) FROM expenses WHERE user_id = {self.id} AND EXTRACT(MONTH FROM add_date) = " \
+                 f"EXTRACT(MONTH FROM TIMESTAMP '{day}')"
         current_month_revenues = db.select_data(query2, 'one')[0]
         if current_month_revenues is None:
             current_month_revenues = 0
-        
-
-        float(amount)+float(current_month_revenues) <= float(spend_limit)
 
         if name != '' and self.isfloat(amount):
-            if float(amount)+float(current_month_revenues) <= float(spend_limit):
+            if float(amount) + float(current_month_revenues) <= float(spend_limit):
                 budget = Budget(self.id)
                 budget.add_revenue(name, desc, float(amount), day)
                 messagebox.showinfo('Success', 'You successfully added new revenue!')
                 self.on_closing()
             else:
-                messagebox.showerror("Error", f"You exceeded your spend limit tihs month!, your spend limit is {spend_limit}, and you already spent {current_month_revenues}")
+                messagebox.showerror("Error", f"You exceeded your spend limit this month!, your spend limit is "
+                                              f"{spend_limit}, and you already spent {current_month_revenues}")
                
         else:
             messagebox.showerror("Error", "Please enter valid data.")
-
 
     def isfloat(self, num):
         try:

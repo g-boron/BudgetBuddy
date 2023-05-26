@@ -24,7 +24,9 @@ class ApplicationSettings(customtkinter.CTk):
         self.resizable(True, True)
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
 
@@ -53,12 +55,12 @@ class ApplicationSettings(customtkinter.CTk):
 
         self.dark_button = customtkinter.CTkButton(master=self.frame, text="dark", font=("arial", 20, "normal"),
                                                    fg_color=DARK_COLOR, hover_color=SYSTEM_BLUE,
-                                                   command=lambda:self.change_ui_theme("dark"))
+                                                   command=lambda: self.change_ui_theme("dark"))
         self.dark_button.grid(column=0, row=4, padx=20, pady=10)
 
         self.light_button = customtkinter.CTkButton(master=self.frame, text="light", font=("arial", 20, "normal"),
                                                     fg_color=LIGHT_COLOR, hover_color=SYSTEM_BLUE,
-                                                    command=lambda:self.change_ui_theme("light"))
+                                                    command=lambda: self.change_ui_theme("light"))
         self.light_button.grid(column=1, row=4, padx=20, pady=10)
 
         self.invite_label = customtkinter.CTkLabel(master=self.frame, text="Invite someone to your budget:",
@@ -77,16 +79,15 @@ class ApplicationSettings(customtkinter.CTk):
 
         if theme == "light":
             query = f"UPDATE users SET theme = 'light' WHERE username = '{self.id}'"
+            db.make_query(query)
         elif theme == "dark":
             query = f"UPDATE users SET theme = 'dark' WHERE username = '{self.id}'"
+            db.make_query(query)
 
-        db.make_query(query)
-            
     def on_closing(self):
         self.destroy()
         home = home_window.HomeWindow(self.id)
         home.mainloop()
-
 
     def change_ui_language_to_eng(self):
         pass

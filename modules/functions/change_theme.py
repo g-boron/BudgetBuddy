@@ -1,6 +1,6 @@
 import customtkinter
 from modules.database.database_connect import DatabaseConnector
-from modules.functions.get_user_id import *
+from modules.functions.get_users_info import *
 
 
 def set_theme(user_id):

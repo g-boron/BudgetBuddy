@@ -22,6 +22,9 @@ class RevenueDetail(customtkinter.CTk):
         self.title("Revenue detail")
         self.frame = customtkinter.CTkScrollableFrame(master=self, width=700, height=500)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.grid_rowconfigure(0, weight=1)
         self.frame.grid_rowconfigure(1, weight=1)
         self.frame.grid_rowconfigure(2, weight=1)
@@ -29,12 +32,13 @@ class RevenueDetail(customtkinter.CTk):
         self.frame.grid_rowconfigure(4, weight=1)
         self.resizable(False, False)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
+        self.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window_flag = 1
 
         db = database_connect.DatabaseConnector()
         query = f"SELECT revenues.id, revenues.name, revenues.description, revenues.add_date, " \
-                f"revenues.amount, users.currency, revenues.user_id FROM revenues JOIN users ON revenues.user_id=users.id WHERE " \
-                f"revenues.id={self.id}"
+                f"revenues.amount, users.currency, revenues.user_id FROM revenues JOIN users " \
+                f"ON revenues.user_id=users.id WHERE revenues.id={self.id}"
         revenue = db.select_data(query, 'one')
 
         self.name = customtkinter.CTkLabel(master=self.frame, text=revenue[1], font=("Arial", 30, "normal"),
@@ -55,15 +59,15 @@ class RevenueDetail(customtkinter.CTk):
         id_revenue = revenue[0]
 
         self.edit = customtkinter.CTkButton(master=self.frame, text='Edit revenue', font=('Arial', 25, 'normal'),
-                                            command=lambda id_revenue=id_revenue: self.edit_revenue(id_revenue, username))
+                                            command=lambda id_revenue=id_revenue:
+                                            self.edit_revenue(id_revenue, username))
         self.edit.grid(pady=18, padx=10, row=3, column=2)
 
         self.delete = customtkinter.CTkButton(master=self.frame, text='Delete',
-                                              command=lambda id_revenue=id_revenue: self.delete_revenue(id_revenue, revenue[6], revenue[4]),
+                                              command=lambda id_revenue=id_revenue:
+                                              self.delete_revenue(id_revenue, revenue[6], revenue[4]),
                                               font=('Arial', 25, 'normal'))
         self.delete.grid(pady=18, padx=10, row=3, column=0)
-
-        self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def on_closing(self):
         self.destroy()
@@ -80,13 +84,10 @@ class RevenueDetail(customtkinter.CTk):
 
     def delete_revenue(self, id_revenue, user_id, amount):
         msg_box = messagebox.askquestion('Delete revenue', 'Are you sure you want to delete the revenue?', icon='warning')
-
         if msg_box == 'yes':
             db = database_connect.DatabaseConnector()
             query = f"DELETE FROM revenues WHERE id = {id_revenue};"
             db.make_query(query)
-
             balance = db.select_data(f'SELECT balance FROM users WHERE id={user_id}', 'one')[0]
             db.make_query(f'UPDATE users SET balance = {float(balance) - float(amount)} WHERE id={user_id}')
-
             self.on_closing()

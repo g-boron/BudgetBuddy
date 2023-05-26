@@ -21,7 +21,6 @@ from modules.app_settings import ApplicationSettings
 from modules.functions.notifications import *
 from modules.notifications import Notifications
 from modules.budget_prediction import BudgetPrediction
-from modules.functions.sharing_budgets import *
 from modules.choose_budget import ChooseBudget
 from modules.functions.sharing_budgets import *
 from modules.payment_term import PaymentTerm
@@ -30,7 +29,7 @@ from .functions.summaries import get_user_currency, get_daily_summary, get_month
     sum_lists, get_spend_limit
 from modules.functions.change_theme import set_theme
 from modules.functions.send_email import *
-from modules.functions.get_user_name import *
+from modules.functions.get_users_info import *
 
 
 class HomeWindow(customtkinter.CTk):
@@ -102,8 +101,8 @@ class HomeWindow(customtkinter.CTk):
             self.show_choose_budget()
 
         self.add_limit = customtkinter.CTkButton(master=self.menu_frame, text="Add monthly expanses limit",
-                                                     fg_color="transparent", font=("Arial", 26, "normal"),
-                                                     command=lambda: self.spend_limit(self.username))
+                                                 fg_color="transparent", font=("Arial", 26, "normal"),
+                                                 command=lambda: self.spend_limit(self.username))
         self.add_limit.grid(pady=18, padx=10, row=8, column=0, sticky="new")
 
         self.app_settings_button = customtkinter.CTkButton(master=self.menu_frame, text="App Settings",
@@ -168,9 +167,10 @@ class HomeWindow(customtkinter.CTk):
             
             plt.close(fig)
         else:
-            self.error = customtkinter.CTkLabel(master=self.user_balance_frame, text="Set your spending limit to see a pie chart.", font=("Arial", 25, "normal"))
+            self.error = customtkinter.CTkLabel(master=self.user_balance_frame, text="Set your spending limit to see "
+                                                                                     "a pie chart.",
+                                                font=("Arial", 25, "normal"))
             self.error.grid(pady=18, padx=10, column=0, row=3)
-
 
         self.summary, self.results = get_daily_summary(self.username)
 
@@ -189,16 +189,16 @@ class HomeWindow(customtkinter.CTk):
         self.view.grid(pady=18, padx=10, column=1, row=0)
 
         self.month_total = customtkinter.CTkLabel(master=self.spending_summary,
-                                                  text=f"Month total: {str(round(sum(self.month_summary.values()), 2))} "
-                                                       f"{self.currency}", font=("Arial", 30, "normal"))
+                                                  text=f"Month total: {str(round(sum(self.month_summary.values()), 2))}"
+                                                       f" {self.currency}", font=("Arial", 30, "normal"))
         self.month_total.grid(pady=18, padx=10, column=0, row=1)
 
         self.month_view = customtkinter.CTkButton(master=self.spending_summary, text='View details',
                                                   command=self.see_month_details, font=('Arial', 30, 'normal'))
         self.month_view.grid(pady=18, padx=10, column=1, row=1)
 
-        #incoming payments scrollable menu
-        self.incoming_transactions_frame = customtkinter.CTkScrollableFrame(master=self, width=int((screen_width / 3)), height=160)
+        self.incoming_transactions_frame = customtkinter.CTkScrollableFrame(master=self,
+                                                                            width=int((screen_width / 3)), height=160)
         self.incoming_transactions_frame.grid(column=1, row=3, sticky="nsw")
         self.incoming_transactions_frame.grid_columnconfigure((0,1,2,3), weight=1)
         self.incoming_transactions_frame.grid_rowconfigure((0,1, 2 ), weight=1)
@@ -280,7 +280,6 @@ class HomeWindow(customtkinter.CTk):
     def see_month_details(self):
         month_summary = MonthSummary(self.username, len(self.month_results))
         month_summary.mainloop()
-
 
     def show_expenses(self):
         self.destroy()
@@ -375,7 +374,6 @@ class HomeWindow(customtkinter.CTk):
         setting_window.mainloop()
         
     def show_incoming_payments(self, username):
-        
         db = database_connect.DatabaseConnector()
         query = f"SELECT name, date, amount, id FROM payment_term " \
                 f"WHERE user_id={get_user_id(username)} "
@@ -383,8 +381,8 @@ class HomeWindow(customtkinter.CTk):
         payments = db.select_data(query)
 
         for idx, payments in enumerate(payments):
-            payment_term_name = customtkinter.CTkLabel(master=self.incoming_transactions_frame, text=textwrap.shorten(payments[0], width=25,
-                                                                                                placeholder='...'),
+            payment_term_name = customtkinter.CTkLabel(master=self.incoming_transactions_frame,
+                                                       text=textwrap.shorten(payments[0], width=25, placeholder='...'),
                                                        font=("Arial", 18, "normal"))
             payment_term_name.grid(pady=20, padx=10, row=idx, column=0)
 
@@ -392,7 +390,8 @@ class HomeWindow(customtkinter.CTk):
                                           font=("Arial", 18, "normal"))
             date.grid(pady=20, padx=10, row=idx, column=1)
 
-            amount = customtkinter.CTkLabel(master=self.incoming_transactions_frame, text=payments[2], font=("Arial", 18, "normal"))
+            amount = customtkinter.CTkLabel(master=self.incoming_transactions_frame, text=payments[2],
+                                            font=("Arial", 18, "normal"))
             amount.grid(pady=20, padx=10, row=idx, column=2)
 
     def check_flag(self):

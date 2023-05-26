@@ -12,7 +12,6 @@ def get_user_currency(username):
 
 def get_daily_summary(username, day='now'):
     db = DatabaseConnector()
-
     if day == 'now':
         query = f"SELECT e.amount, c.name from expenses AS e JOIN users AS u ON e.user_id=u.id JOIN categories AS " \
                 f"c ON e.category_id=c.id WHERE u.username='{username}'AND e.add_date=CURRENT_DATE"
@@ -40,7 +39,6 @@ def get_daily_summary(username, day='now'):
 
 def get_month_summary(username, month='now'):
     db = DatabaseConnector()
-
     if month == 'now':
         current_month = datetime.datetime.now().month
         current_year = datetime.datetime.now().year
@@ -75,7 +73,6 @@ def get_month_summary(username, month='now'):
 
 def generate_month_graph_data(username):
     db = DatabaseConnector()
-
     current_month = datetime.datetime.now().month  
     current_year = datetime.datetime.now().year
     query = f"SELECT e.amount, c.name, EXTRACT(DAY FROM e.add_date) as day from expenses AS e " \
