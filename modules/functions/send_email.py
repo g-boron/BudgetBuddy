@@ -11,6 +11,7 @@ MESSAGE_PL = f"Cześć, xxx.\nCieszymy się, że od dziś będziesz lepiej zarz�
 
 
 def send_confirmation_mail_eng(provided_email, provided_login):
+    """Confirmation mail to given email address after account creation"""
     user_email = provided_email
     username = provided_login
     final_message = MESSAGE_ENG.replace("xxx", username)
@@ -22,6 +23,7 @@ def send_confirmation_mail_eng(provided_email, provided_login):
 
 
 def send_confirmation_mail_pl(provided_email, provided_login):
+    """Confirmation mail to given email address after account creation"""
     user_email = provided_email
     username = provided_login
     my_email = modules.email_credentials.email
@@ -35,6 +37,7 @@ def send_confirmation_mail_pl(provided_email, provided_login):
 
 
 def send_notification_email(provided_login, provided_email):
+    """Confirmation mail to given email address after account receives a notification"""
     user_email = provided_email
     username = provided_login
     notification_message = f"Hi, {username}.\nWe need to inform you that you have unread new notifications. " \

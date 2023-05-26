@@ -81,6 +81,7 @@ class AddExpense(customtkinter.CTk):
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         db = database_connect.DatabaseConnector()
         query = f"SELECT username from users WHERE id = {self.id}"
@@ -89,6 +90,7 @@ class AddExpense(customtkinter.CTk):
         expenses.mainloop()
 
     def add_new_expense(self):
+        """Adds new expense for a logged user"""
         name = self.name_entry.get()
         desc = self.desc_text.get("1.0", END)
         amount = self.amount_entry.get()
@@ -157,6 +159,7 @@ class AddExpense(customtkinter.CTk):
             messagebox.showerror("Error", "Please enter valid data.")
 
     def isfloat(self, num):
+        """Checks if the given variable is float"""
         try:
             float(num)
             return True

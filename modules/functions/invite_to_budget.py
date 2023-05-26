@@ -1,8 +1,10 @@
 from modules.database import database_connect
 from tkinter import messagebox
+from modules.functions.get_users_info import get_user_id
 
 
 def validate(invited_login):
+    """Checks if the given user exists inside the database"""
     provided_login = invited_login
     db = database_connect.DatabaseConnector()
     login_query = f"SELECT id FROM users WHERE username = '{provided_login}';"
@@ -13,18 +15,8 @@ def validate(invited_login):
         return False
 
 
-def get_account_id(inviting_person):
-    provided_login = inviting_person
-    db = database_connect.DatabaseConnector()
-    login_query = f"SELECT id FROM users WHERE username = '{provided_login}';"
-    user_id = db.select_data(login_query, 'one')
-    if user_id is not None:
-        return user_id[0]
-    else:
-        return False
-
-
 def send_invitation(inviting_person, invited_login):
+    """Sends an invitation from logged account to selected account"""
     invited_person = invited_login
     my_account_id = inviting_person
     db = database_connect.DatabaseConnector()
@@ -34,7 +26,8 @@ def send_invitation(inviting_person, invited_login):
 
 
 def invite_a_friend(inviting_person, invited_login):
-    account_login = get_account_id(inviting_person)
+    """Validates and then sends an invitation to a selected user"""
+    account_login = get_user_id(inviting_person)
     validation = validate(invited_login)
     if validation:
         send_invitation(account_login, validation)

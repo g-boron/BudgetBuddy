@@ -2,6 +2,7 @@ from modules.database import database_connect
 
 
 def get_user_id(user_id):
+    """Returns the id from database of given user"""
     provided_login = user_id
     db = database_connect.DatabaseConnector()
     login_query = f"SELECT id FROM users WHERE username = '{provided_login}';"
@@ -13,6 +14,7 @@ def get_user_id(user_id):
 
 
 def get_user_login(user_id):
+    """Returns the login from database of given user"""
     db = database_connect.DatabaseConnector()
     login_query = f"SELECT username FROM users WHERE id = {user_id};"
     result = db.select_data(login_query, 'one')
@@ -20,6 +22,7 @@ def get_user_login(user_id):
 
 
 def get_user_name(user_login):
+    """Returns the name from database of given user"""
     db = database_connect.DatabaseConnector()
     name_query = f"SELECT id, name FROM users WHERE username='{user_login}';"
     user_name = db.select_data(name_query, 'one')

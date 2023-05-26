@@ -72,6 +72,7 @@ class AddRevenue(customtkinter.CTk):
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         db = database_connect.DatabaseConnector()
         query = f"SELECT username FROM users WHERE id={self.id}"
@@ -80,6 +81,7 @@ class AddRevenue(customtkinter.CTk):
         revenues.mainloop()
 
     def add_new_revenue(self):
+        """Adds new revenue to a logged account"""
         name = self.name_entry.get()
         desc = self.desc_text.get("1.0", END)
         amount = self.amount_entry.get()
@@ -95,6 +97,7 @@ class AddRevenue(customtkinter.CTk):
             messagebox.showerror("Error", "Please enter valid data.")
 
     def isfloat(self, num):
+        """Checks if given variable is a float"""
         try:
             float(num)
             return True
