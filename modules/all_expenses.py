@@ -8,6 +8,7 @@ from modules.add_expense import AddExpense
 from modules import home_window
 import textwrap
 import csv
+import json
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -168,10 +169,18 @@ class AllExpenses(customtkinter.CTk):
             for i, e in enumerate(exp):
                 if isinstance(e, str):
                     expenses[idx][i] = e.replace('\n', '\\n')
-        header = ['Name', 'Description', 'Add_date', 'Amount', 'Category']
+        headers = ['Name', 'Description', 'Add_date', 'Amount', 'Category']
 
         if self.format_type.get() == 'csv':
             with open('expenses.csv', 'w', newline='') as f:
                 writer = csv.writer(f)
-                writer.writerow(header)
+                writer.writerow(headers)
                 writer.writerows(expenses)
+        else:
+            expenses_with_headers = []
+            for exp in expenses:
+                exp_dict = {headers[i]: exp[i] for i in range(len(headers))}
+                expenses_with_headers.append(exp_dict)
+
+            with open('expenses.json', 'w') as f:
+                json.dump(expenses_with_headers, f, default=str, indent=4)
