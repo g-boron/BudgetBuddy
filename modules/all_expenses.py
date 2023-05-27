@@ -67,10 +67,13 @@ class AllExpenses(customtkinter.CTk):
                                                       font=('Arial', 30, 'normal'))
         self.refresh_button.place(relx=0.375, rely=0.9, anchor='center')
 
+        self.format_type = customtkinter.CTkOptionMenu(master=self, values=['csv', 'json'], font=('Arial', 30, 'normal'))
+        self.format_type.place(relx=0.675, rely=0.9, anchor='center')
+
         self.download_button = customtkinter.CTkButton(master=self, text='Download',
                                                        command=lambda: self.download_data(str(self.category_opt.get())),
                                                        font=('Arial', 30, 'normal'))
-        self.download_button.place(relx=0.625, rely=0.9, anchor='center')
+        self.download_button.place(relx=0.59, rely=0.9, anchor='center')
 
         self.exit_button = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.on_closing(),
                                                    font=('Arial', 30, 'normal'))
@@ -167,7 +170,8 @@ class AllExpenses(customtkinter.CTk):
                     expenses[idx][i] = e.replace('\n', '\\n')
         header = ['Name', 'Description', 'Add_date', 'Amount', 'Category']
 
-        with open('expenses.csv', 'w', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(header)
-            writer.writerows(expenses)
+        if self.format_type.get() == 'csv':
+            with open('expenses.csv', 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(header)
+                writer.writerows(expenses)
