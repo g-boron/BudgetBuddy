@@ -42,6 +42,7 @@ class MonthSummary(customtkinter.CTk):
         self.refresh('now')
 
     def refresh(self, month):
+        """Refreshes month summary tab"""
         for widget in self.frame.grid_slaves():
             widget.grid_forget()
         if month == 'now':
@@ -112,4 +113,5 @@ class MonthSummary(customtkinter.CTk):
         total_other.grid(row=7, column=1, padx=10, pady=20, sticky='e')
 
     def change(self):
+        """Changes the month summary tab content by a given parameter"""
         self.refresh(self.choose.get())

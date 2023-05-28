@@ -42,6 +42,7 @@ class DaySummary(customtkinter.CTk):
         self.refresh('now')
     
     def refresh(self, day):
+        """Refreshes all the data showed on the screen"""
         for widget in self.frame.grid_slaves():
             widget.grid_forget()
 
@@ -111,4 +112,5 @@ class DaySummary(customtkinter.CTk):
         total_other.grid(row=7, column=1, padx=10, pady=20, sticky='e')
 
     def change(self):
+        """Changes the showed content based on given parameter"""
         self.refresh(self.choose.get())

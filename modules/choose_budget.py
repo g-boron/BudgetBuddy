@@ -39,6 +39,7 @@ class ChooseBudget(customtkinter.CTk):
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def open_default_budget(self, user_id):
+        """Opens a budget that is set as a default to a given account"""
         with open('budget_flag.txt', 'w') as file:
             file.write('')
         self.destroy()
@@ -46,6 +47,7 @@ class ChooseBudget(customtkinter.CTk):
         home.mainloop()
 
     def get_to_budget(self, owner_id):
+        """Opens a selected budget"""
         account_id = owner_id
         with open('budget_flag.txt', 'r') as file:
             content = file.read()
@@ -63,6 +65,7 @@ class ChooseBudget(customtkinter.CTk):
         home.mainloop()
 
     def get_all_budgets(self, user_id):
+        """Gets all the budgets that are assigned to an account"""
         budget_id_list = []
         owner_id_list = []
         owner_name = []
@@ -124,6 +127,7 @@ class ChooseBudget(customtkinter.CTk):
         owner_name.clear()
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         with open('budget_flag.txt', 'w') as file:
             file.write('')
         self.destroy()

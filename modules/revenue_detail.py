@@ -70,11 +70,13 @@ class RevenueDetail(customtkinter.CTk):
         self.delete.grid(pady=18, padx=10, row=3, column=0)
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         revenues = all_revenues.AllRevenues(self.username)
         revenues.mainloop()
 
     def edit_revenue(self, id_revenue, username):
+        """Opens revenue edit tab"""
         db = database_connect.DatabaseConnector()
         query = f"SELECT id FROM users WHERE username='{username}'"
         user_id = db.select_data(query, 'one')[0]
@@ -83,7 +85,9 @@ class RevenueDetail(customtkinter.CTk):
         edit_window.mainloop()
 
     def delete_revenue(self, id_revenue, user_id, amount):
-        msg_box = messagebox.askquestion('Delete revenue', 'Are you sure you want to delete the revenue?', icon='warning')
+        """Let's user to delete selected revenue"""
+        msg_box = messagebox.askquestion('Delete revenue', 'Are you sure you want to delete the revenue?',
+                                         icon='warning')
         if msg_box == 'yes':
             db = database_connect.DatabaseConnector()
             query = f"DELETE FROM revenues WHERE id = {id_revenue};"

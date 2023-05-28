@@ -78,7 +78,7 @@ class HomeWindow(customtkinter.CTk):
 
         self.payment_term = customtkinter.CTkButton(master=self.menu_frame, text="Payment term", fg_color="transparent",
                                                     font=("Arial", 26, "normal"),
-                                                    command=lambda: self.show_payment_payments())
+                                                    command=lambda: self.show_payment_terms_tab())
         self.payment_term.grid(pady=18, padx=10, row=3, column=0, sticky="new")
 
         self.notifications = customtkinter.CTkButton(master=self.menu_frame, text="Notifications",
@@ -274,28 +274,34 @@ class HomeWindow(customtkinter.CTk):
         plt.close(fig)
 
     def see_details(self):
+        """Shows details of current day's expenses summary"""
         day_summary = DaySummary(self.username, len(self.results))
         day_summary.mainloop()
 
     def see_month_details(self):
+        """Shows details of current month's expenses summary"""
         month_summary = MonthSummary(self.username, len(self.month_results))
         month_summary.mainloop()
 
     def show_expenses(self):
+        """Opens all expenses tab"""
         self.destroy()
         expenses = AllExpenses(self.username)
         expenses.mainloop()
 
     def show_revenues(self):
+        """Opens all revenues tab"""
         self.destroy()
         revenues = AllRevenues(self.username)
         revenues.mainloop()
 
     def change_password(self):
+        """Opens prompt to change accounts password"""
         change_password = ChangePassword(self.username)
         change_password.mainloop()
 
     def logout(self):
+        """Loggs out of a currently logged account"""
         current_dir = os.path.dirname(os.path.abspath(__file__))
         parent_dir = os.path.dirname(current_dir)
         file_path = os.path.join(parent_dir, "login_pass.txt")
@@ -308,27 +314,32 @@ class HomeWindow(customtkinter.CTk):
         login_screen.mainloop()
 
     def app_settings(self, username):
+        """Opens app settings tab"""
         self.destroy()
         setting_window = ApplicationSettings(username)
         setting_window.mainloop()
 
     def open_notifications(self, username):
+        """Opens notifications tab"""
         self.destroy()
         notification_tab = Notifications(username)
         notification_tab.mainloop()
 
     def show_prediction(self):
+        """Opens next month's prediction tab"""
         db = database_connect.DatabaseConnector()
         user_id = db.select_data(f"SELECT id FROM users WHERE username='{self.username}'", 'one')[0]
         prediction = BudgetPrediction(user_id, self.currency)
         prediction.mainloop()
 
-    def show_payment_payments(self):
+    def show_payment_terms_tab(self):
+        """Opens payment terms tab"""
         self.destroy()
         payment_payments_tab = PaymentTerm(self.username)
         payment_payments_tab.mainloop()
 
     def display_number_of_notifications(self):
+        """Shows the number of unread notifications for a user on a home tab"""
         number_of_unread_notifications = count_unread_notifications(self.username)
         if number_of_unread_notifications > 0:
             self.notifications.configure(text=f"Notifications [{number_of_unread_notifications}]", text_color="red")
@@ -338,12 +349,15 @@ class HomeWindow(customtkinter.CTk):
             send_notification_email(self.username, email)
 
     def show_choose_budget(self):
+        """Shows choose budget button"""
         self.choose_budget.configure(text="Change budget")
 
     def show_default_budget(self):
+        """Shows default budget button"""
         self.choose_budget.configure(text="Default budget")
 
     def check_if_there_are_shared_budgets(self):
+        """Checks if logged user is inheriting someone's budget"""
         user_id = get_user_id(self.username)
         db = database_connect.DatabaseConnector()
         check_query = f"SELECT id FROM shared_budgets WHERE inherited_id = {user_id};"
@@ -352,28 +366,33 @@ class HomeWindow(customtkinter.CTk):
             self.choose_budget.grid_forget()
 
     def select_budget(self, username):
+        """Opens budget selection tab"""
         self.destroy()
         budget_selector = ChooseBudget(username)
         budget_selector.mainloop()
 
     def get_user_balance(self, user_login):
+        """Checks user's balance"""
         db = database_connect.DatabaseConnector()
         name_query = f"SELECT balance FROM users WHERE username='{user_login}';"
         user_name = db.select_data(name_query, 'one')
         return str(user_name[0])
     
     def get_user_currency(self, user_login):
+        """Checks user's currency"""
         db = database_connect.DatabaseConnector()
         name_query = f"SELECT currency FROM users WHERE username='{user_login}';"
         user_name = db.select_data(name_query, 'one')
         return str(user_name[0])
     
     def spend_limit(self, username):
+        """Shows spend limit tab"""
         self.destroy()
         setting_window = SpendLimit(username)
         setting_window.mainloop()
         
     def show_incoming_payments(self, username):
+        """Shows incoming payments on the home tab"""
         db = database_connect.DatabaseConnector()
         query = f"SELECT name, date, amount, id FROM payment_term " \
                 f"WHERE user_id={get_user_id(username)} "
@@ -395,6 +414,7 @@ class HomeWindow(customtkinter.CTk):
             amount.grid(pady=20, padx=10, row=idx, column=2)
 
     def check_flag(self):
+        """Checks for budget flags"""
         with open('budget_flag.txt', 'r') as file:
             content = file.read()
         return content

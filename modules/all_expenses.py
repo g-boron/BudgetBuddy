@@ -9,6 +9,7 @@ from modules import home_window
 import textwrap
 import csv
 import json
+from modules.functions.get_users_info import get_user_name
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -83,21 +84,25 @@ class AllExpenses(customtkinter.CTk):
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         home = home_window.HomeWindow(self.username)
         home.mainloop()
 
     def see_details(self, exp_id):
+        """Shows details of a specific expense"""
         self.destroy()
         exp_detail = ExpenseDetail(exp_id, self.username)
         exp_detail.mainloop()
 
     def add_new_expense(self):
+        """Adds new expense for logged user"""
         self.destroy()
-        add_exp = AddExpense(self.get_user_name(self.username)[0])
+        add_exp = AddExpense(get_user_name(self.username)[0])
         add_exp.mainloop()
     
     def refresh(self, category):
+        """Refresh the list of all expenses that are owned by logged user"""
         for widget in self.frame.grid_slaves():
             widget.grid_forget()
 
@@ -130,6 +135,7 @@ class AllExpenses(customtkinter.CTk):
             detail_button.grid(pady=20, padx=10, row=idx, column=4)
 
     def filter_data(self, category):
+        """Applies a filter on a list"""
         name = self.expense_name_entry.get()
         choosed_filter = self.filter_opt.get()
 
@@ -149,18 +155,13 @@ class AllExpenses(customtkinter.CTk):
 
         query = f"SELECT expenses.name, expenses.description, expenses.add_date, expenses.amount, categories.name, " \
                 f"expenses.id FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE " \
-                f"expenses.user_id={self.get_user_name(self.username)[0]} {category_filter} AND expenses.name LIKE " \
+                f"expenses.user_id={get_user_name(self.username)[0]} {category_filter} AND expenses.name LIKE " \
                 f"'%{name}%' ORDER BY {sort_filter}"
 
         return query
 
-    def get_user_name(self, user_login):
-        db = database_connect.DatabaseConnector()
-        name_query = f"SELECT id, name FROM users WHERE username='{user_login}';"
-        user_name = db.select_data(name_query, 'one')
-        return user_name
-
     def download_data(self, category):
+        """Allows to download all data of a given user"""
         db = database_connect.DatabaseConnector()
         query = self.filter_data(category)
         expenses = list(db.select_data(query))

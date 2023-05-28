@@ -85,6 +85,7 @@ class EditExpense(customtkinter.CTk):
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         db = database_connect.DatabaseConnector()
         query = f"SELECT username FROM users WHERE id={self.id_user}"
@@ -93,6 +94,7 @@ class EditExpense(customtkinter.CTk):
         expenses.mainloop()
 
     def get_previous(self, id_exp):
+        """Gets previous expense id"""
         exp_id = id_exp
         db = database_connect.DatabaseConnector()
         query = f"SELECT * FROM expenses WHERE id = {exp_id}"
@@ -100,6 +102,7 @@ class EditExpense(customtkinter.CTk):
         return exp
 
     def make_changes(self, id_exp):
+        """Applies all the changes to database"""
         exp_id = id_exp
         new_name = self.name_entry.get()
         new_description = self.desc_text.get("1.0", END)
@@ -121,6 +124,7 @@ class EditExpense(customtkinter.CTk):
             messagebox.showerror('Error', 'Please enter valid data.')
 
     def isfloat(self, num):
+        """Checks if the given variable is a float"""
         try:
             float(num)
             return True

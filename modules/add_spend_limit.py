@@ -47,6 +47,7 @@ class SpendLimit(customtkinter.CTk):
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def set_limit(self):
+        """Sets a expense limitation for monthly amount to a value"""
         try:
             limit = float(self.limit_entry.get())
             if limit > 0:
@@ -61,6 +62,7 @@ class SpendLimit(customtkinter.CTk):
             messagebox.showerror("Error", "Value must be a number!")
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         home = home_window.HomeWindow(self.username)
         home.mainloop()

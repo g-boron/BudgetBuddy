@@ -75,8 +75,8 @@ class ApplicationSettings(customtkinter.CTk):
         self.invite_button.grid(column=1, row=6, padx=20, pady=10)
 
     def change_ui_theme(self, theme):
+        """Changes the ui to a selected option"""
         db = database_connect.DatabaseConnector()
-
         if theme == "light":
             query = f"UPDATE users SET theme = 'light' WHERE username = '{self.id}'"
             db.make_query(query)
@@ -85,6 +85,7 @@ class ApplicationSettings(customtkinter.CTk):
             db.make_query(query)
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         home = home_window.HomeWindow(self.id)
         home.mainloop()
@@ -96,6 +97,7 @@ class ApplicationSettings(customtkinter.CTk):
         pass
 
     def invite_someone(self, user_id):
+        """Inserts both logged user id and invited user id to specific table in the database"""
         inviting_person = user_id
         invited_person = self.login_entry.get()
         invited_login = str(invited_person)

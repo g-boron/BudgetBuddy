@@ -49,6 +49,7 @@ class ChangePassword(customtkinter.CTk):
         self.button_save.grid(pady=18, padx=10, row=4, column=1, sticky="ew")
 
     def save_changes(self):
+        """Saves the changes to database"""
         password_old = self.password_old.get()
         password = self.password.get()
         password2 = self.password2.get()

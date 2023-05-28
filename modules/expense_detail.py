@@ -74,11 +74,13 @@ class ExpenseDetail(customtkinter.CTk):
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         expenses = all_expenses.AllExpenses(self.username)
         expenses.mainloop()
 
     def edit_expense(self, id_expense, username):
+        """Let's edit a specific expense details"""
         db = database_connect.DatabaseConnector()
         query = f"SELECT id FROM users WHERE username='{username}'"
         user_id = db.select_data(query, 'one')[0]
@@ -87,6 +89,7 @@ class ExpenseDetail(customtkinter.CTk):
         edit_window.mainloop()
 
     def delete_expense(self, id_expense, user_id, amount):
+        """Let's logged user delete selected expense"""
         msg_box = messagebox.askquestion('Delete expense', 'Are you sure you want to delete the expense?',
                                          icon='warning')
 

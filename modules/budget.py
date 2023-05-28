@@ -10,6 +10,7 @@ class Budget:
         self.balance = float(self.db.select_data(query, 'one')[0])
 
     def add_expense(self, name, desc, amount, category, day):
+        """Let's add a new expense to logged user account"""
         '''
         uzycie:
         user = Budget('admin')
@@ -28,6 +29,7 @@ class Budget:
             return True
 
     def edit_expense(self, new_name, new_desc, new_amount, new_day, transaction_id, category):
+        """Let's edit selected expense that is signed to logged user"""
         query = f"SELECT amount FROM expenses WHERE id = '{transaction_id}'"
         previous_amount = self.db.select_data(query, 'one')
         current_balance = self.balance + float(previous_amount[0])
@@ -48,6 +50,7 @@ class Budget:
             return True
     
     def add_revenue(self, name, desc, amount, day):
+        """Let's add a new revenue to logged user account"""
         query = f"INSERT INTO revenues (name, description, amount, add_date, user_id) " \
                 f"VALUES ('{name}', '{desc}', '{amount}', '{day}', '{self.user_id}')"
         self.db.make_query(query)
@@ -56,10 +59,12 @@ class Budget:
         self.db.make_query(query)
 
     def get_category_id(self, name):
+        """Gets the category value"""
         query = f"SELECT id FROM categories WHERE name = '{name}'"
         return self.db.select_data(query, 'one')[0]
 
     def edit_revenue(self, new_name, new_desc, new_amount, new_day, transaction_id):
+        """Let's edit selected revenue that is signed to logged user"""
         query = f"SELECT amount FROM revenues WHERE id = '{transaction_id}'"
         previous_amount = self.db.select_data(query, 'one')
         current_balance = self.balance - float(previous_amount[0])

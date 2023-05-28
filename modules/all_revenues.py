@@ -49,7 +49,7 @@ class AllRevenues(customtkinter.CTk):
 
         self.refresh()
 
-        self.add_button = customtkinter.CTkButton(master=self, text='Add new revenue', command=self.add_new_expense,
+        self.add_button = customtkinter.CTkButton(master=self, text='Add new revenue', command=self.add_new_revenue,
                                                   font=('Arial', 30, 'normal'))
         self.add_button.place(relx=0.2, rely=0.9, anchor='center')
 
@@ -62,21 +62,25 @@ class AllRevenues(customtkinter.CTk):
         self.exit_button.place(relx=0.8, rely=0.9, anchor='center')
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         home = home_window.HomeWindow(self.username)
         home.mainloop()
 
     def see_details(self, rev_id):
+        """Shows details of a specific revenue"""
         self.destroy()
         rev_detail = RevenueDetail(rev_id, self.username)
         rev_detail.mainloop()
 
-    def add_new_expense(self):
+    def add_new_revenue(self):
+        """Let's add new revenue that will be signed to a logged user"""
         self.destroy()
         add_rev = AddRevenue(get_user_name(self.username)[0])
         add_rev.mainloop()
     
     def refresh(self):
+        """Refreshes a list of all revenues"""
         for widget in self.frame.grid_slaves():
             widget.grid_forget()
 

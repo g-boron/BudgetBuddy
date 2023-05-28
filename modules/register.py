@@ -59,6 +59,7 @@ class Register(customtkinter.CTk):
         self.button_login.grid(pady=10, padx=0, column=1, row=6)
 
     def register(self):
+        """Validates provided data in required entries and creates an user account if everything matches requirements"""
         provided_email = self.email_entry.get()
         provided_login = self.login_entry.get()
         provided_password = self.password_entry.get()
@@ -113,11 +114,13 @@ class Register(customtkinter.CTk):
             self.get_me_to_welcome_page()
 
     def get_me_to_login(self):
+        """Opens login tab"""
         self.destroy()
         login_page = modules.login.Login()
         login_page.mainloop()
 
     def get_me_to_welcome_page(self):
+        """Opens welcome page after successful account creation"""
         user_login = self.login_entry.get()
         print(user_login)
         if user_login:

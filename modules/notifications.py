@@ -35,6 +35,7 @@ class Notifications(customtkinter.CTk):
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def accept_invitation(self, user_id, notification_num):
+        """Inserts to database information about accepted budget sharing invitation"""
         notification_number = notification_num
         sharing_accounts_ids = []
         notifications_id = []
@@ -62,6 +63,7 @@ class Notifications(customtkinter.CTk):
                 home.mainloop()
 
     def decline_invitation(self, user_id, notification_num):
+        """Inserts to database information about declined budget sharing invitation"""
         notification_number = notification_num
         all_notifications = get_all_user_notifications(user_id)
         notifications_id = []
@@ -80,6 +82,7 @@ class Notifications(customtkinter.CTk):
             home.mainloop()
 
     def show_all_notifications(self, user_id):
+        """Shows all user's notifications"""
         all_notifications = get_all_user_notifications(user_id)
         sender_id = []
         sender_name = []
@@ -119,11 +122,11 @@ class Notifications(customtkinter.CTk):
                                                     font=('Arial', 18, 'normal'))
             accept_button.grid(pady=20, padx=10, row=row_number, column=2)
 
-            declince_button = customtkinter.CTkButton(master=self.frame, text="Decline", hover_color="red",
-                                                      command=lambda notification_num=int(j):
-                                                      self.decline_invitation(user_id, notification_num),
-                                                      font=('Arial', 18, 'normal'))
-            declince_button.grid(pady=20, padx=10, row=row_number, column=3)
+            decline_button = customtkinter.CTkButton(master=self.frame, text="Decline", hover_color="red",
+                                                     command=lambda notification_num=int(j):
+                                                     self.decline_invitation(user_id, notification_num),
+                                                     font=('Arial', 18, 'normal'))
+            decline_button.grid(pady=20, padx=10, row=row_number, column=3)
 
 # read notifications are greyed out
             if all_notifications[j][2]:
@@ -133,6 +136,7 @@ class Notifications(customtkinter.CTk):
         sender_id.clear()
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         home = home_window.HomeWindow(self.login)
         home.mainloop()

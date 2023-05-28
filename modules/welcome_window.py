@@ -51,6 +51,7 @@ class WelcomeWindow(customtkinter.CTk):
         self.button.grid(pady=18, padx=10, row=6, column=1, sticky="ew")
 
     def validate(self):
+        """Validates provided values"""
         name = int(self.name_entry.get())
         balance = float(self.balance_entry.get())
 
@@ -61,11 +62,11 @@ class WelcomeWindow(customtkinter.CTk):
                                  message="One of the boxes is empty or has a bad value.")
 
     def get_me_to_home_window(self):
+        """Opens home window tab"""
         name = self.name_entry.get()
         balance = self.balance_entry.get()
         currency = str(self.currency_select.get())
         user_login = self.user_login
-        print(user_login)
         if user_login:
             db = database_connect.DatabaseConnector()
             set_name_query = f" UPDATE users SET name = '{name}', balance = '{balance}', currency = '{currency}' " \

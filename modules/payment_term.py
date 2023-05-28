@@ -63,11 +63,13 @@ class PaymentTerm(customtkinter.CTk):
         self.exit_button.place(relx=0.8, rely=0.9, anchor='center')
 
     def add_new_payment_term(self):
+        """Opens add payment term prompt for a logged user"""
         self.destroy()
         add_payment_term = AddPaymentData(self.login)
         add_payment_term.mainloop()
 
     def refresh(self):
+        """Refreshes list of all payment terms"""
         for widget in self.frame.grid_slaves():
             widget.grid_forget()
         db = database_connect.DatabaseConnector()
@@ -100,6 +102,7 @@ class PaymentTerm(customtkinter.CTk):
             amount.grid(pady=20, padx=10, row=idx, column=2)
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         payment_terms = modules.home_window.HomeWindow(self.login)
         payment_terms.mainloop()
