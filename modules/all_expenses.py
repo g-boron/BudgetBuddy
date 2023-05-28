@@ -8,6 +8,7 @@ from modules.add_expense import AddExpense
 from modules import home_window
 import textwrap
 import csv
+import json
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -67,10 +68,13 @@ class AllExpenses(customtkinter.CTk):
                                                       font=('Arial', 30, 'normal'))
         self.refresh_button.place(relx=0.375, rely=0.9, anchor='center')
 
+        self.format_type = customtkinter.CTkOptionMenu(master=self, values=['csv', 'json'], font=('Arial', 30, 'normal'))
+        self.format_type.place(relx=0.675, rely=0.9, anchor='center')
+
         self.download_button = customtkinter.CTkButton(master=self, text='Download',
                                                        command=lambda: self.download_data(str(self.category_opt.get())),
                                                        font=('Arial', 30, 'normal'))
-        self.download_button.place(relx=0.625, rely=0.9, anchor='center')
+        self.download_button.place(relx=0.59, rely=0.9, anchor='center')
 
         self.exit_button = customtkinter.CTkButton(master=self, text='Exit', command=lambda: self.on_closing(),
                                                    font=('Arial', 30, 'normal'))
@@ -165,9 +169,18 @@ class AllExpenses(customtkinter.CTk):
             for i, e in enumerate(exp):
                 if isinstance(e, str):
                     expenses[idx][i] = e.replace('\n', '\\n')
-        header = ['Name', 'Description', 'Add_date', 'Amount', 'Category']
+        headers = ['Name', 'Description', 'Add_date', 'Amount', 'Category']
 
-        with open('expenses.csv', 'w', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(header)
-            writer.writerows(expenses)
+        if self.format_type.get() == 'csv':
+            with open('expenses.csv', 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(headers)
+                writer.writerows(expenses)
+        else:
+            expenses_with_headers = []
+            for exp in expenses:
+                exp_dict = {headers[i]: exp[i] for i in range(len(headers))}
+                expenses_with_headers.append(exp_dict)
+
+            with open('expenses.json', 'w') as f:
+                json.dump(expenses_with_headers, f, default=str, indent=4)
