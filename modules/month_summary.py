@@ -51,7 +51,7 @@ class MonthSummary(customtkinter.CTk):
 
         if month == 'now':
             date = customtkinter.CTkLabel(master=self.frame, text=datetime.today().strftime('%m-%Y'),
-                                               font=("Arial", 30, "normal"))
+                                          font=("Arial", 30, "normal"))
         else:
             date = customtkinter.CTkLabel(master=self.frame, text=month, font=("Arial", 30, "normal"))
 
@@ -63,11 +63,11 @@ class MonthSummary(customtkinter.CTk):
         total_amount.grid(pady=18, padx=10, row=1, column=1, sticky='e')
 
         number_of_exp = customtkinter.CTkLabel(master=self.frame, text='Number of expenses:',
-                                                    font=("Arial", 25, "normal"),
-                                                    wraplength=700)
+                                               font=("Arial", 25, "normal"),
+                                               wraplength=700)
         number_of_exp.grid(pady=18, padx=10, row=2, column=0, sticky='w')
 
-        number = customtkinter.CTkLabel(master=self.frame, text=len(self.results), font=("Arial", 25, "normal"))
+        number = customtkinter.CTkLabel(master=self.frame, text=str(len(results)), font=("Arial", 25, "normal"))
         number.grid(pady=18, padx=10, row=2, column=1, sticky='e')
 
         entertainment = customtkinter.CTkLabel(master=self.frame, text="Entertainment",

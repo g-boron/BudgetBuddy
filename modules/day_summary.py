@@ -69,7 +69,7 @@ class DaySummary(customtkinter.CTk):
                                                     font=("Arial", 25, "normal"), wraplength=700)
         number_of_expenses.grid(pady=18, padx=10, row=2, column=0, sticky='w')
 
-        number = customtkinter.CTkLabel(master=self.frame, text=len(self.results), font=("Arial", 25, "normal"))
+        number = customtkinter.CTkLabel(master=self.frame, text=len(results), font=("Arial", 25, "normal"))
         number.grid(pady=18, padx=10, row=2, column=1, sticky='e')
        
         entertainment = customtkinter.CTkLabel(master=self.frame, text="Entertainment", font=("Arial", 25, "normal"))
