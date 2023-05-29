@@ -10,6 +10,7 @@ import textwrap
 from modules.functions.get_users_info import get_user_name
 import csv
 import json
+from tkinter import messagebox
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -150,12 +151,15 @@ class AllRevenues(customtkinter.CTk):
                 if isinstance(r, str):
                     revenues[idx][i] = r.replace('\n', '\\n')
         headers = ['Name', 'Description', 'Add_date', 'Amount']
+        status = None
 
         if self.format_type.get() == 'csv':
             with open('revenues.csv', 'w', newline='') as f:
                 writer = csv.writer(f)
                 writer.writerow(headers)
                 writer.writerows(revenues)
+            
+            status = True
         else:
             revenues_with_headers = []
             for rev in revenues:
@@ -164,3 +168,10 @@ class AllRevenues(customtkinter.CTk):
 
             with open('revenues.json', 'w') as f:
                 json.dump(revenues_with_headers, f, default=str, indent=4)
+
+            status = True
+
+        if status:
+            messagebox.showinfo("Success", "You successfully downloaded your revenues!")
+        else:
+            messagebox.showerror("Error", "There was an error!")

@@ -10,6 +10,7 @@ import textwrap
 import csv
 import json
 from modules.functions.get_users_info import get_user_name
+from tkinter import messagebox
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -171,12 +172,15 @@ class AllExpenses(customtkinter.CTk):
                 if isinstance(e, str):
                     expenses[idx][i] = e.replace('\n', '\\n')
         headers = ['Name', 'Description', 'Add_date', 'Amount', 'Category']
+        status = False
 
         if self.format_type.get() == 'csv':
             with open('expenses.csv', 'w', newline='') as f:
                 writer = csv.writer(f)
                 writer.writerow(headers)
                 writer.writerows(expenses)
+            
+            status = True
         else:
             expenses_with_headers = []
             for exp in expenses:
@@ -185,3 +189,10 @@ class AllExpenses(customtkinter.CTk):
 
             with open('expenses.json', 'w') as f:
                 json.dump(expenses_with_headers, f, default=str, indent=4)
+            
+            status = True
+
+        if status:
+            messagebox.showinfo("Success", "You successfully downloaded your expenses!")
+        else:
+            messagebox.showerror("Error", "There was an error!")
