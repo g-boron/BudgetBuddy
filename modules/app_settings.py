@@ -5,6 +5,7 @@ from modules.database import database_connect
 from tkinter import messagebox
 from modules.functions.invite_to_budget import *
 from modules import home_window
+from modules import buy_premium
 
 
 customtkinter.set_appearance_mode("System")
@@ -74,6 +75,13 @@ class ApplicationSettings(customtkinter.CTk):
                                                      command=lambda: self.invite_someone(user_id))
         self.invite_button.grid(column=1, row=6, padx=20, pady=10)
 
+        self.premium_label = customtkinter.CTkLabel(master=self.frame, text='Buy premium version:', font=('Arial', 25, 'normal'))
+        self.premium_label.grid(column=0, row=7, padx=20, pady=10)
+
+        self.buy_button = customtkinter.CTkButton(master=self.frame, text="Buy!",
+                                                     command=lambda: self.buy_premium(user_id))
+        self.buy_button.grid(column=1, row=7, padx=20, pady=10)
+
     def change_ui_theme(self, theme):
         """Changes the ui to a selected option"""
         db = database_connect.DatabaseConnector()
@@ -104,3 +112,6 @@ class ApplicationSettings(customtkinter.CTk):
         invite_a_friend(inviting_person, invited_login)
         self.destroy()
 
+    def buy_premium(self, user_id):
+        premium = buy_premium.BuyPremium(self.id)
+        premium.mainloop()
