@@ -28,7 +28,7 @@ class AllExpenses(customtkinter.CTk):
         self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
         self.iconphoto(False, self.iconpath)
         self.resizable(True, True)
-        self.label = customtkinter.CTkLabel(master=self, text=f"{self.get_user_name(self.username)[1]}'s expenses",
+        self.label = customtkinter.CTkLabel(master=self, text=f"{get_user_name(self.username)[1]}'s expenses",
                                             font=("Arial", 50, "normal"))
         self.label.pack(pady=50)
 
@@ -139,11 +139,11 @@ class AllExpenses(customtkinter.CTk):
         name = self.expense_name_entry.get()
         choosed_filter = self.filter_opt.get()
 
-        if filter == 'Amount descending':
+        if choosed_filter == 'Amount descending':
             sort_filter = 'expenses.amount DESC'
-        elif filter == 'Amount ascending':
+        elif choosed_filter == 'Amount ascending':
             sort_filter = 'expenses.amount ASC'
-        elif filter == 'Date descending':
+        elif choosed_filter == 'Date descending':
             sort_filter = 'expenses.add_date DESC'
         else:
             sort_filter = 'expenses.add_date ASC'

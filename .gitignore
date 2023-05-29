@@ -163,3 +163,5 @@ email_credentials.py
 login_pass.txt
 expenses.csv
 expenses.json
+revenues.csv
+revenues.json
