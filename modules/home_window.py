@@ -48,6 +48,10 @@ class HomeWindow(customtkinter.CTk):
         self.resizable(True, True)
         file_flag = self.check_flag()
 
+        db = database_connect.DatabaseConnector()
+        query = f"SELECT is_premium FROM users WHERE username='{self.username}'"
+        is_premium = db.select_data(query, 'one')[0]
+
         #   -------------------------------- top panel --------------------------------
         self.logo = PhotoImage(file="./images/logo_transparent_small.png")
         self.canvas = Canvas(width=140, height=150, bg="#242424", highlightthickness=0)
@@ -81,24 +85,25 @@ class HomeWindow(customtkinter.CTk):
                                                     command=lambda: self.show_payment_terms_tab())
         self.payment_term.grid(pady=18, padx=10, row=3, column=0, sticky="new")
 
-        self.notifications = customtkinter.CTkButton(master=self.menu_frame, text="Notifications",
-                                                     fg_color="transparent", font=("Arial", 26, "normal"),
-                                                     command=lambda: self.open_notifications(self.username))
-        self.notifications.grid(pady=18, padx=10, row=4, column=0, sticky="new")
-        self.display_number_of_notifications()
-        self.prediction = customtkinter.CTkButton(master=self.menu_frame, text="Budget prediction",
-                                                  fg_color="transparent", font=("Arial", 26, "normal"),
-                                                  command=self.show_prediction)
-        self.prediction.grid(pady=18, padx=10, row=5, column=0, sticky="new")
+        if is_premium == True:
+            self.notifications = customtkinter.CTkButton(master=self.menu_frame, text="Notifications",
+                                                        fg_color="transparent", font=("Arial", 26, "normal"),
+                                                        command=lambda: self.open_notifications(self.username))
+            self.notifications.grid(pady=18, padx=10, row=4, column=0, sticky="new")
+            self.display_number_of_notifications()
+            self.prediction = customtkinter.CTkButton(master=self.menu_frame, text="Budget prediction",
+                                                    fg_color="transparent", font=("Arial", 26, "normal"),
+                                                    command=self.show_prediction)
+            self.prediction.grid(pady=18, padx=10, row=5, column=0, sticky="new")
 
-        self.choose_budget = customtkinter.CTkButton(master=self.menu_frame, text="Budget button",
-                                                     fg_color="transparent", font=("Arial", 26, "normal"),
-                                                     command=lambda: self.select_budget(self.username))
-        self.choose_budget.grid(pady=18, padx=10, row=6, column=0, sticky="new")
-        if file_flag:
-            self.show_default_budget()
-        else:
-            self.show_choose_budget()
+            self.choose_budget = customtkinter.CTkButton(master=self.menu_frame, text="Budget button",
+                                                        fg_color="transparent", font=("Arial", 26, "normal"),
+                                                        command=lambda: self.select_budget(self.username))
+            self.choose_budget.grid(pady=18, padx=10, row=6, column=0, sticky="new")
+            if file_flag:
+                self.show_default_budget()
+            else:
+                self.show_choose_budget()
 
         self.add_limit = customtkinter.CTkButton(master=self.menu_frame, text="Add monthly expanses limit",
                                                  fg_color="transparent", font=("Arial", 26, "normal"),
@@ -210,32 +215,37 @@ class HomeWindow(customtkinter.CTk):
         self.first_graph_frame.grid_columnconfigure(0, weight=1)
         self.first_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
-        columns = list(self.summary.keys())
-        values = list(self.summary.values())
+        if is_premium == True:
+            columns = list(self.summary.keys())
+            values = list(self.summary.values())
 
-        fig, ax = plt.subplots(figsize=(6.5, 4.5))
-        bars = ax.bar(columns, values)
+            fig, ax = plt.subplots(figsize=(6.5, 4.5))
+            bars = ax.bar(columns, values)
 
-        for c in ax.containers:
-            labels = [v if v > 0 else "" for v in c.datavalues]    
-            ax.bar_label(c, labels=labels)
+            for c in ax.containers:
+                labels = [v if v > 0 else "" for v in c.datavalues]    
+                ax.bar_label(c, labels=labels)
 
-        fig.patch.set_facecolor('#242424')
-        ax.set_facecolor('#242424')
+            fig.patch.set_facecolor('#242424')
+            ax.set_facecolor('#242424')
 
-        ax.tick_params(color=COLOR, labelcolor=COLOR)
-        for spine in ax.spines.values():
-            spine.set_edgecolor(COLOR)
+            ax.tick_params(color=COLOR, labelcolor=COLOR)
+            for spine in ax.spines.values():
+                spine.set_edgecolor(COLOR)
 
-        plt.xlabel('Categories', fontsize=11)
-        plt.ylabel(f'Amount [{self.currency}]', fontsize=11)
-        plt.title('Day summary', fontsize=18)
+            plt.xlabel('Categories', fontsize=11)
+            plt.ylabel(f'Amount [{self.currency}]', fontsize=11)
+            plt.title('Day summary', fontsize=18)
 
-        canvas = FigureCanvasTkAgg(fig, self.first_graph_frame)
-        canvas.draw()
-        canvas.get_tk_widget().pack()
-        
-        plt.close(fig)
+            canvas = FigureCanvasTkAgg(fig, self.first_graph_frame)
+            canvas.draw()
+            canvas.get_tk_widget().pack()
+            
+            plt.close(fig)
+        else:
+            self.first_graph_frame.configure(fg_color='#242424')
+            premium_mess = customtkinter.CTkLabel(self.first_graph_frame, text='Buy premium version to see summary graphs.', font=('Arial', 25, 'normal'))
+            premium_mess.pack(pady=20, padx=15, side='right')
 
         self.second_graph_frame = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)), height=450,
                                                          fg_color="#242424")
@@ -243,35 +253,38 @@ class HomeWindow(customtkinter.CTk):
         self.second_graph_frame.grid_columnconfigure(0, weight=1)
         self.second_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
-        x, days_in_month, entertainment_list, shopping_list, bills_list, subs_list, \
-            other_list = generate_month_graph_data(self.username)
-        
-        fig, ax = plt.subplots(figsize=(7.5, 4))
+        if is_premium == True:
+            x, days_in_month, entertainment_list, shopping_list, bills_list, subs_list, \
+                other_list = generate_month_graph_data(self.username)
+            
+            fig, ax = plt.subplots(figsize=(7.5, 4))
 
-        p1 = ax.bar(x, entertainment_list, bottom=sum_lists(shopping_list, bills_list, subs_list, other_list))
-        p2 = ax.bar(x, shopping_list, bottom=sum_lists(bills_list, subs_list, other_list))
-        p3 = ax.bar(x, bills_list, bottom=sum_lists(subs_list, other_list))
-        p4 = ax.bar(x, subs_list, bottom=other_list)
-        p5 = ax.bar(x, other_list)
-        ax.set_xticks(range(1, days_in_month+1, 2))
-        fig.patch.set_facecolor('#242424')
-        ax.set_facecolor('#242424')
+            p1 = ax.bar(x, entertainment_list, bottom=sum_lists(shopping_list, bills_list, subs_list, other_list))
+            p2 = ax.bar(x, shopping_list, bottom=sum_lists(bills_list, subs_list, other_list))
+            p3 = ax.bar(x, bills_list, bottom=sum_lists(subs_list, other_list))
+            p4 = ax.bar(x, subs_list, bottom=other_list)
+            p5 = ax.bar(x, other_list)
+            ax.set_xticks(range(1, days_in_month+1, 2))
+            fig.patch.set_facecolor('#242424')
+            ax.set_facecolor('#242424')
 
-        plt.xlabel('Days in month', fontsize=11)
-        plt.ylabel(f'Amount [{self.currency}]', fontsize=11)
-        plt.title('Month summary', fontsize=18)
+            plt.xlabel('Days in month', fontsize=11)
+            plt.ylabel(f'Amount [{self.currency}]', fontsize=11)
+            plt.title('Month summary', fontsize=18)
 
-        for spine in ax.spines.values():
-            spine.set_edgecolor(COLOR)
+            for spine in ax.spines.values():
+                spine.set_edgecolor(COLOR)
 
-        canvas = FigureCanvasTkAgg(fig, self.second_graph_frame)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=LEFT)
+            canvas = FigureCanvasTkAgg(fig, self.second_graph_frame)
+            canvas.draw()
+            canvas.get_tk_widget().pack(side=LEFT)
 
-        ax.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Entertainment', 'Shopping', 'Bills', 'Subscriptions', 'Other'),
-                  loc='best', frameon=False)
-        
-        plt.close(fig)
+            ax.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Entertainment', 'Shopping', 'Bills', 'Subscriptions', 'Other'),
+                    loc='best', frameon=False)
+            
+            plt.close(fig)
+        else:
+            self.second_graph_frame.configure(width=10)
 
     def see_details(self):
         """Shows details of current day's expenses summary"""

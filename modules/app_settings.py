@@ -31,6 +31,10 @@ class ApplicationSettings(customtkinter.CTk):
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
 
+        db = database_connect.DatabaseConnector()
+        query = f"SELECT is_premium FROM users WHERE username='{self.id}'"
+        is_premium = db.select_data(query, 'one')[0]
+
         self.resizable(False, False)
         self.label = customtkinter.CTkLabel(master=self.frame, text="Settings", font=("Arial", 35, "normal"))
         self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=3, sticky="new")
@@ -64,16 +68,17 @@ class ApplicationSettings(customtkinter.CTk):
                                                     command=lambda: self.change_ui_theme("light"))
         self.light_button.grid(column=1, row=4, padx=20, pady=10)
 
-        self.invite_label = customtkinter.CTkLabel(master=self.frame, text="Invite someone to your budget:",
-                                                   font=("arial", 25, "normal"))
-        self.invite_label.grid(column=0, row=5, padx=20, pady=10, columnspan=2)
+        if is_premium == True:
+            self.invite_label = customtkinter.CTkLabel(master=self.frame, text="Invite someone to your budget:",
+                                                    font=("arial", 25, "normal"))
+            self.invite_label.grid(column=0, row=5, padx=20, pady=10, columnspan=2)
 
-        self.login_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="login", justify=CENTER)
-        self.login_entry.grid(column=0, row=6, padx=20, pady=10, sticky="ew")
+            self.login_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="login", justify=CENTER)
+            self.login_entry.grid(column=0, row=6, padx=20, pady=10, sticky="ew")
 
-        self.invite_button = customtkinter.CTkButton(master=self.frame, text="Invite to budget!",
-                                                     command=lambda: self.invite_someone(user_id))
-        self.invite_button.grid(column=1, row=6, padx=20, pady=10)
+            self.invite_button = customtkinter.CTkButton(master=self.frame, text="Invite to budget!",
+                                                        command=lambda: self.invite_someone(user_id))
+            self.invite_button.grid(column=1, row=6, padx=20, pady=10)
 
         self.premium_label = customtkinter.CTkLabel(master=self.frame, text='Buy premium version:', font=('Arial', 25, 'normal'))
         self.premium_label.grid(column=0, row=7, padx=20, pady=10)
