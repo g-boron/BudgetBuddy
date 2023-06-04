@@ -26,23 +26,27 @@ class SpendLimit(customtkinter.CTk):
         self.wm_iconbitmap()
         self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
         self.iconphoto(False, self.iconpath)
-        self.frame.grid_rowconfigure((0, 1, 2), weight=1)
+        self.frame.grid_rowconfigure((0, 1, 2, 3,4), weight=1)
         self.frame.grid_columnconfigure((0, 1, 2), weight=1)
 
         self.resizable(False, False)
+        self.label = customtkinter.CTkLabel(master=self.frame, text="Your current limit is:"+str(self.get_limit()),
+                                            font=("Arial", 25, "normal"))
+        self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=3, sticky="new")
+
         self.label = customtkinter.CTkLabel(master=self.frame, text="Change monthly spend limit",
                                             font=("Arial", 35, "normal"))
-        self.label.grid(row=0, column=0, padx=20, pady=10, columnspan=3, sticky="new")
+        self.label.grid(row=1, column=0, padx=20, pady=10, columnspan=3, sticky="new")
 
         self.info_label = customtkinter.CTkLabel(master=self.frame, text="Enter value to set monthly spend limit:",
                                                  font=("arial", 25, "normal"))
-        self.info_label.grid(column=0, row=1, columnspan=2, padx=20, pady=10)
+        self.info_label.grid(column=0, row=2, columnspan=2, padx=20, pady=10)
 
         self.limit_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="", justify=CENTER)
-        self.limit_entry.grid(column=0, row=2, padx=20, pady=10, sticky="ew")
+        self.limit_entry.grid(column=0, row=3, padx=20, pady=10, sticky="ew")
 
         self.invite_button = customtkinter.CTkButton(master=self.frame, text="Set limit!", command=self.set_limit)
-        self.invite_button.grid(column=1, row=2, padx=20, pady=10)
+        self.invite_button.grid(column=1, row=3, padx=20, pady=10)
 
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
@@ -60,6 +64,12 @@ class SpendLimit(customtkinter.CTk):
                 messagebox.showerror("Error", "Value must be greater than 0!")
         except ValueError:
             messagebox.showerror("Error", "Value must be a number!")
+
+    def get_limit(self):
+        db = database_connect.DatabaseConnector()
+        query = f"SELECT spend_limit FROM users WHERE username = '{self.username}';"
+        limit = db.select_data(query, 'one')
+        return limit[0]
 
     def on_closing(self):
         """Desecrates what will happen after closing the window"""
