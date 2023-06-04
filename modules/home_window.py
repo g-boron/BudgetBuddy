@@ -48,10 +48,19 @@ class HomeWindow(customtkinter.CTk):
         self.resizable(True, True)
         file_flag = self.check_flag()
 
+        if set_theme(user_login) == "dark":
+                background='#242424'
+        else:
+                background='#ebebeb'
+
         #   -------------------------------- top panel --------------------------------
         self.logo = PhotoImage(file="./images/logo_transparent_small.png")
-        self.canvas = Canvas(width=140, height=150, bg="#242424", highlightthickness=0)
-        self.canvas.create_image(90, 101, image=self.logo)
+        self.canvas = Canvas(width=140, height=150, bg=background, highlightthickness=0)
+        if set_theme(user_login) == "dark":
+                background='#242424'
+        else:
+                background='grey'
+        self.canvas.create_image(90, 101, image=self.logo )
         self.canvas.grid(column=0, row=0, padx=0, pady=0, sticky="nw")
         self.label = customtkinter.CTkLabel(master=self, text=f"Welcome {get_user_name(self.username)[1]}, "
                                                               f"your budget: {self.get_user_balance(self.username)} "
@@ -60,7 +69,9 @@ class HomeWindow(customtkinter.CTk):
         self.label.grid(pady=30, padx=10, row=0, column=1, sticky="nw")
         #   -------------------------------- left panel --------------------------------
         self.menu_frame = customtkinter.CTkScrollableFrame(master=self, width=int(((screen_width / 3) - 20)),
-                                                           height=440)
+                                                           height=440,fg_color=background)
+        
+    
         self.menu_frame.grid(column=0, row=1, sticky="n")
         self.menu_frame.grid_columnconfigure(0, weight=1)
         self.menu_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6, 7, 8 ,9 ,10), weight=1)
@@ -118,7 +129,7 @@ class HomeWindow(customtkinter.CTk):
         self.logout.grid(pady=18, padx=10, row=11, column=0, sticky="new")
 
         self.calendar_frame = customtkinter.CTkFrame(master=self, width=int(screen_width / 3), height=450,
-                                                     fg_color='#242424')
+                                                     fg_color=background)
         self.calendar_frame.grid(column=0, row=2, sticky="n", rowspan=2)
         self.calendar_frame.grid_columnconfigure(0, weight=1)
         self.calendar_frame.grid_rowconfigure(0, weight=1)
@@ -157,8 +168,15 @@ class HomeWindow(customtkinter.CTk):
             values = [total_expenses, limit_left]
             labels = ['Total expenses', 'Limit left']
             fig, ax = plt.subplots(figsize=(5, 4.25))
-            fig.patch.set_facecolor('#242424')
-            ax.set_facecolor('#242424')
+
+            if set_theme(user_login) == "dark":
+                fig.patch.set_facecolor('#242424')
+                ax.set_facecolor('#242424')
+            else:
+                fig.patch.set_facecolor('gray')
+                ax.set_facecolor('gray')
+
+    
             ax.pie(values, labels=labels, autopct='%1.1f%%', explode=(0, 0.1), textprops={'fontsize': 12})
             plt.title('Remaining spend limit', fontsize=18)
             canvas = FigureCanvasTkAgg(fig, self.user_balance_frame)
@@ -174,14 +192,17 @@ class HomeWindow(customtkinter.CTk):
 
         self.summary, self.results = get_daily_summary(self.username)
 
+        
+
         self.spending_summary = customtkinter.CTkFrame(master=self, width=int((screen_width / 3)),
-                                                       height=270, fg_color="#242424")
+                                                       height=270, fg_color=background)
         self.spending_summary.grid(column=1, row=2, sticky="w")
         self.spending_summary.grid_columnconfigure((0, 1), weight=1)
         self.spending_summary.grid_rowconfigure((0, 1), weight=1)
         self.total = customtkinter.CTkLabel(master=self.spending_summary,
                                             text=f"Daily total: {str(round(sum(self.summary.values()), 2))} "
                                                  f"{self.currency}", font=("Arial", 30, "normal"))
+        
         self.total.grid(pady=18, padx=10, column=0, row=0)
 
         self.view = customtkinter.CTkButton(master=self.spending_summary, text='View details',
@@ -220,8 +241,12 @@ class HomeWindow(customtkinter.CTk):
             labels = [v if v > 0 else "" for v in c.datavalues]    
             ax.bar_label(c, labels=labels)
 
-        fig.patch.set_facecolor('#242424')
-        ax.set_facecolor('#242424')
+        if set_theme(user_login) == "dark":
+                fig.patch.set_facecolor('#242424')
+                ax.set_facecolor('#242424')
+        else:
+                fig.patch.set_facecolor('gray')
+                ax.set_facecolor('gray')
 
         ax.tick_params(color=COLOR, labelcolor=COLOR)
         for spine in ax.spines.values():
@@ -254,8 +279,13 @@ class HomeWindow(customtkinter.CTk):
         p4 = ax.bar(x, subs_list, bottom=other_list)
         p5 = ax.bar(x, other_list)
         ax.set_xticks(range(1, days_in_month+1, 2))
-        fig.patch.set_facecolor('#242424')
-        ax.set_facecolor('#242424')
+        
+        if set_theme(user_login) == "dark":
+                fig.patch.set_facecolor('#242424')
+                ax.set_facecolor('#242424')
+        else:
+                fig.patch.set_facecolor('gray')
+                ax.set_facecolor('gray')
 
         plt.xlabel('Days in month', fontsize=11)
         plt.ylabel(f'Amount [{self.currency}]', fontsize=11)

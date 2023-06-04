@@ -67,6 +67,8 @@ class ApplicationSettings(customtkinter.CTk):
                                                    font=("arial", 25, "normal"))
         self.invite_label.grid(column=0, row=5, padx=20, pady=10, columnspan=2)
 
+        
+
         self.login_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="login", justify=CENTER)
         self.login_entry.grid(column=0, row=6, padx=20, pady=10, sticky="ew")
 
