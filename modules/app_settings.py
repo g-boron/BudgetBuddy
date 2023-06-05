@@ -44,15 +44,10 @@ class ApplicationSettings(customtkinter.CTk):
                                                      font=("arial", 25, "normal"))
         self.language_label.grid(column=0, row=1, columnspan=2, padx=20, pady=10)
 
-        self.language_button_pl = customtkinter.CTkButton(master=self.frame, text="polish",
-                                                          font=("arial", 20, "normal"),
-                                                          command=self.change_ui_language_to_pl())
-        self.language_button_pl.grid(column=0, row=2, padx=20, pady=10)
+        self.language_label = customtkinter.CTkLabel(master=self.frame, text="Available soon!",
+                                                     font=("arial", 25, "normal"))
+        self.language_label.grid(column=0, row=2, columnspan=2, padx=20, pady=10)
 
-        self.language_button_en = customtkinter.CTkButton(master=self.frame, text="english",
-                                                          font=("arial", 20, "normal"),
-                                                          command=self.change_ui_language_to_eng())
-        self.language_button_en.grid(column=1, row=2, padx=20, pady=10)
 
         self.theme_label = customtkinter.CTkLabel(master=self.frame, text="Choose a theme from the following:",
                                                   font=("arial", 25, "normal"))
