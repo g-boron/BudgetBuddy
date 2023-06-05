@@ -59,6 +59,7 @@ class Login(customtkinter.CTk):
         self.button.grid(pady=10, padx=0, column=2, row=5, rowspan=2, sticky="sw")
 
     def check_login_credentials(self):
+        """Validated provided login and password with database"""
         provided_username = self.login_entry.get()
         provided_password = self.password_entry.get()
         db = database_connect.DatabaseConnector()
@@ -71,6 +72,7 @@ class Login(customtkinter.CTk):
             return False
 
     def login(self):
+        """Loggs into an account"""
         user_login = self.check_login_credentials()
         if user_login:
             self.destroy()
@@ -85,6 +87,7 @@ class Login(customtkinter.CTk):
             messagebox.showerror(title="login or password not valid", message="Login or password do not match!")
 
     def get_me_to_registration(self):
+        """Opens registration tab"""
         self.window_flag = 0
         self.destroy()
         register_page = modules.register.Register()

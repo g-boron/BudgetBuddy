@@ -23,7 +23,9 @@ class EditRevenue(customtkinter.CTk):
         self.title("Edit your revenue")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
         self.resizable(False, False)
@@ -32,7 +34,7 @@ class EditRevenue(customtkinter.CTk):
         records = self.get_previous(self.id_rev)
 
         previous_date = str(records[4])
-        print(previous_date)
+#        print(previous_date)
         previous_year = int(previous_date[:4])
         previous_month = int(previous_date[5:7])
         previous_day = int(previous_date[8:10])
@@ -78,6 +80,7 @@ class EditRevenue(customtkinter.CTk):
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         db = database_connect.DatabaseConnector()
         query = f"SELECT username FROM users WHERE id={self.id_user}"
@@ -86,12 +89,14 @@ class EditRevenue(customtkinter.CTk):
         revenues.mainloop()
 
     def get_previous(self, revenue_id):
+        """Gets previous revenue id from teh database"""
         db = database_connect.DatabaseConnector()
         query = f"SELECT id, name, description, amount, add_date, user_id FROM revenues WHERE id = '{revenue_id}'"
         exp = db.select_data(query, 'one')
         return exp
 
     def make_changes(self, revenue_id):
+        """Changes value inside database"""
         rev_id = revenue_id
         new_name = self.name_entry.get()
         new_description = self.desc_text.get("1.0", END)
@@ -111,10 +116,9 @@ class EditRevenue(customtkinter.CTk):
             messagebox.showerror('Error', 'Please enter valid data.')
 
     def isfloat(self, num):
+        """Checks if the given variable is a float"""
         try:
             float(num)
             return True
         except ValueError:
             return False
-
-

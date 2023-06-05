@@ -6,9 +6,7 @@ from tkinter import messagebox
 from modules.functions.notifications import *
 from modules import home_window
 from modules.functions.sharing_budgets import *
-from modules.functions.get_user_login import *
-from modules.functions.get_user_id import *
-from modules.functions.get_user_name import *
+from modules.functions.get_users_info import *
 
 
 customtkinter.set_appearance_mode("System")
@@ -23,25 +21,42 @@ TEXT = "Shared budget with "
 class ChooseBudget(customtkinter.CTk):
     def __init__(self, user_id):
         super().__init__()
-        self.id = user_id #login
+        self.login = user_id
         self.geometry("400x600")
         self.title("Choose the budget you want to use.")
         self.resizable(True, True)
         self.frame = customtkinter.CTkFrame(master=self, width=400, height=600)
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
         self.resizable(False, False)
-        self.get_all_budgets(self.id)
+        self.get_all_budgets(self.login)
+        self.logged = ''
+        print("self logged: ", self.logged)
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
 
     def open_default_budget(self, user_id):
+        """Opens a budget that is set as a default to a given account"""
+        with open('budget_flag.txt', 'w') as file:
+            file.write('')
         self.destroy()
         home = home_window.HomeWindow(user_id)
         home.mainloop()
 
     def get_to_budget(self, owner_id):
+        """Opens a selected budget"""
         account_id = owner_id
+        with open('budget_flag.txt', 'r') as file:
+            content = file.read()
+        if content:
+            with open('budget_flag.txt', 'w') as file:
+                file.write('')
+        else:
+            with open('budget_flag.txt', 'w') as file:
+                file.write(f"{account_id}")
         db = database_connect.DatabaseConnector()
         name_query = f"SELECT username FROM users WHERE id='{account_id}';"
         user_name = db.select_data(name_query, 'one')
@@ -50,12 +65,14 @@ class ChooseBudget(customtkinter.CTk):
         home.mainloop()
 
     def get_all_budgets(self, user_id):
+        """Gets all the budgets that are assigned to an account"""
         budget_id_list = []
         owner_id_list = []
         owner_name = []
         inheriting = get_user_id(user_id)
         db = database_connect.DatabaseConnector()
-        query = f"SELECT id, owner_id FROM shared_budgets WHERE inheriting_id = {inheriting} OR owner_id = {inheriting};"
+        query = f"SELECT id, owner_id FROM shared_budgets WHERE inheriting_id = {inheriting} " \
+                f"OR owner_id = {inheriting};"
         all_budgets = db.select_data(query)
         number_of_budgets = len(all_budgets)
         home_window.is_not_default_budget = 1
@@ -76,7 +93,7 @@ class ChooseBudget(customtkinter.CTk):
             label = customtkinter.CTkLabel(master=self.frame, text="Choose budget", font=("Arial", 30, "normal"))
             label.grid(row=0, column=0, padx=20, pady=10, columnspan=2, sticky="n")
             if not check:
-                login = self.id
+                login = self.login
                 home_window.is_not_default_budget = 1
                 own_budget = customtkinter.CTkButton(master=self.frame, text="My budget", font=("Arial", 18, "normal"),
                                                      command=lambda: self.open_default_budget(user_id=login))
@@ -90,7 +107,7 @@ class ChooseBudget(customtkinter.CTk):
                 home_window.is_not_default_budget = 0
                 check_def_budget = check_default_budget(user_id)
                 if check_def_budget:
-                    users_default_budget = get_default_budget(self.id)
+                    users_default_budget = get_default_budget(self.login)
                     own_budget = customtkinter.CTkButton(master=self.frame, text="My budget",
                                                          font=("Arial", 18, "normal"),
                                                          command=lambda: self.open_default_budget(user_id=login))
@@ -110,8 +127,11 @@ class ChooseBudget(customtkinter.CTk):
         owner_name.clear()
 
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
+        with open('budget_flag.txt', 'w') as file:
+            file.write('')
         self.destroy()
-        home = home_window.HomeWindow(self.id)
+        home = home_window.HomeWindow(self.login)
         home.mainloop()
 
 

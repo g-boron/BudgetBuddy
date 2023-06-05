@@ -11,14 +11,13 @@ customtkinter.set_default_color_theme("blue")
 class WelcomeWindow(customtkinter.CTk):
     def __init__(self, user_login):
         super().__init__()
-        self.userlogin = user_login
-        print(self.userlogin)
+        self.user_login = user_login
         self.geometry("800x600")
         self.title("Let us know something more about yourself")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.wm_iconbitmap()
-        self.icopath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
-        self.iconphoto(False, self.icopath)
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
         self.frame.grid_rowconfigure(0, weight=1)
         self.frame.grid_rowconfigure(1, weight=1)
@@ -52,6 +51,7 @@ class WelcomeWindow(customtkinter.CTk):
         self.button.grid(pady=18, padx=10, row=6, column=1, sticky="ew")
 
     def validate(self):
+        """Validates provided values"""
         name = int(self.name_entry.get())
         balance = float(self.balance_entry.get())
 
@@ -62,11 +62,11 @@ class WelcomeWindow(customtkinter.CTk):
                                  message="One of the boxes is empty or has a bad value.")
 
     def get_me_to_home_window(self):
+        """Opens home window tab"""
         name = self.name_entry.get()
         balance = self.balance_entry.get()
         currency = str(self.currency_select.get())
-        user_login = self.userlogin
-        print(user_login)
+        user_login = self.user_login
         if user_login:
             db = database_connect.DatabaseConnector()
             set_name_query = f" UPDATE users SET name = '{name}', balance = '{balance}', currency = '{currency}' " \
@@ -77,4 +77,3 @@ class WelcomeWindow(customtkinter.CTk):
             home_window.mainloop()
         else:
             messagebox.showerror(title="error2", message="Something went wrong")
-

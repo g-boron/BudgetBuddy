@@ -4,6 +4,7 @@ from calendar import monthrange
 
 
 def get_user_currency(username):
+    """Selects given user's currency from database"""
     db = DatabaseConnector()
     query = f"SELECT currency FROM users WHERE username='{username}'"
     
@@ -11,8 +12,8 @@ def get_user_currency(username):
 
 
 def get_daily_summary(username, day='now'):
+    """Gets logged user's daily expenses summary"""
     db = DatabaseConnector()
-
     if day == 'now':
         query = f"SELECT e.amount, c.name from expenses AS e JOIN users AS u ON e.user_id=u.id JOIN categories AS " \
                 f"c ON e.category_id=c.id WHERE u.username='{username}'AND e.add_date=CURRENT_DATE"
@@ -39,8 +40,8 @@ def get_daily_summary(username, day='now'):
 
 
 def get_month_summary(username, month='now'):
+    """Gets logged user's monthly expenses summary"""
     db = DatabaseConnector()
-
     if month == 'now':
         current_month = datetime.datetime.now().month
         current_year = datetime.datetime.now().year
@@ -49,7 +50,6 @@ def get_month_summary(username, month='now'):
                 f"WHERE u.username='{username}' AND EXTRACT(MONTH FROM add_date) = {current_month} " \
                 f"AND EXTRACT(YEAR FROM add_date) = {current_year}"
     else:
-
         query = f"SELECT e.amount, c.name, EXTRACT(MONTH FROM add_date) from expenses AS e JOIN " \
                 f"users AS u ON e.user_id=u.id JOIN categories AS c ON e.category_id=c.id " \
                 f"WHERE u.username='{username}' AND EXTRACT(MONTH FROM add_date) = {int(month.split('-')[0])} " \
@@ -74,8 +74,8 @@ def get_month_summary(username, month='now'):
 
 
 def generate_month_graph_data(username):
+    """Generates monthly graph for logged user on the home window"""
     db = DatabaseConnector()
-
     current_month = datetime.datetime.now().month  
     current_year = datetime.datetime.now().year
     query = f"SELECT e.amount, c.name, EXTRACT(DAY FROM e.add_date) as day from expenses AS e " \
@@ -129,6 +129,7 @@ def generate_month_graph_data(username):
     
 
 def sum_lists(*lists):
+    """ Calculates the sum of the given list"""
     result = []
     for i in range(len(lists[0])):
         total = 0
@@ -138,4 +139,10 @@ def sum_lists(*lists):
 
     return result
 
+
+def get_spend_limit(username):
+    """Checks logged user's spending limit"""
+    db = DatabaseConnector()
+    query = f"SELECT spend_limit FROM users WHERE username = '{username}'"
     
+    return db.select_data(query, 'one')[0]

@@ -4,7 +4,7 @@ import customtkinter
 from PIL import ImageTk
 from modules.database import database_connect
 import modules.login
-from modules.confirmation_mail import Email
+from modules.functions.send_email import *
 import re
 import modules.welcome_window
 
@@ -59,6 +59,7 @@ class Register(customtkinter.CTk):
         self.button_login.grid(pady=10, padx=0, column=1, row=6)
 
     def register(self):
+        """Validates provided data in required entries and creates an user account if everything matches requirements"""
         provided_email = self.email_entry.get()
         provided_login = self.login_entry.get()
         provided_password = self.password_entry.get()
@@ -70,7 +71,7 @@ class Register(customtkinter.CTk):
                 return False
 
             if len(provided_login) < 3:
-                messagebox.showerror("Invalid Login","Login should be at least 3 characters long")
+                messagebox.showerror("Invalid Login", "Login should be at least 3 characters long")
                 return False
 
             if len(provided_password) < 8 or not any(char.isupper() for char in provided_password) or \
@@ -84,7 +85,6 @@ class Register(customtkinter.CTk):
             if provided_password != provided_password2:
                 messagebox.showerror("Passwords don't match", "Please make sure the passwords match.")
                 return False
-            
 
             db = database_connect.DatabaseConnector()
 
@@ -106,20 +106,21 @@ class Register(customtkinter.CTk):
 
         if validate_input():
             db = database_connect.DatabaseConnector()
-            query = f"INSERT INTO users (username, password, email) VALUES ('{provided_login}', " \
-                    f"crypt('{provided_password}', gen_salt('bf')), '{provided_email}');"
+            query = f"INSERT INTO users (username, password, email, theme) VALUES ('{provided_login}', " \
+                    f"crypt('{provided_password}', gen_salt('bf')), '{provided_email}', 'dark');"
             db.make_query(query)
 
-            email_sender = Email()
-            email_sender.send_confirmation_mail_eng(provided_email, provided_login)
+            send_confirmation_mail_eng(provided_email, provided_login)
             self.get_me_to_welcome_page()
 
     def get_me_to_login(self):
+        """Opens login tab"""
         self.destroy()
         login_page = modules.login.Login()
         login_page.mainloop()
 
     def get_me_to_welcome_page(self):
+        """Opens welcome page after successful account creation"""
         user_login = self.login_entry.get()
         print(user_login)
         if user_login:

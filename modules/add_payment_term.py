@@ -6,8 +6,7 @@ from tkinter import messagebox
 from tkcalendar import Calendar
 from tkinter import ttk
 from modules import payment_term
-from modules.functions.get_user_name import *
-from modules.functions.get_user_id import *
+from modules.functions.get_users_info import *
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -21,11 +20,11 @@ class AddPaymentData(customtkinter.CTk):
         self.title("Add new expense")
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
-
+        self.wm_iconbitmap()
+        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
+        self.iconphoto(False, self.iconpath)
         self.frame.grid_rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
-
-        self.resizable(False, False)
 
         self.resizable(True, True)
         self.protocol('WM_DELETE_WINDOW', self.on_closing)
@@ -58,6 +57,7 @@ class AddPaymentData(customtkinter.CTk):
         self.add_button.grid(padx=20, pady=10, row=4, column=0, sticky='ew')
 
     def add_new_payment_term(self):
+        """Adds new payment to logged account"""
         name = str(self.name_entry.get())
         amount = self.amount_entry.get()
         day = self.cal.selection_get().strftime('%Y-%m-%d')
@@ -73,14 +73,15 @@ class AddPaymentData(customtkinter.CTk):
             messagebox.showerror("Error", "Please enter valid data.")
 
     def isfloat(self, num):
+        """Checks if given variable is a float"""
         try:
             float(num)
             return True
         except ValueError:
             return False
 
-
     def on_closing(self):
+        """Desecrates what will happen after closing the window"""
         self.destroy()
         payment_terms = payment_term.PaymentTerm(self.login)
         payment_terms.mainloop()
