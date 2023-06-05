@@ -106,8 +106,8 @@ class Register(customtkinter.CTk):
 
         if validate_input():
             db = database_connect.DatabaseConnector()
-            query = f"INSERT INTO users (username, password, email) VALUES ('{provided_login}', " \
-                    f"crypt('{provided_password}', gen_salt('bf')), '{provided_email}');"
+            query = f"INSERT INTO users (username, password, email, theme) VALUES ('{provided_login}', " \
+                    f"crypt('{provided_password}', gen_salt('bf')), '{provided_email}', 'dark');"
             db.make_query(query)
 
             send_confirmation_mail_eng(provided_email, provided_login)
