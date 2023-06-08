@@ -66,6 +66,11 @@ class Register(customtkinter.CTk):
         provided_password2 = self.password2_entry.get()
 
         def validate_input():
+
+            if not re.match(r"^\S*$", provided_login):
+                messagebox.showerror("Invalid Login", "Login should not contain any whitespace characters.")
+                return False
+
             if not re.match(r"[^@]+@[^@]+\.[^@]+", provided_email):
                 messagebox.showerror("Invalid email", "Please enter a valid email address.")
                 return False

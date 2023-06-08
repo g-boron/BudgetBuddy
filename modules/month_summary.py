@@ -6,6 +6,7 @@ from modules.database import database_connect
 from tkinter import messagebox
 from datetime import datetime
 from .functions.summaries import get_month_summary, get_user_currency
+import re
 
 
 customtkinter.set_appearance_mode("System")
@@ -29,7 +30,7 @@ class MonthSummary(customtkinter.CTk):
         self.title = customtkinter.CTkLabel(master=self, text='Month summary', font=('Arial', 35, 'normal'))
         self.title.place(relx=0.4, rely=0.025)
 
-        self.choose = customtkinter.CTkEntry(master=self, placeholder_text='Month', font=('Arial', 25, 'normal'))
+        self.choose = customtkinter.CTkEntry(master=self, placeholder_text='MM-YYYY', font=('Arial', 25, 'normal'))
         self.choose.place(relx=0.3, rely=0.1)
 
         self.button = customtkinter.CTkButton(master=self, text='Choose', font=('Arial', 25, 'normal'),
@@ -111,4 +112,11 @@ class MonthSummary(customtkinter.CTk):
 
     def change(self):
         """Changes the month summary tab content by a given parameter"""
+
+        input_month = self.choose.get()
+        
+        if not re.match(r"\d{2}-\d{4}$", input_month):
+            messagebox.showerror('Error', 'Please enter a month in the format MM-YYYY')
+            return
+
         self.refresh(self.choose.get())
