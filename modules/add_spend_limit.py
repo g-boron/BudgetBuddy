@@ -5,6 +5,7 @@ from modules.database import database_connect
 from tkinter import messagebox
 from modules.functions.invite_to_budget import *
 from modules import home_window
+from .functions.summaries import get_month_summary
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
@@ -52,16 +53,25 @@ class SpendLimit(customtkinter.CTk):
 
     def set_limit(self):
         """Sets a expense limitation for monthly amount to a value"""
+
+
+        month_summary, month_results = get_month_summary(self.username)
+        month_total = sum(month_summary.values())
+
         try:
             limit = float(self.limit_entry.get())
-            if limit > 0:
+            if limit <= 0:
+                messagebox.showerror("Error", "Value must be greater than 0!")
+            
+            elif limit < month_total:
+                messagebox.showerror("Error", "Value must be greater than your monthly expenses!")
+                
+            else:
                 db = database_connect.DatabaseConnector()
                 query = f"UPDATE users SET spend_limit = {limit} WHERE username = '{self.username}';"
                 db.make_query(query)
                 messagebox.showinfo("Success", "Monthly spend limit has been set!")
                 self.on_closing()
-            else:
-                messagebox.showerror("Error", "Value must be greater than 0!")
         except ValueError:
             messagebox.showerror("Error", "Value must be a number!")
 
