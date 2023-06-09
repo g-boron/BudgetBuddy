@@ -6,6 +6,7 @@ from modules.database import database_connect
 from tkinter import messagebox
 from datetime import datetime
 from .functions.summaries import get_daily_summary, get_user_currency
+import re
 
 
 customtkinter.set_appearance_mode("System")
@@ -29,8 +30,8 @@ class DaySummary(customtkinter.CTk):
         self.title = customtkinter.CTkLabel(master=self, text='Day summary', font=('Arial', 35, 'normal'))
         self.title.place(relx=0.4, rely=0.025)
 
-        self.choose = customtkinter.CTkEntry(master=self, placeholder_text='Day', font=('Arial', 25,'normal'))
-        self.choose.place(relx=0.3, rely=0.1)
+        self.choose = customtkinter.CTkEntry(master=self, placeholder_text='DD-MM-YYYY', font=('Arial', 25,'normal'), width=175)
+        self.choose.place(relx=0.25, rely=0.1)
 
         self.btn = customtkinter.CTkButton(master=self, text='Choose', font=('Arial', 25, 'normal'),
                                            command=self.change)
@@ -110,4 +111,10 @@ class DaySummary(customtkinter.CTk):
 
     def change(self):
         """Changes the showed content based on given parameter"""
+        input_day = self.choose.get()
+
+        if not re.match(r"\d{2}-\d{2}-\d{4}$", input_day):
+            messagebox.showerror('Error', 'Please enter a day in the format DD-MM-YYYY')
+            return
+
         self.refresh(self.choose.get())
