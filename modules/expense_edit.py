@@ -21,9 +21,6 @@ class EditExpense(customtkinter.CTk):
         super().__init__()
         self.geometry("800x800")
         self.title("Edit your expense")
-        self.wm_iconbitmap()
-        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
-        self.iconphoto(False, self.iconpath)
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
