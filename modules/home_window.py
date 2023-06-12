@@ -270,7 +270,7 @@ class HomeWindow(customtkinter.CTk):
         self.second_graph_frame.grid_columnconfigure(0, weight=1)
         self.second_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
-        if not is_premium:
+        if is_premium:
             x, days_in_month, entertainment_list, shopping_list, bills_list, subs_list, \
                 other_list = generate_month_graph_data(self.username)
             
