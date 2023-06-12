@@ -228,7 +228,7 @@ class HomeWindow(customtkinter.CTk):
         self.first_graph_frame.grid_columnconfigure(0, weight=1)
         self.first_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
-        if is_premium == True:
+        if is_premium:
             columns = list(self.summary.keys())
             values = list(self.summary.values())
 
@@ -270,7 +270,7 @@ class HomeWindow(customtkinter.CTk):
         self.second_graph_frame.grid_columnconfigure(0, weight=1)
         self.second_graph_frame.grid_rowconfigure((1, 2, 3, 4, 5, 6), weight=1)
 
-        if is_premium == True:
+        if not is_premium:
             x, days_in_month, entertainment_list, shopping_list, bills_list, subs_list, \
                 other_list = generate_month_graph_data(self.username)
             
@@ -432,20 +432,22 @@ class HomeWindow(customtkinter.CTk):
                 f"WHERE user_id={get_user_id(username)} "
                 
         payments = db.select_data(query)
-
+        term_label = customtkinter.CTkLabel(master=self.incoming_transactions_frame, text="Payment terms:",
+                                            font=("Arial", 20, "bold"))
+        term_label.grid(row=0, column=0, sticky="ew", columnspan=3)
         for idx, payments in enumerate(payments):
             payment_term_name = customtkinter.CTkLabel(master=self.incoming_transactions_frame,
                                                        text=textwrap.shorten(payments[0], width=25, placeholder='...'),
                                                        font=("Arial", 18, "normal"))
-            payment_term_name.grid(pady=20, padx=10, row=idx, column=0)
+            payment_term_name.grid(pady=20, padx=10, row=idx+1, column=0)
 
             date = customtkinter.CTkLabel(master=self.incoming_transactions_frame, text=str(payments[1]).split(' ')[0],
                                           font=("Arial", 18, "normal"))
-            date.grid(pady=20, padx=10, row=idx, column=1)
+            date.grid(pady=20, padx=10, row=idx+1, column=1)
 
             amount = customtkinter.CTkLabel(master=self.incoming_transactions_frame, text=payments[2],
                                             font=("Arial", 18, "normal"))
-            amount.grid(pady=20, padx=10, row=idx, column=2)
+            amount.grid(pady=20, padx=10, row=idx+1, column=2)
 
     def check_flag(self):
         """Checks for budget flags"""

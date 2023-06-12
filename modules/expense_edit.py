@@ -21,9 +21,6 @@ class EditExpense(customtkinter.CTk):
         super().__init__()
         self.geometry("800x800")
         self.title("Edit your expense")
-        self.wm_iconbitmap()
-        self.iconpath = ImageTk.PhotoImage(file="./images/logo_transparent.png")
-        self.iconphoto(False, self.iconpath)
         self.frame = customtkinter.CTkFrame(master=self, width=800, height=600)
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
@@ -73,9 +70,10 @@ class EditExpense(customtkinter.CTk):
 
         self.category = customtkinter.CTkOptionMenu(master=self.frame, values=categories)
         self.category.grid(pady=20, padx=10, row=5, column=0, sticky="ew", columnspan=2)
+        self.category.set(records[8])
 
         self.delete = customtkinter.CTkButton(master=self.frame, text="Cancel", font=("Arial", 12, "normal"),
-                                              command=lambda: self.destroy())
+                                              command=lambda: self.on_closing())
         self.delete.grid(row=6, column=0, padx=10, pady=20, sticky='sw')
 
         self.edit = customtkinter.CTkButton(master=self.frame, text="Confirm", font=("Arial", 12, "normal"),
@@ -97,7 +95,7 @@ class EditExpense(customtkinter.CTk):
         """Gets previous expense id"""
         exp_id = id_exp
         db = database_connect.DatabaseConnector()
-        query = f"SELECT * FROM expenses WHERE id = {exp_id}"
+        query = f"SELECT e.id, e.name, e.description, e.add_date, e.amount, e.edit_date, e.user_id, e.category_id, c.name FROM expenses e JOIN categories c ON e.category_id=c.id WHERE e.id = {exp_id}"
         exp = db.select_data(query, 'one')
         return exp
 

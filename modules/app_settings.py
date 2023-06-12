@@ -48,7 +48,6 @@ class ApplicationSettings(customtkinter.CTk):
                                                      font=("arial", 25, "normal"))
         self.language_label.grid(column=0, row=2, columnspan=2, padx=20, pady=10)
 
-
         self.theme_label = customtkinter.CTkLabel(master=self.frame, text="Choose a theme from the following:",
                                                   font=("arial", 25, "normal"))
         self.theme_label.grid(column=0, row=3, columnspan=2, padx=20, pady=10)
@@ -63,23 +62,24 @@ class ApplicationSettings(customtkinter.CTk):
                                                     command=lambda: self.change_ui_theme("light"))
         self.light_button.grid(column=1, row=4, padx=20, pady=10)
 
-        if is_premium == True:
+        if is_premium:
             self.invite_label = customtkinter.CTkLabel(master=self.frame, text="Invite someone to your budget:",
-                                                    font=("arial", 25, "normal"))
+                                                       font=("arial", 25, "normal"))
             self.invite_label.grid(column=0, row=5, padx=20, pady=10, columnspan=2)
 
             self.login_entry = customtkinter.CTkEntry(master=self.frame, placeholder_text="login", justify=CENTER)
             self.login_entry.grid(column=0, row=6, padx=20, pady=10, sticky="ew")
 
             self.invite_button = customtkinter.CTkButton(master=self.frame, text="Invite to budget!",
-                                                        command=lambda: self.invite_someone(user_id))
+                                                         command=lambda: self.invite_someone(user_id))
             self.invite_button.grid(column=1, row=6, padx=20, pady=10)
 
-        self.premium_label = customtkinter.CTkLabel(master=self.frame, text='Buy premium version:', font=('Arial', 25, 'normal'))
+        self.premium_label = customtkinter.CTkLabel(master=self.frame, text='Buy premium version:',
+                                                    font=('Arial', 25, 'normal'))
         self.premium_label.grid(column=0, row=7, padx=20, pady=10)
 
         self.buy_button = customtkinter.CTkButton(master=self.frame, text="Buy!",
-                                                     command=lambda: self.buy_premium(user_id))
+                                                  command=lambda: self.buy_premium(user_id))
         self.buy_button.grid(column=1, row=7, padx=20, pady=10)
 
     def change_ui_theme(self, theme):
@@ -88,9 +88,13 @@ class ApplicationSettings(customtkinter.CTk):
         if theme == "light":
             query = f"UPDATE users SET theme = 'light' WHERE username = '{self.id}'"
             db.make_query(query)
+            messagebox.showinfo("UI changed", "UI color has been changed! Effect will take place after "
+                                              "closing of settings tab")
         elif theme == "dark":
             query = f"UPDATE users SET theme = 'dark' WHERE username = '{self.id}'"
             db.make_query(query)
+            messagebox.showinfo("UI changed", "UI color has been changed! Effect will take place after "
+                                              "closing of settings tab")
 
     def on_closing(self):
         """Desecrates what will happen after closing the window"""

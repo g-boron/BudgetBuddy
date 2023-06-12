@@ -33,17 +33,17 @@ class ChangePassword(customtkinter.CTk):
                                             font=("Arial", 30, "normal"))
         self.label.grid(pady=18, padx=10, row=0, column=1)
 
+        self.password_old = customtkinter.CTkEntry(master=self.frame, placeholder_text="Previous Password", show="*",
+                                                   justify=CENTER)
+        self.password_old.grid(pady=18, padx=10, row=1, column=1, sticky="ew")
+
         self.password = customtkinter.CTkEntry(master=self.frame, placeholder_text="New password", show="*",
                                                justify=CENTER)
-        self.password.grid(pady=18, padx=10, row=1, column=1, sticky="ew")
+        self.password.grid(pady=18, padx=10, row=2, column=1, sticky="ew")
 
         self.password2 = customtkinter.CTkEntry(master=self.frame, placeholder_text="Confirm new password", show="*",
                                                 justify=CENTER)
-        self.password2.grid(pady=18, padx=10, row=2, column=1, sticky="ew")
-
-        self.password_old = customtkinter.CTkEntry(master=self.frame, placeholder_text="Previous Password", show="*",
-                                                   justify=CENTER)
-        self.password_old.grid(pady=18, padx=10, row=3, column=1, sticky="ew")
+        self.password2.grid(pady=18, padx=10, row=3, column=1, sticky="ew")
 
         self.button_save = customtkinter.CTkButton(master=self.frame, text="Save changes", command=self.save_changes)
         self.button_save.grid(pady=18, padx=10, row=4, column=1, sticky="ew")
