@@ -23,8 +23,8 @@ class Budget:
                     f"VALUES ('{name}', '{desc}', '{amount}', '{day}', '{self.user_id}', '{category}')"
             self.db.make_query(query)
             
-            current_balance = self.balance - amount
-            query = f"UPDATE users SET balance = {current_balance} WHERE id = '{self.user_id}'"
+            self.balance = self.balance - amount
+            query = f"UPDATE users SET balance = {self.balance} WHERE id = '{self.user_id}'"
             self.db.make_query(query)
             return True
 
@@ -54,8 +54,8 @@ class Budget:
         query = f"INSERT INTO revenues (name, description, amount, add_date, user_id) " \
                 f"VALUES ('{name}', '{desc}', '{amount}', '{day}', '{self.user_id}')"
         self.db.make_query(query)
-        current_balance = self.balance + amount
-        query = f"UPDATE users SET balance = {current_balance} WHERE id = '{self.user_id}'"
+        self.balance = self.balance + amount
+        query = f"UPDATE users SET balance = {self.balance} WHERE id = '{self.user_id}'"
         self.db.make_query(query)
 
     def get_category_id(self, name):
